@@ -1,0 +1,9 @@
+{
+  "preload": {
+    "files": [{
+      "type": "json",
+      "key": "ryanAndLoAnimation",
+      "url": "./src/assets/data/animations/ryanandlo.json"
+    } ]
+  }
+}

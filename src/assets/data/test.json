@@ -1,0 +1,19 @@
+{
+  "1": {
+    "name": "Test Blob",
+    "spriteKey": "blob",
+    "maxHp": 40,
+    "maxMp": 10,
+    "level": 1,
+    "intellect": 2,
+    "dexterity": 10,
+    "wisdom": 2,
+    "stamina": 3,
+    "strength": 12,
+    "physicalResist": 1,
+    "magicalResist": 1,
+    "lootTable": [],
+    "goldValue": 10,
+    "experiencePoints": 30
+  }
+}
