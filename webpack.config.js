@@ -10,13 +10,30 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.ts$/, loader: "ts-loader", exclude: "/node_modules/" },
-      { test: /phaser\.js$/, loader: "expose-loader?Phaser" }
+      {
+        test: /\.ts$/,
+        use: [
+          {
+            loader: "ts-loader", options: {
+            }
+          }
+        ],
+        rules: [
+          {
+            exclude: "/node_modules/"
+          }
+        ]
+      },
+      // {
+      //   test: /phaser\.js$/, use: [{ loader: "expose-loader?Phaser" }],
+      // }
     ]
   },
   devServer: {
-    contentBase: path.resolve(__dirname, "./"),
-    publicPath: "/dist/",
+    devMiddleware:{
+      publicPath: "/dist/",
+    },
+    static: path.resolve(__dirname, "./"),
     host: "127.0.0.1",
     port: 8080,
     open: true

@@ -1,9 +1,5 @@
 {
   "preload": {
-    "files": [{
-      "type": "json",
-      "key": "test",
-      "url": "./src/assets/data/test.json"
-    }]
+    "files": []
   }
 }

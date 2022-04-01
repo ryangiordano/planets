@@ -1,6 +1,5 @@
 import { AnimationHelper } from "../utility/tweens/animation-helper";
 import { BLACK, WHITE } from "../utility/Constants";
-import { State } from "../utility/state/State";
 import { MainScene } from "./MainScene";
 import DependentScene from "./DependentScene";
 
@@ -44,14 +43,11 @@ export class BootScene extends Phaser.Scene {
     animationHelper.createGameAnimations(
       this.cache.json.get("ryanAndLoAnimation").anims
     );
-
     const sprite = this.add.sprite(400, 300, "ryanandlo");
     sprite.scaleX = 1;
     sprite.scaleY = 1;
     sprite.anims.play("shine-in");
     sprite.on("animationcomplete", () => {
-      this.sound.play("startup", { volume: 0.1 });
-
       this.add.text(300, 330, "Catshape Daruma®", {
         fontFamily: "pixel",
         fontSize: "20px",
@@ -64,14 +60,9 @@ export class BootScene extends Phaser.Scene {
         this.scene.start("MainScene");
       }, 1);
     });
-
-    // When we get to the point  where we can save state to a JSON, this is where we'd load it in, flipping the proper flags.
-    const sm = State.getInstance();
-    sm.initialize(this.game);
   }
 
   preload(): void {
-    // this.sound.add("startup");
     this.cameras.main.setBackgroundColor(WHITE.hex);
     this.createLoadingGraphics();
     this.load.on("complete", () => {

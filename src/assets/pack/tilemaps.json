@@ -1,9 +1,5 @@
 {
   "preload": {
-    "files": [{
-      "type": "tilemapTiledJSON",
-      "key": "room",
-      "url": "./src/assets/maps/room.json"
-    }]
+    "files": []
   }
 }
