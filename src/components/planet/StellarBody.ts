@@ -29,7 +29,7 @@ export default class StellarBody extends Phaser.GameObjects.Sprite {
     orbit = [],
     distanceFromCenter,
     rotationSpeed,
-    parentBody,
+    color = 0xffffff,
   }: {
     scene: Phaser.Scene;
     x?: number;
@@ -38,19 +38,23 @@ export default class StellarBody extends Phaser.GameObjects.Sprite {
     distanceFromCenter?: number;
     rotationSpeed?: number;
     size: StellarBodySize;
-    parentBody?: StellarBody;
+    color?: number;
   }) {
     super(scene, x, y, "planet", size);
-    this.orbit = orbit;
+    if (orbit.length) {
+      orbit.forEach((o) => this.addToOrbit(o));
+    }
     this.distanceFromCenter = distanceFromCenter;
     this.rotationSpeed = rotationSpeed;
-    this.parentBody = parentBody;
 
     this.scene.add.existing(this);
+    this.setTint(color);
   }
 
   private isRotatingWithSatelites() {
-    return Boolean(this.rotationSpeed && this.orbit.length);
+    return Boolean(
+      this.rotationSpeed && this.orbit.length && this.orbitContainer
+    );
   }
 
   getX() {
@@ -106,9 +110,13 @@ export default class StellarBody extends Phaser.GameObjects.Sprite {
   }
 
   private _addToOrbit(stellarBody: StellarBody) {
+    if (!stellarBody) {
+      return;
+    }
     stellarBody.setX(this.getX() + stellarBody.distanceFromCenter);
     stellarBody.setY(this.getY() + stellarBody.distanceFromCenter);
     this.orbit.push(stellarBody);
+    stellarBody.parentBody = this;
     if (this.isRotatingWithSatelites()) {
       this.orbitContainer.add(stellarBody);
     }
@@ -119,7 +127,7 @@ export default class StellarBody extends Phaser.GameObjects.Sprite {
     this.orbit.forEach((sb) => sb.update(time, delta));
 
     // Update your own position if you're rotating around a StellarBody
-    if (this.rotationSpeed) {
+    if (this.rotationSpeed && this.parentBody) {
       const rotateBy = ((90 * delta) / 500000) * this.rotationSpeed;
       const currentPosition = {
         x: this.getX(),
