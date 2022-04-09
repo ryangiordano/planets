@@ -8,7 +8,6 @@ export const ORANGE = { str: "#f1942a", hex: 0xf1942a };
 export const RED = { str: "#ff777a", hex: 0xff777a };
 export const LIGHT_GREY = { str: "#bfbfbf", hex: 0xbfbfbf };
 
-
 export const TILE_SIZE = 64;
 
 export enum Directions {
@@ -16,4 +15,8 @@ export enum Directions {
   down,
   left,
   right,
+  upLeft,
+  downLeft,
+  upRight,
+  downRight,
 }
