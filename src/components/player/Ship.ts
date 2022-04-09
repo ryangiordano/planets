@@ -2,6 +2,8 @@ import { tweenToAngle } from "./shared";
 const SHIP_VELOCITY = 250;
 
 export default class Ship extends Phaser.Physics.Arcade.Sprite {
+  private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+  private emitter: Phaser.GameObjects.Particles.ParticleEmitter;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,
@@ -17,49 +19,90 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
     this.setDrag(250);
     this.setMaxVelocity(250);
     this.setInputs();
+
+    const particles = this.scene.add.particles("ship", 1);
+
+    this.emitter = particles.createEmitter({
+      speed: 100,
+      scale: { start: 0.5, end: 0 },
+      blendMode: "ADD",
+      angle: -this.angle,
+      frequency: 100,
+    });
+
+    this.emitter.stop();
+    this.emitter.startFollow(this);
   }
 
-  /** Add listeners for player movement,
-   * let callback handle any side effects of movement */
-  public setInputs() {
-    const cursors = this.scene.input.keyboard.createCursorKeys();
+  private stopEngine() {
+    !this.keyIsDown() && this.emitter.stop();
+  }
 
-    cursors.down.addListener("down", () => {
-      tweenToAngle(cursors, this.scene, this);
+  private startEngine() {
+    this.emitter.start();
+  }
+
+  public setInputs() {
+    this.cursors = this.scene.input.keyboard.createCursorKeys();
+
+    this.cursors.down.addListener("down", () => {
+      this.startEngine();
+      tweenToAngle(this.cursors, this.scene, this);
       this.setAccelerationY(SHIP_VELOCITY);
     });
-    cursors.down.addListener("up", () => {
+    this.cursors.down.addListener("up", () => {
+      this.stopEngine();
       this.setAccelerationY(0);
-      tweenToAngle(cursors, this.scene, this);
+      tweenToAngle(this.cursors, this.scene, this);
     });
 
-    cursors.up.addListener("down", () => {
-      tweenToAngle(cursors, this.scene, this);
+    this.cursors.up.addListener("down", () => {
+      this.startEngine();
+      tweenToAngle(this.cursors, this.scene, this);
       this.setAccelerationY(-SHIP_VELOCITY);
     });
-    cursors.up.addListener("up", () => {
+    this.cursors.up.addListener("up", () => {
+      this.stopEngine();
       this.setAccelerationY(0);
-      tweenToAngle(cursors, this.scene, this);
+      tweenToAngle(this.cursors, this.scene, this);
     });
 
-    cursors.left.addListener("down", () => {
-      tweenToAngle(cursors, this.scene, this);
+    this.cursors.left.addListener("down", () => {
+      this.startEngine();
+      tweenToAngle(this.cursors, this.scene, this);
       this.setAccelerationX(-SHIP_VELOCITY);
     });
 
-    cursors.left.addListener("up", () => {
+    this.cursors.left.addListener("up", () => {
+      this.stopEngine();
       this.setAccelerationX(0);
-      tweenToAngle(cursors, this.scene, this);
+      tweenToAngle(this.cursors, this.scene, this);
     });
 
-    cursors.right.addListener("down", () => {
-      tweenToAngle(cursors, this.scene, this);
+    this.cursors.right.addListener("down", () => {
+      this.startEngine();
+      tweenToAngle(this.cursors, this.scene, this);
       this.setAccelerationX(SHIP_VELOCITY);
     });
 
-    cursors.right.addListener("up", () => {
+    this.cursors.right.addListener("up", () => {
+      this.stopEngine();
       this.setAccelerationX(0);
-      tweenToAngle(cursors, this.scene, this);
+      tweenToAngle(this.cursors, this.scene, this);
+    });
+  
+  }
+  keyIsDown() {
+    return Object.keys(this.cursors).some((key) => {
+      switch (key) {
+        case "down":
+        case "up":
+        case "left":
+        case "right":
+          return this.cursors[key].isDown;
+      }
     });
   }
+
+  update() {}
 }

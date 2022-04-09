@@ -1,3 +1,4 @@
+import { getRandomInt } from "../../utility/Utility";
 import { rotatePoint } from "./shared";
 
 export type StellarBodySize = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -109,12 +110,16 @@ export default class StellarBody extends Phaser.GameObjects.Sprite {
     return this;
   }
 
+  /** Add the bodies to the orbit at a random quadrant */
   private _addToOrbit(stellarBody: StellarBody) {
-    if (!stellarBody) {
-      return;
-    }
-    stellarBody.setX(this.getX() + stellarBody.distanceFromCenter);
-    stellarBody.setY(this.getY() + stellarBody.distanceFromCenter);
+    stellarBody.setX(
+      this.getX() +
+        stellarBody.distanceFromCenter * (getRandomInt(1, 3) % 2 === 0 ? 1 : -1)
+    );
+    stellarBody.setY(
+      this.getY() +
+        stellarBody.distanceFromCenter * (getRandomInt(1, 3) % 2 === 0 ? 1 : -1)
+    );
     this.orbit.push(stellarBody);
     stellarBody.parentBody = this;
     if (this.isRotatingWithSatelites()) {
