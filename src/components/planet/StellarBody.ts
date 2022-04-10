@@ -7,7 +7,7 @@ export type StellarBodySize = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
  * A planetary body or star that has other StellarBodies to rotate around it.
  * Other bodies must be smaller than the parent StellarBody
  */
-export default class StellarBody extends Phaser.GameObjects.Sprite {
+export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
   private orbit: StellarBody[] = [];
   private distanceFromCenter: number;
   private rotationSpeed: number;
@@ -82,6 +82,10 @@ export default class StellarBody extends Phaser.GameObjects.Sprite {
       this.y = value;
     }
     return this;
+  }
+
+  getOrbitSize() {
+    return this.distanceFromCenter * 1.4;
   }
 
   private buildOrbitContainer() {

@@ -10,11 +10,13 @@ export type StellarBodyData = {
 
 export default {
   "0": {
+    name: "Locifur",
     size: 6,
     color: 0xe0c34c,
+    distanceFromCenter: 1000,
   },
   "1": {
-    name: "",
+    name: "Andy IV",
     distanceFromCenter: 150,
     rotationSpeed: 15,
     size: 3,
@@ -22,21 +24,21 @@ export default {
     orbit: [1.1],
   },
   "2": {
-    name: "",
+    name: "Wryan",
     distanceFromCenter: 250,
     rotationSpeed: 25,
     size: 2,
     color: 0x98bf88,
   },
   "3": {
-    name: "",
+    name: "Mayga",
     distanceFromCenter: 350,
     rotationSpeed: 10,
     size: 4,
     color: 0xe362ab,
   },
   "1.1": {
-    name: "",
+    name: "Charger",
     distanceFromCenter: 30,
     rotationSpeed: 100,
     size: 0,

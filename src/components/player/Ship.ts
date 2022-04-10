@@ -23,11 +23,11 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
     const particles = this.scene.add.particles("ship", 1);
 
     this.emitter = particles.createEmitter({
-      speed: 100,
-      scale: { start: 0.5, end: 0 },
+      scale: { start: 0.8, end: 0 },
       blendMode: "ADD",
       angle: -this.angle,
       frequency: 100,
+      alpha: 0.5,
     });
 
     this.emitter.stop();
@@ -90,7 +90,6 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
       this.setAccelerationX(0);
       tweenToAngle(this.cursors, this.scene, this);
     });
-  
   }
   keyIsDown() {
     return Object.keys(this.cursors).some((key) => {
