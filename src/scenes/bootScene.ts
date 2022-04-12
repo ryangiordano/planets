@@ -2,6 +2,7 @@ import { AnimationHelper } from "../utility/tweens/animation-helper";
 import { BLACK, WHITE } from "../utility/Constants";
 import { MainScene } from "./MainScene";
 import DependentScene from "./DependentScene";
+import { SystemSelectScene } from "./SystemSelectScene";
 
 function preloadSceneDependencies(
   bootScene: Phaser.Scene,
@@ -56,8 +57,8 @@ export class BootScene extends Phaser.Scene {
       });
 
       setTimeout(() => {
-        this.scene.start("Audio");
-        this.scene.start("MainScene");
+        this.scene.start("SystemSelectScene");
+        // this.scene.start("MainScene");
       }, 1);
     });
   }
@@ -98,7 +99,7 @@ export class BootScene extends Phaser.Scene {
 
     this.load.pack("preload", "./src/assets/pack.json", "preload");
 
-    preloadSceneDependencies(this, [MainScene]);
+    preloadSceneDependencies(this, [MainScene, SystemSelectScene]);
   }
   private createLoadingGraphics(): void {
     // We can specify the type of config we want to send.

@@ -32,6 +32,8 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
 
     this.emitter.stop();
     this.emitter.startFollow(this);
+
+    this.body.setCircle(12, this.height / 2.5, this.width / 2.5);
   }
 
   private stopEngine() {
