@@ -2,16 +2,17 @@ import Ship from "../components/player/Ship";
 import HexTile from "../components/system-select/HexTile";
 import DependentScene from "./DependentScene";
 import { paintStars } from "./utility";
+import { buildHexMap } from "../assets/data/controllers/HexMapController";
 import {
-  buildHexMap,
   renderSystem,
   renderSystemNeighbors,
-} from "../assets/data/controllers/HexMapController";
-import { getStarSystem } from "../assets/data/repositories/StarSystemRepository";
+} from "../assets/data/controllers/StarSystemController";
+import { getSaveData } from "../assets/data/controllers/SaveController";
 
 export class SystemSelectScene extends DependentScene {
   private ship: Ship;
   private playerGroup: Phaser.GameObjects.Group;
+
   constructor() {
     super({
       key: "SystemSelectScene",
@@ -40,12 +41,13 @@ export class SystemSelectScene extends DependentScene {
   create(): void {
     this.paintStars();
 
-    const homeSystem = getStarSystem(0);
     const hexMap = buildHexMap(this, 25);
+    const save = getSaveData(0);
+
+    const homeSystem = save.startingSystem;
 
     renderSystem(homeSystem, hexMap);
-
-    renderSystemNeighbors(homeSystem, hexMap);
+    // renderSystemNeighbors(homeSystem, hexMap);
 
     this.ship = new Ship({ scene: this, x: 500, y: 500 });
     this.playerGroup = new Phaser.GameObjects.Group(this, [this.ship]);

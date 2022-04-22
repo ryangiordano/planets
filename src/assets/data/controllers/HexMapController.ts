@@ -19,36 +19,3 @@ export function buildHexMap(
   return hexMap;
 }
 
-export function renderSystem(
-  system: StarSystemObject,
-  hexMap: { [key: string]: HexTile }
-) {
-  const [x, y] = system.coordinates;
-  const hexTile = hexMap[`${x},${y}`];
-  hexTile.addSystem(system);
-}
-
-const neighbors = [
-  [0, -1],
-  [1, -1],
-  [1, 0],
-  [1, 1],
-  [0, 1],
-  [-1, 0],
-];
-
-export function renderSystemNeighbors(
-  system: StarSystemObject,
-  hexMap: { [key: string]: HexTile }
-) {
-  const [originX, originY] = system.coordinates;
-
-  neighbors.forEach(([x, y]) => {
-    const hexTile = hexMap[`${originX + x},${originY + y}`];
-    hexTile.setUnexplored()
-    const starSystem = getStarSystemByCoordinate([x, y]);
-    if (starSystem) {
-      hexTile.addSystem(starSystem);
-    }
-  });
-}

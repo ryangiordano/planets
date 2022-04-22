@@ -48,7 +48,7 @@ export default {
   "4": {
     name: "Odie",
     size: 6,
-    color: 0xe0c34c,
+    color: 0xd96729,
     distanceFromCenter: 1000,
   },
   "5": {
@@ -56,7 +56,7 @@ export default {
     distanceFromCenter: 150,
     rotationSpeed: 15,
     size: 3,
-    color: 0x606de0,
+    color: 0x6b5143,
   },
   "6": {
     name: "Grampar",
@@ -71,7 +71,7 @@ export default {
     distanceFromCenter: 350,
     rotationSpeed: 10,
     size: 4,
-    color: 0xe362ab,
+    color: 0xf02453,
   },
   "6.1": {
     name: "Moe",

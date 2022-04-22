@@ -1,5 +1,10 @@
 import StellarBody from "../../../components/planet/StellarBody";
-import { getStarSystem } from "../repositories/StarSystemRepository";
+import HexTile from "../../../components/system-select/HexTile";
+import {
+  getStarSystem,
+  getStarSystemByCoordinate,
+  StarSystemObject,
+} from "../repositories/StarSystemRepository";
 
 export function buildStarSystem(
   scene: Phaser.Scene,
@@ -59,4 +64,44 @@ export function buildStarSystem(
   );
 
   return sun;
+}
+
+export function renderSystem(
+  system: StarSystemObject,
+  hexMap: { [key: string]: HexTile }
+) {
+  const [x, y] = system.coordinates;
+  const hexTile = hexMap[`${x},${y}`];
+  hexTile.addSystem(system);
+
+  renderSystemNeighbors(system, hexMap);
+}
+
+const neighbors = [
+  [0, -1],
+  [1, -1],
+  [1, 0],
+  [1, 1],
+  [0, 1],
+  [-1, 0],
+];
+
+export function renderSystemNeighbors(
+  system: StarSystemObject,
+  hexMap: { [key: string]: HexTile }
+) {
+  const [originX, originY] = system.coordinates;
+
+  neighbors.forEach(([x, y]) => {
+    const hexTile = hexMap[`${originX + x},${originY + y}`];
+    if (hexTile.hasStarSystem()) {
+      return;
+    }
+    hexTile.setUnexplored();
+    const starSystem = getStarSystemByCoordinate([originX + x, originY + y]);
+    if (starSystem) {
+      hexTile.addSystem(starSystem);
+      renderSystemNeighbors(starSystem, hexMap);
+    }
+  });
 }

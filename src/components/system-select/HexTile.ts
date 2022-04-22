@@ -12,6 +12,8 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
   ];
 
   private starSystem: StarSystem;
+  public playerHasAccess: boolean = false;
+
   constructor({ scene, x, y }: { scene: Phaser.Scene; x: number; y: number }) {
     super(scene, 0, 0, "hex-tile");
     this.scene.add.existing(this);
@@ -36,5 +38,9 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
       y: this.y,
       systemObject,
     });
+  }
+
+  hasStarSystem() {
+    return !!this.starSystem;
   }
 }
