@@ -9,7 +9,7 @@ export type StellarBodySize = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
  */
 export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
   private orbit: StellarBody[] = [];
-  private distanceFromCenter: number;
+  public distanceFromCenter: number;
   private rotationSpeed: number;
   private parentBody?: StellarBody;
   static spriteDependencies: SpriteDependency[] = [

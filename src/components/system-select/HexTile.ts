@@ -11,17 +11,20 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
     },
   ];
 
-  private starSystem: StarSystem;
+  public starSystem: StarSystem;
   public playerHasAccess: boolean = false;
-
+  public focusColor: number = 0xbddebd;
+  public color: number = 0x6e6e6e;
   constructor({ scene, x, y }: { scene: Phaser.Scene; x: number; y: number }) {
     super(scene, 0, 0, "hex-tile");
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
-    this.setTint(0x6e6e6e);
+    this.setTint(this.color);
     this.setX(!(y % 2) ? x * this.width + this.width / 2 : x * this.width);
     this.setY((y * this.height) / 1.4);
     this.setVisible(false);
+
+    this.body.setCircle(50, 15, 15);
   }
 
   setUnexplored() {
@@ -42,5 +45,9 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
 
   hasStarSystem() {
     return !!this.starSystem;
+  }
+
+  public setSelected(selected: boolean) {
+    this.setTint(selected ? this.focusColor : this.color);
   }
 }

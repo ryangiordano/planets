@@ -1,6 +1,9 @@
 import StellarBody from "../components/planet/StellarBody";
 import DependentScene from "./DependentScene";
-import { getStarSystem } from "../assets/data/repositories/StarSystemRepository";
+import {
+  getStarSystem,
+  StarSystemObject,
+} from "../assets/data/repositories/StarSystemRepository";
 import { buildStarSystem } from "../assets/data/controllers/StarSystemController";
 import Ship from "../components/player/Ship";
 import { getRandomInt } from "../utility/Utility";
@@ -44,11 +47,14 @@ export class MainScene extends DependentScene {
       MAX_SYSTEM_SIZE
     );
   }
-  create(): void {
+  create(systemObject: StarSystemObject): void {
     this.paintStars();
-    this.sun = buildStarSystem(this, 0);
-
-    this.ship = new Ship({ scene: this, x: 500, y: 500 });
+    this.sun = buildStarSystem(this, systemObject.id);
+    this.ship = new Ship({
+      scene: this,
+      x: this.sun.x - this.sun.distanceFromCenter / 1.5,
+      y: this.sun.y - this.sun.distanceFromCenter / 1.5,
+    });
     this.playerGroup = new Phaser.GameObjects.Group(this, [this.ship]);
 
     withProximity({
@@ -59,8 +65,8 @@ export class MainScene extends DependentScene {
         console.log("We entered");
       },
       onLeave: () => {
-        //TODO: When we leave, we transition to the parent scene
-        console.log("We left here");
+        this.scene.run("SystemSelectScene");
+        this.scene.stop("MainScene");
       },
       // Need to get this from the sun object
       size: this.sun.getOrbitSize() / 150,
