@@ -8,10 +8,11 @@ export type StellarBodySize = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
  * Other bodies must be smaller than the parent StellarBody
  */
 export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
-  private orbit: StellarBody[] = [];
+  public orbit: StellarBody[] = [];
   public distanceFromCenter: number;
   private rotationSpeed: number;
   private parentBody?: StellarBody;
+  public id: number;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,
@@ -31,6 +32,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     distanceFromCenter,
     rotationSpeed,
     color = 0xffffff,
+    id,
   }: {
     scene: Phaser.Scene;
     x?: number;
@@ -40,6 +42,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     rotationSpeed?: number;
     size: StellarBodySize;
     color?: number;
+    id: number;
   }) {
     super(scene, x, y, "planet", size);
     if (orbit.length) {
@@ -49,7 +52,10 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     this.rotationSpeed = rotationSpeed;
 
     this.scene.add.existing(this);
+    this.scene.physics.add.existing(this);
     this.setTint(color);
+    this.id = id;
+
   }
 
   private isRotatingWithSatelites() {
@@ -129,6 +135,11 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     if (this.isRotatingWithSatelites()) {
       this.orbitContainer.add(stellarBody);
     }
+  }
+
+  public setFocused(focused: boolean) {
+    //TODO: Add juice to this
+    this.setAlpha(focused ? 0.5 : 1);
   }
 
   update(time: number, delta: number) {

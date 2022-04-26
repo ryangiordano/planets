@@ -21,6 +21,7 @@ export function buildStarSystem(
     y: centerY,
     scene,
     size: starSystem.sun.size,
+    id: starSystem.sun.id,
     color: starSystem.sun.color,
     distanceFromCenter:
       starSystem.system.reduce((acc, o) => {
@@ -37,26 +38,29 @@ export function buildStarSystem(
     0.03
   );
   starSystem.system.forEach(
-    ({ size, orbit, color, distanceFromCenter, rotationSpeed }) => {
+    ({ size, orbit, color, distanceFromCenter, rotationSpeed, id }) => {
       const sb = new StellarBody({
         scene,
         size,
         distanceFromCenter,
         rotationSpeed,
         color,
+        id,
       });
       scene.add.circle(centerX, centerY, sb.getOrbitSize(), color, 0.03);
       if (orbit.length) {
-        orbit.forEach(({ size, color, distanceFromCenter, rotationSpeed }) =>
-          sb.addToOrbit(
-            new StellarBody({
-              scene,
-              size,
-              color,
-              distanceFromCenter,
-              rotationSpeed,
-            })
-          )
+        orbit.forEach(
+          ({ size, color, distanceFromCenter, rotationSpeed, id }) =>
+            sb.addToOrbit(
+              new StellarBody({
+                scene,
+                size,
+                color,
+                distanceFromCenter,
+                rotationSpeed,
+                id,
+              })
+            )
         );
       }
       sun.addToOrbit(sb);

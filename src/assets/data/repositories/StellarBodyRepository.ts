@@ -8,6 +8,7 @@ export type StellarBodyObject = {
   color?: number;
   orbit: StellarBodyObject[];
   size: StellarBodySize;
+  id: number;
 };
 
 export function getStellarBodyData(stellarBodyId: number): StellarBodyData {
@@ -16,7 +17,7 @@ export function getStellarBodyData(stellarBodyId: number): StellarBodyData {
   if (!stellarBodyData)
     throw new Error(`StellarBody not found at id: ${stellarBodyId}`);
 
-  return stellarBodyData;
+  return { ...stellarBodyData, id: stellarBodyId };
 }
 
 export function mapToStellarBodyObject(

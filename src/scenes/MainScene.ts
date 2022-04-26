@@ -16,6 +16,8 @@ export class MainScene extends DependentScene {
   private sun: StellarBody;
   private ship: Ship;
   private playerGroup: Phaser.GameObjects.Group;
+  private planetGroup: Phaser.GameObjects.Group;
+  private focusedStellarBody: StellarBody;
   constructor() {
     super({
       key: "MainScene",
@@ -48,6 +50,17 @@ export class MainScene extends DependentScene {
     );
   }
   create(systemObject: StarSystemObject): void {
+    const cursors = this.input.keyboard.createCursorKeys();
+
+    cursors.space.addListener("down", () => {
+      this.scene.sleep("MainScene");
+
+      this.scene.run("StellarBodyScene", {
+        stellarBodyId: this.focusedStellarBody.id,
+        referringSystemId: systemObject.id,
+      });
+    });
+
     this.paintStars();
     this.sun = buildStarSystem(this, systemObject.id);
     this.ship = new Ship({
@@ -56,6 +69,22 @@ export class MainScene extends DependentScene {
       y: this.sun.y - this.sun.distanceFromCenter / 1.5,
     });
     this.playerGroup = new Phaser.GameObjects.Group(this, [this.ship]);
+    this.planetGroup = new Phaser.GameObjects.Group(this, this.sun.orbit);
+
+    this.physics.add.overlap(
+      this.playerGroup,
+      this.planetGroup,
+      (ship: Ship, planet: StellarBody) => {
+        planet.setFocused(true);
+        this.focusedStellarBody = planet;
+        setTimeout(() => {
+          if (!this.physics.overlap(ship, planet)) {
+            this.focusedStellarBody = null;
+            planet.setFocused(false);
+          }
+        }, 500);
+      }
+    );
 
     withProximity({
       scene: this,
@@ -68,9 +97,9 @@ export class MainScene extends DependentScene {
         this.scene.run("SystemSelectScene");
         this.scene.stop("MainScene");
       },
-      // Need to get this from the sun object
       size: this.sun.getOrbitSize() / 150,
     });
+
     this.cameras.main.startFollow(this.ship);
   }
 

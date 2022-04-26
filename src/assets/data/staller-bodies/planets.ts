@@ -6,6 +6,7 @@ export type StellarBodyData = {
   color?: number;
   orbit: number[];
   size: StellarBodySize;
+  id: number;
 };
 
 export default {

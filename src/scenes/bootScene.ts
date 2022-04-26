@@ -3,6 +3,7 @@ import { BLACK, WHITE } from "../utility/Constants";
 import { MainScene } from "./MainScene";
 import DependentScene from "./DependentScene";
 import { SystemSelectScene } from "./SystemSelectScene";
+import { StellarBodyScene } from "./StellarBodyScene";
 
 function preloadSceneDependencies(
   bootScene: Phaser.Scene,
@@ -99,7 +100,11 @@ export class BootScene extends Phaser.Scene {
 
     this.load.pack("preload", "./src/assets/pack.json", "preload");
 
-    preloadSceneDependencies(this, [MainScene, SystemSelectScene]);
+    preloadSceneDependencies(this, [
+      MainScene,
+      SystemSelectScene,
+      StellarBodyScene,
+    ]);
   }
   private createLoadingGraphics(): void {
     // We can specify the type of config we want to send.
