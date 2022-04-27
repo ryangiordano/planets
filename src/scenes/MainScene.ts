@@ -53,12 +53,14 @@ export class MainScene extends DependentScene {
     const cursors = this.input.keyboard.createCursorKeys();
 
     cursors.space.addListener("down", () => {
-      this.scene.sleep("MainScene");
+      if (this.focusedStellarBody) {
+        this.scene.sleep("MainScene");
 
-      this.scene.run("StellarBodyScene", {
-        stellarBodyId: this.focusedStellarBody.id,
-        referringSystemId: systemObject.id,
-      });
+        this.scene.run("StellarBodyScene", {
+          stellarBodyId: this.focusedStellarBody.id,
+          referringSystemId: systemObject.id,
+        });
+      }
     });
 
     this.paintStars();
