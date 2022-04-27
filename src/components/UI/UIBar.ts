@@ -10,6 +10,13 @@ export class UIBar extends Phaser.GameObjects.Container {
   private barFill: Phaser.GameObjects.Rectangle;
   private barBorder: Phaser.GameObjects.RenderTexture;
   private barType: BarType;
+  private barWidth: number;
+  private barHeight: number;
+  private maxValue: number;
+  private currentValue: number;
+
+  private hasBackground: boolean;
+  private color: number;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,
@@ -18,27 +25,33 @@ export class UIBar extends Phaser.GameObjects.Container {
       url: "/src/assets/sprites/UI_box.png",
     },
   ];
-  constructor(
-    scene: Phaser.Scene,
-    position: Coords,
-    private currentValue: number,
-    private maxValue: number,
-    color: number,
-    private barWidth: number = 32,
-    private barHeight: number = 128
-  ) {
+  constructor({
+    scene,
+    position,
+    currentValue,
+    maxValue,
+    color,
+    barWidth = 32,
+    barHeight = 128,
+    hasBackground = false,
+  }: {
+    scene: Phaser.Scene;
+    position: Coords;
+    currentValue: number;
+    maxValue: number;
+    color: number;
+    barWidth?: number;
+    barHeight?: number;
+    hasBackground?: boolean;
+  }) {
     super(scene, position.x, position.y);
-
+    this.color = color;
+    this.hasBackground = hasBackground;
+    this.barWidth = barWidth;
+    this.barHeight = barHeight;
+    this.maxValue = maxValue;
+    this.currentValue = currentValue;
     this.barType = barWidth > barHeight ? BarType.horizontal : BarType.vertical;
-    // this.barBack = new Phaser.GameObjects.Rectangle(
-    //   scene,
-    //   0,
-    //   0,
-    //   this.barWidth,
-    //   this.barHeight,
-    //   WHITE.hex,
-    //   1
-    // );
 
     this.barBorder = scene.add.nineslice(
       0,
@@ -51,21 +64,44 @@ export class UIBar extends Phaser.GameObjects.Container {
 
     this.barBorder.setOrigin(0.5, 0.5);
 
-    this.barFill = new Phaser.GameObjects.Rectangle(
-      scene,
-      0,
-      0,
+    this.initBarFill();
+
+    this.add(this.barBorder);
+    this.bringToTop(this.barBorder);
+    this.setBar();
+  }
+
+  private initBarFill() {
+    const barFillWidth =
       this.barType === BarType.horizontal
         ? this.barWidth
-        : this.barWidth - this.barWidth / 3,
-
+        : this.barWidth - this.barWidth / 3;
+    const barFillHeight =
       this.barType === BarType.horizontal
         ? this.barHeight - this.barHeight / 3
-        : this.barHeight,
-
-      color,
+        : this.barHeight;
+    this.barFill = new Phaser.GameObjects.Rectangle(
+      this.scene,
+      0,
+      0,
+      barFillWidth,
+      barFillHeight,
+      this.color,
       1
     );
+    if (this.hasBackground) {
+      this.barBack = new Phaser.GameObjects.Rectangle(
+        this.scene,
+        0,
+        0,
+        barFillWidth,
+        barFillHeight,
+        this.color,
+        1
+      );
+      this.barBack.setAlpha(0.2);
+      this.add(this.barBack);
+    }
     // Depending on the dimensions of the bar, we fill the width or the height
     if (this.barWidth > this.barHeight) {
       this.barFill.width = 0;
@@ -76,9 +112,6 @@ export class UIBar extends Phaser.GameObjects.Container {
 
     this.add(this.barFill);
     this.bringToTop(this.barFill);
-    this.add(this.barBorder);
-    this.bringToTop(this.barBorder);
-    this.setBar();
   }
 
   setCurrentValue(newValue: number): Promise<void> {

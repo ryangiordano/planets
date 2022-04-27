@@ -18,15 +18,35 @@ export class UIScene extends DependentScene {
   preload(): void {}
 
   create(): void {
-    this.blueGasBar = new UIBar(this, { x: 0, y: 0 }, 10, 10, 0x4c75d4);
-    this.yellowGasBar = new UIBar(this, { x: 40, y: 0 }, 3, 10, 0xd9b44e);
-    this.redGasBar = new UIBar(this, { x: 80, y: 0 }, 7, 10, 0xd44c5a);
+    this.blueGasBar = new UIBar({
+      scene: this,
+      position: { x: 0, y: 0 },
+      currentValue: 0,
+      maxValue: 10,
+      color: 0x4c75d4,
+      hasBackground: true,
+    });
+    this.yellowGasBar = new UIBar({
+      scene: this,
+      position: { x: 40, y: 0 },
+      currentValue: 0,
+      maxValue: 10,
+      color: 0xd9b44e,
+      hasBackground: true,
+    });
+    this.redGasBar = new UIBar({
+      scene: this,
+      position: { x: 80, y: 0 },
+      currentValue: 0,
+      maxValue: 10,
+      color: 0xd44c5a,
+      hasBackground: true,
+    });
 
-    const f = new UIBar(this, { x: 40, y: -100 }, 7, 10, 0xd44c5a, 128, 32);
     this.gasBarContainer = this.add.container(
       this.game.canvas.width - 150,
       this.game.canvas.height - 150,
-      [this.blueGasBar, this.yellowGasBar, this.redGasBar, f]
+      [this.blueGasBar, this.yellowGasBar, this.redGasBar]
     );
   }
 
