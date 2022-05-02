@@ -61,17 +61,23 @@ export class StellarBodyScene extends DependentScene {
   private renderStellarBody(stellarBodyObject: StellarBodyObject) {
     const centerX = this.game.canvas.width / 2;
     const centerY = this.game.canvas.height / 2;
-
-    this.add.existing(
-      new LargeStellarBody({
-        scene: this,
-        x: centerX,
-        y: centerY,
-        size: stellarBodyObject.size,
-        color: stellarBodyObject.color,
-        id: stellarBodyObject.id,
-      })
-    );
+    console.log(stellarBodyObject);
+    const stellarBody = new LargeStellarBody({
+      scene: this,
+      x: centerX,
+      y: centerY,
+      size: stellarBodyObject.size,
+      color: stellarBodyObject.color,
+      id: stellarBodyObject.id,
+      onHarvest: (payload) => {
+        /** Add payload to state
+         * Update UI based on state updates.
+         */
+        console.log(payload.content[0]);
+      },
+      composition: stellarBodyObject.composition,
+    });
+    this.add.existing(stellarBody);
   }
 
   update(time: number, delta: number): void {}

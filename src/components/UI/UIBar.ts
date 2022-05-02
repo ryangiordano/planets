@@ -114,14 +114,15 @@ export class UIBar extends Phaser.GameObjects.Container {
     this.bringToTop(this.barFill);
   }
 
-  setCurrentValue(newValue: number): Promise<void> {
+  public setCurrentValue(newValue: number): Promise<void> {
     return new Promise(async (resolve) => {
       this.currentValue = Math.max(0, newValue);
       await this.setBar();
       resolve();
     });
   }
-  setBar(): Promise<void> {
+
+  private setBar(): Promise<void> {
     return new Promise((resolve) => {
       const barValue = Math.max(this.barWidth, this.barHeight);
       const fill = barValue / (this.maxValue / this.currentValue);

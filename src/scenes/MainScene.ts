@@ -6,7 +6,6 @@ import {
 } from "../assets/data/repositories/StarSystemRepository";
 import { buildStarSystem } from "../assets/data/controllers/StarSystemController";
 import Ship from "../components/player/Ship";
-import { getRandomInt } from "../utility/Utility";
 import { withProximity } from "../utility/Proximity";
 import { paintStars } from "./utility/index";
 

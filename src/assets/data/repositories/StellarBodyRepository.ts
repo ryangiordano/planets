@@ -1,5 +1,8 @@
 import planets, { StellarBodyData } from "../staller-bodies/planets";
-import { StellarBodySize } from "../../../components/planet/StellarBody";
+import {
+  CompositionType,
+  StellarBodySize,
+} from "../../../components/planet/StellarBody";
 
 export type StellarBodyObject = {
   name: string;
@@ -9,6 +12,7 @@ export type StellarBodyObject = {
   orbit: StellarBodyObject[];
   size: StellarBodySize;
   id: number;
+  composition?: CompositionType;
 };
 
 export function getStellarBodyData(stellarBodyId: number): StellarBodyData {

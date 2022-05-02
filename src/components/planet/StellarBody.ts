@@ -3,6 +3,23 @@ import { rotatePoint } from "./shared";
 
 export type StellarBodySize = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
+export type GasType = "blue" | "yellow" | "red";
+
+export type MineralType = "green" | "orange" | "purple";
+
+export type ContentType = GasType | MineralType;
+
+export type CompositionType = {
+  /** Array of tuples of GasType and value*/
+  gas: [GasType, number][];
+  /** Array of tuples of MineralType and value*/
+  mineral: [MineralType, number][];
+};
+
+export type StellarBodyPayload = { content: [ContentType, number] } & {
+  /** TODO: the ID of an artifact mined from the planet */
+  artifact: number | null;
+};
 /**
  * A planetary body or star that has other StellarBodies to rotate around it.
  * Other bodies must be smaller than the parent StellarBody
@@ -55,7 +72,6 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.add.existing(this);
     this.setTint(color);
     this.id = id;
-
   }
 
   private isRotatingWithSatelites() {

@@ -8,7 +8,7 @@ export const createThrottle = (limit, func) => {
   };
 };
 
-export const getRandomInt = (min, max) => {
+export const getRandomInt = (min: number, max: number) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;
@@ -53,3 +53,25 @@ export const getObjectPropertyByName = (name: string, properties) => {
   const property = properties.find((p) => p.name === name);
   return property.value;
 };
+
+/** Given a value between 0 and 1 `percentage`, roll the dice and return true
+ * if the value is less than `percentage`.
+ */
+export function isWinningRoll(
+  /** number between 0 and 1 */
+  percentage: number
+) {
+  const roll = Math.random();
+  return roll < percentage;
+}
+
+/** Given a value, return a new value with +/- a fuzzy number based on a percentage
+ * `weight` times Math.random()
+ */
+export function getFuzzyValue(value: number, weight: number = 0.25): number {
+  const isPlusModifier = getRandomInt(1, 2) % 2 === 0;
+
+  const modifier = value * weight * Math.random();
+
+  return value + (isPlusModifier ? modifier : modifier * -1);
+}

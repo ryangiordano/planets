@@ -5,6 +5,7 @@ import DependentScene from "./DependentScene";
 import { SystemSelectScene } from "./SystemSelectScene";
 import { StellarBodyScene } from "./StellarBodyScene";
 import { UIScene } from "./UIScene";
+import { StateScene } from "./StateScene";
 
 function preloadSceneDependencies(
   bootScene: Phaser.Scene,
@@ -106,6 +107,7 @@ export class BootScene extends Phaser.Scene {
       SystemSelectScene,
       StellarBodyScene,
       UIScene,
+      StateScene,
     ]);
   }
   private createLoadingGraphics(): void {

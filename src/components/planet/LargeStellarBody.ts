@@ -1,7 +1,35 @@
-import { getRandomInt } from "../../utility/Utility";
-import { rotatePoint } from "./shared";
+import { CompositionType, ContentType } from "./StellarBody";
+import { StellarBodyPayload, StellarBodySize } from "./StellarBody";
 
-export type StellarBodySize = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+/** Harvest content given an array of tuples of content types and chance to mine */
+function handleHarvest(
+  contentArray: [ContentType, number][],
+  callback: (payload: StellarBodyPayload) => void
+) {
+  contentArray.sort(([_, a], [__, b]) => a - b);
+  const maxRoll = contentArray.reduce<number>(
+    (acc, [_, value]) => (acc += value),
+    0
+  );
+
+  const roll = Math.random() * maxRoll;
+
+  let rollingSum = 0;
+
+  const content = contentArray.find(([_, value], index, array) => {
+    rollingSum += value;
+    const hasNext = !!array[index + 1];
+    if (hasNext) {
+      return roll <= rollingSum;
+    }
+    return true;
+  });
+
+  callback({
+    content,
+    artifact: null,
+  });
+}
 
 /**
  * A planetary body or star that has other StellarBodies to rotate around it.
@@ -9,6 +37,7 @@ export type StellarBodySize = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
  */
 export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
   public distanceFromCenter: number;
+  private composition: CompositionType;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 512,
@@ -26,6 +55,8 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     rotationSpeed,
     color = 0xffffff,
     id,
+    onHarvest,
+    composition,
   }: {
     scene: Phaser.Scene;
     x?: number;
@@ -36,6 +67,8 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     size: StellarBodySize;
     color?: number;
     id: number;
+    composition?: CompositionType;
+    onHarvest: (payload: StellarBodyPayload) => void;
   }) {
     super(scene, x, y, "planet_large", size);
     // if (orbit.length) {
@@ -43,9 +76,25 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     //   orbit.forEach((o) => this.addToOrbit(o));
     // }
 
+    this.composition = composition;
+
     this.scene.add.existing(this);
+
     this.setTint(color);
+
+    if (onHarvest && composition) {
+      this.setInteractive();
+      this.on("pointerdown", () => {
+        const contentArray = [
+          ...this.composition.gas,
+          ...this.composition.mineral,
+        ];
+        handleHarvest(contentArray, onHarvest);
+      });
+    }
   }
+
+  generateHarvestFromComposition() {}
 
   update(time: number, delta: number) {}
 }

@@ -7,6 +7,7 @@ import { BootScene } from "./scenes/BootScene";
 import { SystemSelectScene } from "./scenes/SystemSelectScene";
 import { StellarBodyScene } from "./scenes/StellarBodyScene";
 import { UIScene } from "./scenes/UIScene";
+import { StateScene } from "./scenes/StateScene";
 export type GameScenes = "BootScene" | "MainScene" | "Audio";
 // main game configuration
 const config: Phaser.Types.Core.GameConfig = {
@@ -14,7 +15,14 @@ const config: Phaser.Types.Core.GameConfig = {
   height: "100%",
   type: Phaser.AUTO,
   parent: "game",
-  scene: [BootScene, MainScene, SystemSelectScene, StellarBodyScene, UIScene],
+  scene: [
+    BootScene,
+    MainScene,
+    SystemSelectScene,
+    StellarBodyScene,
+    UIScene,
+    StateScene,
+  ],
   plugins: {
     global: [NineSlicePlugin.DefaultCfg],
     scene: [],
