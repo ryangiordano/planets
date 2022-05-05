@@ -114,9 +114,13 @@ export class UIBar extends Phaser.GameObjects.Container {
     this.bringToTop(this.barFill);
   }
 
+  public incrementBy(valueToIncrementBy) {
+    this.setCurrentValue(this.currentValue + valueToIncrementBy);
+  }
+
   public setCurrentValue(newValue: number): Promise<void> {
     return new Promise(async (resolve) => {
-      this.currentValue = Math.max(0, newValue);
+      this.currentValue = Math.max(0, Math.min(newValue, this.maxValue));
       await this.setBar();
       resolve();
     });
@@ -138,5 +142,18 @@ export class UIBar extends Phaser.GameObjects.Container {
         },
       });
     });
+  }
+
+  getMaxValue() {
+    return this.maxValue;
+  }
+  setMaxValue(maxValue: number) {
+    if (maxValue <= 0) {
+      throw new Error(`maxValue cannot be less than 0, received ${maxValue}`);
+    }
+    this.maxValue = Math.max(maxValue, 1);
+    if (this.currentValue > this.maxValue) {
+      this.setCurrentValue(this.maxValue);
+    }
   }
 }

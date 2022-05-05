@@ -14,6 +14,7 @@ import {
   StellarBodyObject,
 } from "../assets/data/repositories/StellarBodyRepository";
 import LargeStellarBody from "../components/planet/LargeStellarBody";
+import { StateScene } from "./StateScene";
 
 export class StellarBodyScene extends DependentScene {
   constructor() {
@@ -61,7 +62,6 @@ export class StellarBodyScene extends DependentScene {
   private renderStellarBody(stellarBodyObject: StellarBodyObject) {
     const centerX = this.game.canvas.width / 2;
     const centerY = this.game.canvas.height / 2;
-    console.log(stellarBodyObject);
     const stellarBody = new LargeStellarBody({
       scene: this,
       x: centerX,
@@ -69,11 +69,11 @@ export class StellarBodyScene extends DependentScene {
       size: stellarBodyObject.size,
       color: stellarBodyObject.color,
       id: stellarBodyObject.id,
-      onHarvest: (payload) => {
+      onHarvest: ({content}) => {
         /** Add payload to state
          * Update UI based on state updates.
          */
-        console.log(payload.content[0]);
+         this.game.events.emit('resource-gathered',{content})
       },
       composition: stellarBodyObject.composition,
     });

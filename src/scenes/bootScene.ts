@@ -61,6 +61,7 @@ export class BootScene extends Phaser.Scene {
 
       setTimeout(() => {
         this.scene.start("SystemSelectScene");
+        this.scene.start("StateScene");
         this.scene.start("UIScene");
       }, 1);
     });

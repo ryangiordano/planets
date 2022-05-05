@@ -1,9 +1,9 @@
-import { CompositionType, ContentType } from "./StellarBody";
+import { CompositionType, ResourceType } from "./StellarBody";
 import { StellarBodyPayload, StellarBodySize } from "./StellarBody";
 
 /** Harvest content given an array of tuples of content types and chance to mine */
 function handleHarvest(
-  contentArray: [ContentType, number][],
+  contentArray: [ResourceType, number][],
   callback: (payload: StellarBodyPayload) => void
 ) {
   contentArray.sort(([_, a], [__, b]) => a - b);
@@ -24,7 +24,6 @@ function handleHarvest(
     }
     return true;
   });
-
   callback({
     content,
     artifact: null,
@@ -89,6 +88,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
           ...this.composition.gas,
           ...this.composition.mineral,
         ];
+
         handleHarvest(contentArray, onHarvest);
       });
     }

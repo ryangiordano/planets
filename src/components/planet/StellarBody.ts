@@ -7,7 +7,7 @@ export type GasType = "blue" | "yellow" | "red";
 
 export type MineralType = "green" | "orange" | "purple";
 
-export type ContentType = GasType | MineralType;
+export type ResourceType = GasType | MineralType;
 
 export type CompositionType = {
   /** Array of tuples of GasType and value*/
@@ -16,7 +16,7 @@ export type CompositionType = {
   mineral: [MineralType, number][];
 };
 
-export type StellarBodyPayload = { content: [ContentType, number] } & {
+export type StellarBodyPayload = { content: [ResourceType, number] } & {
   /** TODO: the ID of an artifact mined from the planet */
   artifact: number | null;
 };
