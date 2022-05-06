@@ -91,9 +91,7 @@ export class MainScene extends DependentScene {
       scene: this,
       objectWithProximity: this.sun,
       groupToDetect: this.playerGroup,
-      onEnter: () => {
-        console.log("We entered");
-      },
+      onEnter: () => {},
       onLeave: () => {
         this.scene.run("SystemSelectScene");
         this.scene.stop("MainScene");

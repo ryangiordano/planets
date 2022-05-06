@@ -10,15 +10,18 @@ export type StateResourceObject = {
   current: number;
   max: number;
 };
-export class StateScene extends DependentScene {
-  private purple: StateResourceObject = { max: 400, current: 0 };
-  private orange: StateResourceObject = { max: 400, current: 0 };
-  private green: StateResourceObject = { max: 400, current: 0 };
-  private red: StateResourceObject = { max: 400, current: 0 };
-  private blue: StateResourceObject = { max: 400, current: 0 };
-  private yellow: StateResourceObject = { max: 400, current: 0 };
 
-  private energy: StateResourceObject = { max: 400, current: 0 };
+//TODO: Make this a function of the ship's upgrades
+const RESOURCE_GATHER_SIZE = 0.5;
+export class StateScene extends DependentScene {
+  private purple: StateResourceObject = { max: 3, current: 0 };
+  private orange: StateResourceObject = { max: 3, current: 0 };
+  private green: StateResourceObject = { max: 3, current: 0 };
+  private red: StateResourceObject = { max: 3, current: 0 };
+  private blue: StateResourceObject = { max: 3, current: 0 };
+  private yellow: StateResourceObject = { max: 3, current: 0 };
+
+  private energy: StateResourceObject = { max: 3, current: 0 };
   constructor() {
     super({
       key: "StateScene",
@@ -31,8 +34,8 @@ export class StateScene extends DependentScene {
     this.game.events.on(
       "resource-gathered",
       ({ content }: StellarBodyPayload) => {
-        const [resourceType, value] = content;
-        this.incrementResource(resourceType, value);
+        const [resourceType] = content;
+        this.incrementResource(resourceType, RESOURCE_GATHER_SIZE);
       }
     );
 
@@ -62,7 +65,7 @@ export class StateScene extends DependentScene {
       throw new Error(`New maxValue for Resource cannot be ${newMaxValue}`);
     }
     this.game.events.emit("resource-max-value-change", {
-      resource,
+      key: resource,
       newMaxValue,
     });
   }

@@ -14,7 +14,6 @@ import {
   StellarBodyObject,
 } from "../assets/data/repositories/StellarBodyRepository";
 import LargeStellarBody from "../components/planet/LargeStellarBody";
-import { StateScene } from "./StateScene";
 
 export class StellarBodyScene extends DependentScene {
   constructor() {

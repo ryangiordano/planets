@@ -24,6 +24,7 @@ function handleHarvest(
     }
     return true;
   });
+
   callback({
     content,
     artifact: null,

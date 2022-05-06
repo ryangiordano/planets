@@ -4,6 +4,8 @@ const SHIP_VELOCITY = 250;
 export default class Ship extends Phaser.Physics.Arcade.Sprite {
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private emitter: Phaser.GameObjects.Particles.ParticleEmitter;
+
+
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,

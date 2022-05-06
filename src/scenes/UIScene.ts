@@ -26,7 +26,6 @@ export class UIScene extends DependentScene {
   preload(): void {}
 
   create(): void {
-    console.log("Creating UI Scene");
     this.blueGasBar = new UIBar({
       scene: this,
       position: { x: 0, y: 0 },
@@ -88,7 +87,6 @@ export class UIScene extends DependentScene {
       this.game.canvas.height - 250,
       [this.orangeMineralBar, this.greenMineralBar, this.purpleMineralBar]
     );
-
     this.buildContentMap();
     this.setSceneListeners();
   }
