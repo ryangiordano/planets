@@ -1,4 +1,8 @@
-import { CompositionType, ResourceType } from "./StellarBody";
+import {
+  CompositionType,
+  ResourceType,
+  getStellarBodyColorFromComposition,
+} from "./StellarBody";
 import { StellarBodyPayload, StellarBodySize } from "./StellarBody";
 
 /** Harvest content given an array of tuples of content types and chance to mine */
@@ -81,6 +85,9 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
 
     this.setTint(color);
+    if (composition) {
+      this.setTint(getStellarBodyColorFromComposition(composition));
+    }
 
     if (onHarvest && composition) {
       this.setInteractive();

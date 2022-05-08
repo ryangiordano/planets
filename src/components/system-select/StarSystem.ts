@@ -1,4 +1,5 @@
 import { StarSystemObject } from "../../assets/data/repositories/StarSystemRepository";
+import { getStellarBodyColorFromComposition } from '../planet/StellarBody';
 export default class StarSystem extends Phaser.Physics.Arcade.Sprite {
   public systemObject: StarSystemObject;
   static spriteDependencies: SpriteDependency[] = [
@@ -24,6 +25,6 @@ export default class StarSystem extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.systemObject = systemObject;
 
-    this.setTint(systemObject.sun.color);
+    this.setTint(getStellarBodyColorFromComposition(systemObject.sun.composition));
   }
 }

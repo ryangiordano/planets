@@ -16,18 +16,18 @@ export type CompositionType = {
   mineral: [MineralType, number][];
 };
 
+const COLOR_MAP = {
+  red: [0xdb9b97, 0xde8883, 0xde665f, 0xde473e, 0x9c3028],
+  yellow: [0xd9d9a5, 0xd6d986, 0xcfd453, 0xd1d930, 0xb4bd08],
+  blue: [0xa5c4d9, 0x86bbd9, 0x536dd4, 0x233975, 0x0856bd],
+  green: [0xa6d9a5, 0x8ad986, 0x53d462, 0x4cd930, 0x06990b],
+  purple: [0xc9a5d9, 0xc786d9, 0xa753d4, 0xa930d9, 0x610699],
+  orange: [0xd9c4a5, 0xd9b786, 0xd4a353, 0xd99930, 0x996806],
+};
+
 export function getStellarBodyColorFromComposition(
   composition: CompositionType
 ) {
-  const colorMap = {
-    red: [0xdb9b97, 0xde8883, 0xde665f, 0xde473e, 0x9c3028],
-    yellow: [0xd9d9a5, 0xd6d986, 0xcfd453, 0xd1d930, 0xb4bd08],
-    blue: [0xa5c4d9, 0x86bbd9, 0x536dd4, 0x233975, 0x0856bd],
-    green: [0xa6d9a5, 0x8ad986, 0x53d462, 0x4cd930, 0x06990b],
-    purple: [0xc9a5d9, 0xc786d9, 0xa753d4, 0xa930d9, 0x610699],
-    orange: [0xd9c4a5, 0xd9b786, 0xd4a353, 0xd99930, 0x996806],
-  };
-
   const dominantType = [...composition.gas, ...composition.mineral].reduce<
     [ResourceType, number]
   >((acc, k) => {
@@ -37,9 +37,8 @@ export function getStellarBodyColorFromComposition(
     return acc;
   }, undefined);
 
-  const colorArr = colorMap[dominantType[0]];
+  const colorArr = COLOR_MAP[dominantType[0]];
   const index = Math.floor(dominantType[1] * (colorArr.length - 1));
-  console.log(dominantType[0], dominantType[1], index, colorArr.length - 1);
   const randomColor = colorArr[index];
 
   return randomColor;
