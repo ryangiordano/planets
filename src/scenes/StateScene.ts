@@ -11,6 +11,8 @@ export type StateResourceObject = {
   max: number;
 };
 
+
+
 //TODO: Make this a function of the ship's upgrades
 const RESOURCE_GATHER_SIZE = 0.5;
 export class StateScene extends DependentScene {
@@ -22,6 +24,8 @@ export class StateScene extends DependentScene {
   private yellow: StateResourceObject = { max: 3, current: 0 };
 
   private energy: StateResourceObject = { max: 3, current: 0 };
+
+  private systemState
   constructor() {
     super({
       key: "StateScene",

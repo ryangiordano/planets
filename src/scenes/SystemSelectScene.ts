@@ -46,7 +46,10 @@ export class SystemSelectScene extends DependentScene {
     cursors.space.addListener("down", () => {
       this.scene.sleep("SystemSelectScene");
 
-      this.scene.run("MainScene", this.focusedHex.starSystem.systemObject);
+      this.scene.run(
+        "StarSystemScene",
+        this.focusedHex.starSystem.systemObject
+      );
     });
     this.paintStars();
 

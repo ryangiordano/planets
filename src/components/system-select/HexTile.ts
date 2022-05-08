@@ -30,6 +30,7 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
   setUnexplored() {
     this.setVisible(true);
     this.setAlpha(0.1);
+    this.setFrame(1);
   }
 
   addSystem(systemObject: StarSystemObject) {
@@ -49,5 +50,11 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
 
   public setSelected(selected: boolean) {
     this.setTint(selected ? this.focusColor : this.color);
+  }
+
+  setPlayerHasAccess(hasAccess: boolean) {
+    this.playerHasAccess = hasAccess;
+    this.setAlpha(this.playerHasAccess ? 1 : 0.3);
+    this.setFrame(this.playerHasAccess ? 0 : 1);
   }
 }

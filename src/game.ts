@@ -1,5 +1,5 @@
 import "phaser";
-import { MainScene } from "./scenes/MainScene";
+import { StarSystemScene } from "./scenes/StarSystemScene";
 import { Plugin as NineSlicePlugin } from "phaser3-nineslice";
 
 import { BLACK } from "./utility/Constants";
@@ -8,7 +8,7 @@ import { SystemSelectScene } from "./scenes/SystemSelectScene";
 import { StellarBodyScene } from "./scenes/StellarBodyScene";
 import { UIScene } from "./scenes/UIScene";
 import { StateScene } from "./scenes/StateScene";
-export type GameScenes = "BootScene" | "MainScene" | "Audio";
+export type GameScenes = "BootScene" | "StarSystemScene" | "Audio";
 // main game configuration
 const config: Phaser.Types.Core.GameConfig = {
   width: "100%",
@@ -17,7 +17,7 @@ const config: Phaser.Types.Core.GameConfig = {
   parent: "game",
   scene: [
     BootScene,
-    MainScene,
+    StarSystemScene,
     SystemSelectScene,
     StellarBodyScene,
     UIScene,

@@ -2,7 +2,7 @@ import { getRandomInt } from "../../utility/Utility";
 import { rotatePoint } from "./shared";
 
 export type StellarBodySize = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-
+export const MAX_STELLAR_BODY_SIZE = 7;
 export type GasType = "blue" | "yellow" | "red";
 
 export type MineralType = "green" | "orange" | "purple";
@@ -15,6 +15,35 @@ export type CompositionType = {
   /** Array of tuples of MineralType and value*/
   mineral: [MineralType, number][];
 };
+
+export function getStellarBodyColorFromComposition(
+  composition: CompositionType
+) {
+  const colorMap = {
+    red: [0xdb9b97, 0xde8883, 0xde665f, 0xde473e, 0x9c3028],
+    yellow: [0xd9d9a5, 0xd6d986, 0xcfd453, 0xd1d930, 0xb4bd08],
+    blue: [0xa5c4d9, 0x86bbd9, 0x536dd4, 0x233975, 0x0856bd],
+    green: [0xa6d9a5, 0x8ad986, 0x53d462, 0x4cd930, 0x06990b],
+    purple: [0xc9a5d9, 0xc786d9, 0xa753d4, 0xa930d9, 0x610699],
+    orange: [0xd9c4a5, 0xd9b786, 0xd4a353, 0xd99930, 0x996806],
+  };
+
+  const dominantType = [...composition.gas, ...composition.mineral].reduce<
+    [ResourceType, number]
+  >((acc, k) => {
+    if (!acc || k[1] > acc?.[1]) {
+      acc = k;
+    }
+    return acc;
+  }, undefined);
+
+  const colorArr = colorMap[dominantType[0]];
+  const index = Math.floor(dominantType[1] * (colorArr.length - 1));
+  console.log(dominantType[0], dominantType[1], index, colorArr.length - 1);
+  const randomColor = colorArr[index];
+
+  return randomColor;
+}
 
 export type StellarBodyPayload = { content: [ResourceType, number] } & {
   /** TODO: the ID of an artifact mined from the planet */
@@ -30,6 +59,8 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
   private rotationSpeed: number;
   private parentBody?: StellarBody;
   public id: number;
+  private composition: CompositionType;
+
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,
@@ -50,6 +81,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     rotationSpeed,
     color = 0xffffff,
     id,
+    composition,
   }: {
     scene: Phaser.Scene;
     x?: number;
@@ -60,6 +92,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     size: StellarBodySize;
     color?: number;
     id: number;
+    composition?: CompositionType;
   }) {
     super(scene, x, y, "planet", size);
     if (orbit.length) {
@@ -71,7 +104,11 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
     this.setTint(color);
+    if (composition) {
+      this.setTint(getStellarBodyColorFromComposition(composition));
+    }
     this.id = id;
+    this.composition = composition;
   }
 
   private isRotatingWithSatelites() {

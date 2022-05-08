@@ -4,7 +4,7 @@ import {
   getStarSystem,
   StarSystemObject,
 } from "../assets/data/repositories/StarSystemRepository";
-import { buildStarSystem } from "../assets/data/controllers/StarSystemController";
+import { buildStarSystemFromId } from "../assets/data/controllers/StarSystemController";
 import Ship from "../components/player/Ship";
 import { getRandomInt } from "../utility/Utility";
 import { withProximity } from "../utility/Proximity";
@@ -54,7 +54,7 @@ export class StellarBodyScene extends DependentScene {
 
     esc.on("down", () => {
       this.scene.stop();
-      this.scene.run("MainScene", getStarSystem(referringSystemId));
+      this.scene.run("StarSystemScene", getStarSystem(referringSystemId));
     });
   }
 

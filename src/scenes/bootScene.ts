@@ -1,6 +1,6 @@
 import { AnimationHelper } from "../utility/tweens/animation-helper";
 import { BLACK, WHITE } from "../utility/Constants";
-import { MainScene } from "./MainScene";
+import { StarSystemScene } from "./StarSystemScene";
 import DependentScene from "./DependentScene";
 import { SystemSelectScene } from "./SystemSelectScene";
 import { StellarBodyScene } from "./StellarBodyScene";
@@ -104,7 +104,7 @@ export class BootScene extends Phaser.Scene {
     this.load.pack("preload", "./src/assets/pack.json", "preload");
 
     preloadSceneDependencies(this, [
-      MainScene,
+      StarSystemScene,
       SystemSelectScene,
       StellarBodyScene,
       UIScene,

@@ -8,6 +8,6 @@ export const save = {
   0: {
     id: 0,
     startingSystem: 0,
-    access: [0, 1],
+    access: [0],
   },
 };

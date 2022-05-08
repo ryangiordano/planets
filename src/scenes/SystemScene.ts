@@ -4,14 +4,14 @@ import {
   getStarSystem,
   StarSystemObject,
 } from "../assets/data/repositories/StarSystemRepository";
-import { buildStarSystem } from "../assets/data/controllers/StarSystemController";
+import { buildStarSystemFromId } from "../assets/data/controllers/StarSystemController";
 import Ship from "../components/player/Ship";
 import { withProximity } from "../utility/Proximity";
 import { paintStars } from "./utility/index";
 
 const MAX_SYSTEM_SIZE = 2000;
 
-export class MainScene extends DependentScene {
+export class SystemScene extends DependentScene {
   private sun: StellarBody;
   private ship: Ship;
   private playerGroup: Phaser.GameObjects.Group;
@@ -19,7 +19,7 @@ export class MainScene extends DependentScene {
   private focusedStellarBody: StellarBody;
   constructor() {
     super({
-      key: "MainScene",
+      key: "SystemScene",
     });
   }
 
@@ -53,7 +53,7 @@ export class MainScene extends DependentScene {
 
     cursors.space.addListener("down", () => {
       if (this.focusedStellarBody) {
-        this.scene.sleep("MainScene");
+        this.scene.sleep("SystemScene");
 
         this.scene.run("StellarBodyScene", {
           stellarBodyId: this.focusedStellarBody.id,
@@ -63,7 +63,7 @@ export class MainScene extends DependentScene {
     });
 
     this.paintStars();
-    this.sun = buildStarSystem(this, systemObject.id);
+    this.sun = buildStarSystemFromId(this, systemObject.id);
     this.ship = new Ship({
       scene: this,
       x: this.sun.x - this.sun.distanceFromCenter / 1.5,
@@ -94,7 +94,7 @@ export class MainScene extends DependentScene {
       onEnter: () => {},
       onLeave: () => {
         this.scene.run("SystemSelectScene");
-        this.scene.stop("MainScene");
+        this.scene.stop("SystemScene");
       },
       size: this.sun.getOrbitSize() / 150,
     });
