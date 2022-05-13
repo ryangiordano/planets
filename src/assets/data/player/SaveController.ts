@@ -1,11 +1,11 @@
-import SaveRepository from "../repositories/SaveRepository";
-import { save } from "../player/save";
+import SaveRepository from "./SaveRepository";
+import { save } from "./save";
 import {
   getStarSystem,
   StarSystemObject,
-} from "../repositories/StarSystemRepository";
-import { StellarBodyObject } from "../repositories/StellarBodyRepository";
-import { createRandomSystem } from "./StarSystemController";
+} from "../star-systems/StarSystemRepository";
+import { StellarBodyObject } from "../steller-bodies/StellarBodyRepository";
+import { createRandomSystem } from "../star-systems/StarSystemController";
 
 export type SaveObject = {
   id: number;

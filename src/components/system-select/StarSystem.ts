@@ -1,4 +1,4 @@
-import { StarSystemObject } from "../../assets/data/repositories/StarSystemRepository";
+import { StarSystemObject } from "../../assets/data/star-systems/StarSystemRepository";
 import { getStellarBodyColorFromComposition } from '../planet/StellarBody';
 export default class StarSystem extends Phaser.Physics.Arcade.Sprite {
   public systemObject: StarSystemObject;

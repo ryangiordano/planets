@@ -1,4 +1,4 @@
-import planets, { StellarBodyData } from "../staller-bodies/planets";
+import planets, { StellarBodyData } from "./planets";
 import {
   CompositionType,
   StellarBodySize,

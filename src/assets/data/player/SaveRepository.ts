@@ -1,4 +1,4 @@
-import { Repository } from "./Repository";
+import { Repository } from "../repository/Repository";
 
 export type SaveData = {
   id: number;

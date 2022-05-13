@@ -1,4 +1,4 @@
-import { StarSystemObject } from "../../assets/data/repositories/StarSystemRepository";
+import { StarSystemObject } from "../../assets/data/star-systems/StarSystemRepository";
 import StarSystem from "./StarSystem";
 
 export default class HexTile extends Phaser.Physics.Arcade.Sprite {

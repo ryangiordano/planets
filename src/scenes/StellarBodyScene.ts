@@ -3,8 +3,8 @@ import DependentScene from "./DependentScene";
 import {
   getStarSystem,
   StarSystemObject,
-} from "../assets/data/repositories/StarSystemRepository";
-import { buildStarSystemFromId } from "../assets/data/controllers/StarSystemController";
+} from "../assets/data/star-systems/StarSystemRepository";
+import { buildStarSystemFromId } from "../assets/data/star-systems/StarSystemController";
 import Ship from "../components/player/Ship";
 import { getRandomInt } from "../utility/Utility";
 import { withProximity } from "../utility/Proximity";
@@ -12,7 +12,7 @@ import { paintStars } from "./utility/index";
 import {
   getStellarBody,
   StellarBodyObject,
-} from "../assets/data/repositories/StellarBodyRepository";
+} from "../assets/data/steller-bodies/StellarBodyRepository";
 import LargeStellarBody from "../components/planet/LargeStellarBody";
 
 export class StellarBodyScene extends DependentScene {

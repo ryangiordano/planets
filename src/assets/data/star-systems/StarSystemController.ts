@@ -12,13 +12,13 @@ import { getRandomInt } from "../../../utility/Utility";
 import {
   StellarBodyObject,
   setStellarBodydata as setStellarBodyData,
-} from "../repositories/StellarBodyRepository";
+} from "../steller-bodies/StellarBodyRepository";
 import {
   getStarSystem,
   getStarSystemByCoordinate,
   setStarSystem,
   StarSystemObject,
-} from "../repositories/StarSystemRepository";
+} from "./StarSystemRepository";
 
 export const MAX_ORBIT_SIZE = 600;
 export const MIN_ORBIT_SIZE = 200;

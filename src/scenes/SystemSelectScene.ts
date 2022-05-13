@@ -2,11 +2,11 @@ import Ship from "../components/player/Ship";
 import HexTile from "../components/system-select/HexTile";
 import DependentScene from "./DependentScene";
 import { paintStars } from "./utility";
-import { buildHexMap } from "../assets/data/controllers/HexMapController";
+import { buildHexMap } from "../assets/data/star-systems/HexMapController";
 import {
   renderSystem,
-} from "../assets/data/controllers/StarSystemController";
-import { getSaveData } from "../assets/data/controllers/SaveController";
+} from "../assets/data/star-systems/StarSystemController";
+import { getSaveData } from "../assets/data/player/SaveController";
 
 export class SystemSelectScene extends DependentScene {
   private ship: Ship;

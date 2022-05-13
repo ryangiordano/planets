@@ -2,7 +2,7 @@ import HexTile from "../../../components/system-select/HexTile";
 import {
   StarSystemObject,
   getStarSystemByCoordinate,
-} from "../repositories/StarSystemRepository";
+} from "./StarSystemRepository";
 
 export function buildHexMap(
   scene: Phaser.Scene,
