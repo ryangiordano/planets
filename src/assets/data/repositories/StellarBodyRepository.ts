@@ -4,6 +4,8 @@ import {
   StellarBodySize,
 } from "../../../components/planet/StellarBody";
 
+const inMemoryData = { ...planets };
+
 export type StellarBodyObject = {
   name: string;
   distanceFromCenter?: number;
@@ -16,12 +18,15 @@ export type StellarBodyObject = {
 };
 
 export function getStellarBodyData(stellarBodyId: number): StellarBodyData {
-  const stellarBodyData = planets[stellarBodyId];
-
+  const stellarBodyData = inMemoryData[stellarBodyId];
   if (!stellarBodyData)
     throw new Error(`StellarBody not found at id: ${stellarBodyId}`);
 
   return { ...stellarBodyData, id: stellarBodyId };
+}
+
+export function setStellarBodydata(sbd: StellarBodyData) {
+  return (inMemoryData[sbd.id] = { ...sbd });
 }
 
 export function mapToStellarBodyObject(

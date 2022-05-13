@@ -18,7 +18,7 @@ const defaultState: PlayerStateMap = new Map([
 
 export function createPlayerState(
   initialState = defaultState,
-  onResourceChange: () => void
+  onResourceChange: (state: PlayerStateMap) => void
 ) {
   const state = new Map(initialState);
 
@@ -31,7 +31,7 @@ export function createPlayerState(
     resource.current = value;
     state.set(key, resource);
 
-    onResourceChange(state)
+    onResourceChange(state);
     return state;
   }
 }

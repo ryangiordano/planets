@@ -7,7 +7,7 @@ export type SaveData = {
 export const save = {
   0: {
     id: 0,
-    startingSystem: 0,
-    access: [0],
+    startingSystem: undefined,
+    access: [],
   },
 };

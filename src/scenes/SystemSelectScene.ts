@@ -5,7 +5,6 @@ import { paintStars } from "./utility";
 import { buildHexMap } from "../assets/data/controllers/HexMapController";
 import {
   renderSystem,
-  renderSystemNeighbors,
 } from "../assets/data/controllers/StarSystemController";
 import { getSaveData } from "../assets/data/controllers/SaveController";
 
@@ -54,10 +53,9 @@ export class SystemSelectScene extends DependentScene {
     this.paintStars();
 
     const hexMap = buildHexMap(this, 25);
-    const save = getSaveData(0);
+    const save = getSaveData();
 
     const homeSystem = save.startingSystem;
-
     renderSystem(homeSystem, hexMap);
 
     this.ship = new Ship({ scene: this, x: 500, y: 500 });

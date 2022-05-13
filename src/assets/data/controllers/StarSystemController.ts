@@ -4,15 +4,26 @@ import StellarBody, {
   MAX_STELLAR_BODY_SIZE,
 } from "../../../components/planet/StellarBody";
 import HexTile from "../../../components/system-select/HexTile";
-import { StellarBodySize } from "../../../components/planet/StellarBody";
+import {
+  StellarBodySize,
+  MineralType,
+} from "../../../components/planet/StellarBody";
 import { getRandomInt } from "../../../utility/Utility";
+import {
+  StellarBodyObject,
+  setStellarBodydata as setStellarBodyData,
+} from "../repositories/StellarBodyRepository";
 import {
   getStarSystem,
   getStarSystemByCoordinate,
+  setStarSystem,
   StarSystemObject,
 } from "../repositories/StarSystemRepository";
 
-export const MAX_ORBIT_SIZE = 1500;
+export const MAX_ORBIT_SIZE = 600;
+export const MIN_ORBIT_SIZE = 200;
+export const MIN_ROTATION_SPEED = 10;
+export const MAX_ROTATION_SPEED = 150;
 
 function getSystemCenter(scene: Phaser.Scene): [number, number] {
   return [scene.game.canvas.width / 2, scene.game.canvas.height / 2];
@@ -30,9 +41,10 @@ function createOrbitRing(
 
 export function buildStarSystemFromId(
   scene: Phaser.Scene,
-  starSystemId?: number
+  starSystemId?: number,
+  starStstem?: StarSystemObject
 ): StellarBody {
-  const starSystem = getStarSystem(starSystemId);
+  const ss = starStstem ?? getStarSystem(starSystemId);
 
   const [centerX, centerY] = getSystemCenter(scene);
 
@@ -40,12 +52,12 @@ export function buildStarSystemFromId(
     x: centerX,
     y: centerY,
     scene,
-    size: starSystem.sun.size,
-    id: starSystem.sun.id,
-    color: starSystem.sun.color,
-    composition: starSystem.sun.composition,
+    size: ss.sun.size,
+    id: ss.sun.id,
+    color: ss.sun.color,
+    composition: ss.sun.composition,
     distanceFromCenter:
-      starSystem.system.reduce((acc, o) => {
+      ss.system.reduce((acc, o) => {
         acc = Math.max(acc, o.distanceFromCenter);
         return acc;
       }, 0) * 2,
@@ -56,10 +68,10 @@ export function buildStarSystemFromId(
     centerX,
     centerY,
     sun.getOrbitSize(),
-    getStellarBodyColorFromComposition(starSystem.sun.composition)
+    getStellarBodyColorFromComposition(ss.sun.composition)
   );
 
-  starSystem.system.forEach(
+  ss.system.forEach(
     ({
       size,
       orbit,
@@ -133,42 +145,120 @@ function generateRandomCompositionValues<T>(
   }
 }
 
-function generateRandomMineralValue() {}
-
-/** Randomly generate a system with a sun, planets and moons */
-function generateRandomSystem() {}
-
-function createRandomPlanet() {}
-
-function createRandomSun(scene: Phaser.Scene) {
-  const [centerX, centerY] = getSystemCenter(scene);
-  const size = Math.floor(Math.random() * MAX_STELLAR_BODY_SIZE);
-  const distanceFromCenter = Math.floor(Math.random() * MAX_ORBIT_SIZE);
+function createRandomStellarBodyObject({
+  hasMinerals = true,
+  hasGas = true,
+  numberOfStellarBodiesInOrbit = 0,
+  minSize = 0,
+  maxSize = MAX_STELLAR_BODY_SIZE,
+  minDistanceFromCenter = MIN_ORBIT_SIZE,
+  maxDistanceFromCenter = MAX_ORBIT_SIZE,
+  minRotationSpeed = MIN_ROTATION_SPEED,
+  maxRotationSpeed = MAX_ROTATION_SPEED,
+}: {
+  hasMinerals?: boolean;
+  hasGas?: boolean;
+  numberOfStellarBodiesInOrbit?: number;
+  minSize?: number;
+  maxSize?: number;
+  minDistanceFromCenter?: number;
+  maxDistanceFromCenter?: number;
+  minRotationSpeed?: number;
+  maxRotationSpeed?: number;
+}): StellarBodyObject {
+  const size = getRandomInt(minSize, maxSize) as StellarBodySize;
+  const distanceFromCenter = getRandomInt(
+    minDistanceFromCenter,
+    maxDistanceFromCenter
+  );
 
   const numberOfGasElements = getRandomInt(1, 3) as 1 | 2 | 3;
-
-  const sun = new StellarBody({
-    x: centerX,
-    y: centerY,
-    scene,
-    size: size as StellarBodySize,
-    id: new Date().getTime() * Math.random(),
+  const numberOfMinerals = getRandomInt(1, 3) as 1 | 2 | 3;
+  const composition = {
+    mineral: hasMinerals
+      ? generateRandomCompositionValues<MineralType>(numberOfMinerals, [
+          "purple",
+          "orange",
+          "green",
+        ])
+      : [],
+    gas: hasGas
+      ? generateRandomCompositionValues<GasType>(numberOfGasElements, [
+          "red",
+          "yellow",
+          "blue",
+        ])
+      : [],
+  };
+  const id = new Date().getTime() * Math.random();
+  const orbit = [];
+  for (let j = 0; j < numberOfStellarBodiesInOrbit; j++) {
+    // Push satellites into orbit
+    orbit.push(
+      createRandomStellarBodyObject({
+        hasMinerals: true,
+        hasGas: false,
+        maxSize: getRandomInt(minSize, size),
+        minDistanceFromCenter: 50,
+        maxDistanceFromCenter: 75,
+      })
+    );
+  }
+  const stellarBodyData = {
+    name: "Rando",
+    id,
     distanceFromCenter,
-    composition: {
-      mineral: [],
-      gas: generateRandomCompositionValues<GasType>(numberOfGasElements, [
-        "red",
-        "yellow",
-        "blue",
-      ]),
-    },
-  });
-  createOrbitRing(scene, centerX, centerY, sun.getOrbitSize(), sun.tint);
+    size,
+    rotationSpeed: getRandomInt(minRotationSpeed, maxRotationSpeed),
+    composition,
+    orbit: orbit.map((o) => o.id),
+  };
 
-  return sun;
+  /** Register it to our internal database */
+  setStellarBodyData(stellarBodyData);
+  return stellarBodyData;
 }
 
-function createRandomMoon() {}
+/** Randomly generate a system with a sun, planets and moons */
+export function createRandomSystem(
+  coordinates: [number, number]
+): StarSystemObject {
+  const sun = createRandomStellarBodyObject({ hasMinerals: false });
+
+  const numberOfPlanets = getRandomInt(0, 10);
+  const planets: StellarBodyObject[] = [];
+  for (let i = 0; i < numberOfPlanets; i++) {
+    const numberOfMoons = getRandomInt(0, 2);
+
+    const planet = createRandomStellarBodyObject({
+      hasMinerals: true,
+      hasGas: true,
+      numberOfStellarBodiesInOrbit: numberOfMoons,
+    });
+
+    planets.push(planet);
+  }
+
+  const starSystemObject = {
+    id: Math.random(),
+    sun,
+    system: planets,
+    coordinates,
+  };
+
+  const starSystemData = {
+    id: starSystemObject.id,
+    coordinates: starSystemObject.coordinates,
+    sun: starSystemObject.sun.id,
+    system: planets.map((p) => {
+      return p.id;
+    }),
+  };
+
+  setStarSystem(starSystemData);
+
+  return starSystemObject;
+}
 
 export function renderSystem(
   system: StarSystemObject,
@@ -176,6 +266,9 @@ export function renderSystem(
 ) {
   const [x, y] = system.coordinates;
   const hexTile = hexMap[`${x},${y}`];
+  if (!hexTile) {
+    return;
+  }
   hexTile.addSystem(system);
 
   renderSystemNeighbors(system, hexMap);
@@ -195,10 +288,9 @@ export function renderSystemNeighbors(
   hexMap: { [key: string]: HexTile }
 ) {
   const [originX, originY] = system.coordinates;
-
   neighbors.forEach(([x, y]) => {
     const hexTile = hexMap[`${originX + x},${originY + y}`];
-    if (hexTile.hasStarSystem()) {
+    if (!hexTile || hexTile?.hasStarSystem()) {
       return;
     }
     hexTile.setUnexplored();

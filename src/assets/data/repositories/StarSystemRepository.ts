@@ -1,25 +1,31 @@
 import starSystems, { StarSystemData } from "../star-systems/star-systems";
 import { getStellarBody, StellarBodyObject } from "./StellarBodyRepository";
 
+const inMemoryData = { ...starSystems };
+
 export type StarSystemObject = {
   id: number;
   sun: StellarBodyObject;
   system: StellarBodyObject[];
   coordinates: [number, number];
 };
- function getStarSystemById(id: number): StarSystemData {
-  const starSystem = starSystems[id];
+function getStarSystemById(id: number): StarSystemData {
+  const starSystem = inMemoryData[id];
   if (!starSystem) throw new Error(`StarSystem not found at id: ${id}`);
   return starSystem;
 }
+
+export function setStarSystem(ssd: StarSystemData) {
+  inMemoryData[ssd.id] = { ...ssd };
+}
 function _getStarSystemByCoordinate(coords: [number, number]): StarSystemData {
-  const key = Object.keys(starSystems).find(
+  const key = Object.keys(inMemoryData).find(
     (key) =>
-      starSystems[key].coordinates[0] === coords[0] &&
-      starSystems[key].coordinates[1] === coords[1]
+      inMemoryData[key].coordinates[0] === coords[0] &&
+      inMemoryData[key].coordinates[1] === coords[1]
   );
-  if (starSystems[key]) {
-    return starSystems[key];
+  if (inMemoryData[key]) {
+    return inMemoryData[key];
   }
 }
 
@@ -41,7 +47,7 @@ export function getStarSystem(starSystemId: number) {
 }
 
 function _getAllStarSystems() {
-  return Object.keys(starSystems).map((key) => starSystems[key]);
+  return Object.keys(inMemoryData).map((key) => inMemoryData[key]);
 }
 
 export function getAllStarSystems() {
