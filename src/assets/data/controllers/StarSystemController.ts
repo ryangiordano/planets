@@ -23,7 +23,7 @@ import {
 export const MAX_ORBIT_SIZE = 600;
 export const MIN_ORBIT_SIZE = 200;
 export const MIN_ROTATION_SPEED = 10;
-export const MAX_ROTATION_SPEED = 150;
+export const MAX_ROTATION_SPEED = 100;
 
 function getSystemCenter(scene: Phaser.Scene): [number, number] {
   return [scene.game.canvas.width / 2, scene.game.canvas.height / 2];
@@ -134,7 +134,7 @@ function generateRandomCompositionValues<T>(
   const result: [T, number][] = [];
   const arr = [...valueBank];
   while (arr.length) {
-    const i = getRandomInt(1, arr.length);
+    const i = getRandomInt(0, arr.length);
     const type = arr.splice(i, 1)[0];
     const value = Math.random();
     result.push([type, value]);
@@ -198,9 +198,9 @@ function createRandomStellarBodyObject({
       createRandomStellarBodyObject({
         hasMinerals: true,
         hasGas: false,
-        maxSize: getRandomInt(minSize, size),
-        minDistanceFromCenter: 50,
-        maxDistanceFromCenter: 75,
+        maxSize: getRandomInt(minSize, size-1),
+        minDistanceFromCenter: 25,
+        maxDistanceFromCenter: 50,
       })
     );
   }
@@ -234,6 +234,7 @@ export function createRandomSystem(
       hasMinerals: true,
       hasGas: true,
       numberOfStellarBodiesInOrbit: numberOfMoons,
+      minSize: 1,
     });
 
     planets.push(planet);
