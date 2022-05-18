@@ -25,7 +25,7 @@ export function getStellarBodyData(stellarBodyId: number): StellarBodyData {
   return { ...stellarBodyData, id: stellarBodyId };
 }
 
-export function setStellarBodydata(sbd: StellarBodyData) {
+export function setStellarBodyData(sbd: StellarBodyData) {
   return (inMemoryData[sbd.id] = { ...sbd });
 }
 

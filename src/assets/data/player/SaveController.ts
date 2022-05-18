@@ -4,8 +4,7 @@ import {
   getStarSystem,
   StarSystemObject,
 } from "../star-systems/StarSystemRepository";
-import { StellarBodyObject } from "../steller-bodies/StellarBodyRepository";
-import { createRandomSystem } from "../star-systems/StarSystemController";
+import { createRandomSystem } from "../star-systems/RandomGeneration";
 
 export type SaveObject = {
   id: number;
@@ -15,7 +14,7 @@ export type SaveObject = {
 };
 
 export function getSaveData(id?: number): SaveObject {
-  if (id===undefined) {
+  if (id === undefined) {
     const startingSystem = generateInitialGameState([10, 10]);
     return {
       id: Math.random() * new Date().getTime(),
