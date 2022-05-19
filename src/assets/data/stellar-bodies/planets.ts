@@ -1,7 +1,4 @@
-import {
-  CompositionType,
-  StellarBodySize,
-} from "../../../components/planet/StellarBody";
+import { StellarBodySize, CompositionType } from "./Types";
 
 export type StellarBodyData = {
   name: string;
@@ -78,7 +75,6 @@ const data: {
   //   },
   //   id: 1.1,
   // },
-
   // "4": {
   //   name: "Odie",
   //   size: 6,

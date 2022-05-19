@@ -1,29 +1,9 @@
+import { COLOR_MAP } from "../../assets/data/stellar-bodies/Constants";
+import { CompositionType, ResourceType, StellarBodySize } from "../../assets/data/stellar-bodies/Types";
 import { getRandomInt } from "../../utility/Utility";
 import { rotatePoint } from "./shared";
 
-export type StellarBodySize = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-export const MAX_STELLAR_BODY_SIZE = 7;
-export type GasType = "blue" | "yellow" | "red";
 
-export type MineralType = "green" | "orange" | "purple";
-
-export type ResourceType = GasType | MineralType | "energy";
-
-export type CompositionType = {
-  /** Array of tuples of GasType and value*/
-  gas: [GasType, number][];
-  /** Array of tuples of MineralType and value*/
-  mineral: [MineralType, number][];
-};
-
-const COLOR_MAP = {
-  red: [0xdb9b97, 0xde8883, 0xde665f, 0xde473e, 0x9c3028],
-  yellow: [0xd9d9a5, 0xd6d986, 0xcfd453, 0xd1d930, 0xb4bd08],
-  blue: [0xa5c4d9, 0x86bbd9, 0x536dd4, 0x233975, 0x0856bd],
-  green: [0xa6d9a5, 0x8ad986, 0x53d462, 0x4cd930, 0x06990b],
-  purple: [0xc9a5d9, 0xc786d9, 0xa753d4, 0xa930d9, 0x610699],
-  orange: [0xd9c4a5, 0xd9b786, 0xd4a353, 0xd99930, 0x996806],
-};
 
 export function getStellarBodyColorFromComposition(
   composition: CompositionType

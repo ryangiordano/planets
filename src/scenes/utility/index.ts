@@ -18,6 +18,7 @@ export const startScene = (
   scenePlugin.setActive(true, sceneKey);
 };
 
+/** Randomly place stars in the background */
 export function paintStars(
   scene: Phaser.Scene,
   centerCoords: Coords,

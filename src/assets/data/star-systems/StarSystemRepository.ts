@@ -1,5 +1,5 @@
 import starSystems, { StarSystemData } from "./star-systems";
-import { getStellarBody, StellarBodyObject } from "../steller-bodies/StellarBodyRepository";
+import { getStellarBody, StellarBodyObject } from "../stellar-bodies/StellarBodyRepository";
 
 const inMemoryData = { ...starSystems };
 

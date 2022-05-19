@@ -12,7 +12,7 @@ import { paintStars } from "./utility/index";
 import {
   getStellarBody,
   StellarBodyObject,
-} from "../assets/data/steller-bodies/StellarBodyRepository";
+} from "../assets/data/stellar-bodies/StellarBodyRepository";
 import LargeStellarBody from "../components/planet/LargeStellarBody";
 
 export class StellarBodyScene extends DependentScene {
@@ -68,11 +68,8 @@ export class StellarBodyScene extends DependentScene {
       size: stellarBodyObject.size,
       color: stellarBodyObject.color,
       id: stellarBodyObject.id,
-      onHarvest: ({content}) => {
-        /** Add payload to state
-         * Update UI based on state updates.
-         */
-         this.game.events.emit('resource-gathered',{content})
+      onHarvest: ({ content }) => {
+        this.game.events.emit("resource-gathered", { content });
       },
       composition: stellarBodyObject.composition,
     });

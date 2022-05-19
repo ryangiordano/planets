@@ -1,4 +1,5 @@
-import { ResourceType } from "../planet/StellarBody";
+import { ResourceType } from "../../assets/data/stellar-bodies/Types";
+
 export type StateResourceObject = {
   current: number;
   max: number;

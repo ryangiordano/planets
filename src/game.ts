@@ -2,19 +2,6 @@ import "phaser";
 import { StarSystemScene } from "./scenes/StarSystemScene";
 import { Plugin as NineSlicePlugin } from "phaser3-nineslice";
 
-function scramble(s) {
-  const t = s.split("");
-
-  for (let i = 0; i < t.length; i++) {
-    const randomToSwap = getRandomInt(0, t.length - 1);
-
-    const temp = t[i];
-    t[i] = t[randomToSwap];
-    t[randomToSwap] = temp;
-  }
-  return t.join("");
-}
-
 import { BLACK } from "./utility/Constants";
 import { BootScene } from "./scenes/BootScene";
 import { SystemSelectScene } from "./scenes/SystemSelectScene";
@@ -45,7 +32,7 @@ const config: Phaser.Types.Core.GameConfig = {
   physics: {
     default: "arcade",
     arcade: {
-      debug: true,
+      // debug: true,
     },
   },
   render: { pixelArt: true, antialias: false },
@@ -54,10 +41,6 @@ const config: Phaser.Types.Core.GameConfig = {
 export class Game extends Phaser.Game {
   constructor(config: Phaser.Types.Core.GameConfig) {
     super(config);
-
-    for (let i = 0; i < 10; i++) {
-      console.log(scramble("poplar"));
-    }
   }
 }
 

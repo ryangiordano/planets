@@ -2,6 +2,8 @@ import StellarBody, {
   getStellarBodyColorFromComposition,
 } from "../../../components/planet/StellarBody";
 import HexTile from "../../../components/system-select/HexTile";
+import { ResourceType } from "../stellar-bodies/Types";
+import { createRandomSystem } from "./RandomGeneration";
 
 import {
   getStarSystem,
@@ -113,14 +115,15 @@ export function buildStarSystemFromId(
 
 export function renderSystem(
   system: StarSystemObject,
-  hexMap: { [key: string]: HexTile }
+  hexMap: { [key: string]: HexTile },
+  playerHasAccess = true
 ) {
   const [x, y] = system.coordinates;
   const hexTile = hexMap[`${x},${y}`];
   if (!hexTile) {
     return;
   }
-  hexTile.addSystem(system);
+  prepareHex(system, hexTile, playerHasAccess);
 
   renderSystemNeighbors(system, hexMap);
 }
@@ -144,12 +147,36 @@ export function renderSystemNeighbors(
     if (!hexTile || hexTile?.hasStarSystem()) {
       return;
     }
+    const coordinates: [number, number] = [originX + x, originY + y];
     hexTile.setUnexplored();
-    const starSystem = getStarSystemByCoordinate([originX + x, originY + y]);
-    if (starSystem) {
-      hexTile.addSystem(starSystem);
-      hexTile.setPlayerHasAccess(false);
-      renderSystemNeighbors(starSystem, hexMap);
+    let starSystem = getStarSystemByCoordinate([originX + x, originY + y]);
+    if (!starSystem) {
+      starSystem = createRandomSystem(coordinates);
     }
+
+    prepareHex(starSystem, hexTile, false);
   });
+}
+
+function prepareHex(
+  starSystem: StarSystemObject,
+  hexTile: HexTile,
+  playerHasAccess: boolean
+): HexTile {
+  hexTile.addSystem(starSystem);
+  hexTile.setPlayerHasAccess(playerHasAccess);
+  //TODO: Polish up how we set unlock requirements
+  const g = [
+    ...(starSystem.sun.composition.gas.map((f) => [f[0], 0.01]) as [
+      ResourceType,
+      number
+    ][]),
+    ...(starSystem.sun.composition.mineral.map((f) => [f[0], 0.01]) as [
+      ResourceType,
+      number
+    ][]),
+  ];
+
+  hexTile.setUnlockRequirements(g);
+  return hexTile;
 }

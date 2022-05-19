@@ -2,11 +2,13 @@ import Ship from "../components/player/Ship";
 import HexTile from "../components/system-select/HexTile";
 import DependentScene from "./DependentScene";
 import { paintStars } from "./utility";
-import { buildHexMap } from "../assets/data/star-systems/HexMapController";
 import {
-  renderSystem,
-} from "../assets/data/star-systems/StarSystemController";
+  buildHexMap,
+  unlockHexTile,
+} from "../assets/data/star-systems/HexMapController";
+import { renderSystem } from "../assets/data/star-systems/StarSystemController";
 import { getSaveData } from "../assets/data/player/SaveController";
+import { StateScene } from "./StateScene";
 
 export class SystemSelectScene extends DependentScene {
   private ship: Ship;
@@ -43,12 +45,19 @@ export class SystemSelectScene extends DependentScene {
     const cursors = this.input.keyboard.createCursorKeys();
 
     cursors.space.addListener("down", () => {
-      this.scene.sleep("SystemSelectScene");
+      const hex = this.focusedHex;
+      if (hex.playerHasAccess) {
+        this.scene.sleep("SystemSelectScene");
+        this.scene.run("StarSystemScene", hex.starSystem.systemObject);
+        return;
+      }
 
-      this.scene.run(
-        "StarSystemScene",
-        this.focusedHex.starSystem.systemObject
-      );
+      const stateScene = this.scene.get("StateScene") as StateScene;
+      unlockHexTile(hex, stateScene.getAllResources(), (remainingBalance) => {
+        remainingBalance.forEach((resource) => {
+          this.game.events.emit("resource-spent", resource);
+        });
+      });
     });
     this.paintStars();
 
@@ -76,7 +85,7 @@ export class SystemSelectScene extends DependentScene {
 
     this.cameras.main.startFollow(this.ship);
 
-    const startTile = hexMap[`9,10`];
+    const startTile = hexMap[`10,10`];
     this.ship.setX(startTile.x);
     this.ship.setY(startTile.y);
   }

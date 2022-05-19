@@ -1,4 +1,4 @@
-import { ResourceType } from "../components/planet/StellarBody";
+import { ResourceType } from "../assets/data/stellar-bodies/Types";
 import { UIBar } from "../components/UI/UIBar";
 import DependentScene from "./DependentScene";
 import { StateResourceObject, StateScene } from "./StateScene";
@@ -117,7 +117,9 @@ export class UIScene extends DependentScene {
         resource: StateResourceObject;
       }) => {
         const bar = this.contentMap.get(key);
-        bar.setCurrentValue(resource.current);
+        if (bar) {
+          bar.setCurrentValue(resource.current);
+        }
       }
     );
 

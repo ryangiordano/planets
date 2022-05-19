@@ -1,8 +1,5 @@
 import planets, { StellarBodyData } from "./planets";
-import {
-  CompositionType,
-  StellarBodySize,
-} from "../../../components/planet/StellarBody";
+import { StellarBodySize, CompositionType } from "./Types";
 
 const inMemoryData = { ...planets };
 

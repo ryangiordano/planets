@@ -1,17 +1,14 @@
 /**
  * Module of helper functions for randomly generating stellar bodies and star systems
  */
-import {
-  MAX_STELLAR_BODY_SIZE,
-  StellarBodySize,
-  MineralType,
-  GasType,
-} from "../../../components/planet/StellarBody";
+
 import { getRandomInt } from "../../../utility/Utility";
+import { MAX_STELLAR_BODY_SIZE } from "../stellar-bodies/Constants";
 import {
   StellarBodyObject,
   setStellarBodyData,
-} from "../steller-bodies/StellarBodyRepository";
+} from "../stellar-bodies/StellarBodyRepository";
+import { MineralType, GasType, StellarBodySize } from "../stellar-bodies/Types";
 import {
   MIN_ORBIT_SIZE,
   MAX_ORBIT_SIZE,
@@ -20,13 +17,17 @@ import {
 } from "./Constants";
 import { StarSystemObject, setStarSystem } from "./StarSystemRepository";
 
+type PossibleCompositionValues = 1 | 2 | 3;
+
 /** Generate gas or mineral values at random for a planet
  *
  * T expects a MineralType or GasType to inform the return value of the random composition
  */
-function generateRandomCompositionValues<T extends MineralType | GasType>(
+export function generateRandomCompositionValues<
+  T extends MineralType | GasType
+>(
   /** Number of elements that the stellar body is composed of */
-  numberToGenerate: 1 | 2 | 3,
+  numberToGenerate: PossibleCompositionValues,
   /** Actual elements to choose from when randomly creating the value */
   valueBank: T[]
 ) {
@@ -74,8 +75,8 @@ function createRandomStellarBodyObject({
     maxDistanceFromCenter
   );
 
-  const numberOfGasElements = getRandomInt(1, 3) as 1 | 2 | 3;
-  const numberOfMinerals = getRandomInt(1, 3) as 1 | 2 | 3;
+  const numberOfGasElements = getRandomInt(1, 3) as PossibleCompositionValues;
+  const numberOfMinerals = getRandomInt(1, 3) as PossibleCompositionValues;
   const composition = {
     mineral: hasMinerals
       ? generateRandomCompositionValues<MineralType>(numberOfMinerals, [
@@ -106,7 +107,9 @@ function createRandomStellarBodyObject({
       })
     );
   }
+
   const stellarBodyData = {
+    //TODO: Randomly generate names
     name: "Rando",
     id,
     distanceFromCenter,
@@ -126,18 +129,19 @@ export function createRandomSystem(
   /** The coordinates at which the star system should exist within the context of the game's Hex Map */
   coordinates: [number, number]
 ): StarSystemObject {
-  const sun = createRandomStellarBodyObject({ hasMinerals: false });
+  const sun = createRandomStellarBodyObject({minSize: 3});
 
-  const numberOfPlanets = getRandomInt(0, 10);
+  const numberOfPlanets = getRandomInt(1, 10);
   const planets: StellarBodyObject[] = [];
   for (let i = 0; i < numberOfPlanets; i++) {
-    const numberOfMoons = getRandomInt(0, 2);
+    const numberOfMoons = getRandomInt(0, 3);
 
     const planet = createRandomStellarBodyObject({
       hasMinerals: true,
       hasGas: true,
       numberOfStellarBodiesInOrbit: numberOfMoons,
       minSize: 1,
+      maxSize: sun.size - 1,
     });
 
     planets.push(planet);
@@ -158,7 +162,6 @@ export function createRandomSystem(
       return p.id;
     }),
   };
-
   setStarSystem(starSystemData);
 
   return starSystemObject;

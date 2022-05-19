@@ -1,9 +1,10 @@
 import {
-  CompositionType,
   ResourceType,
-  getStellarBodyColorFromComposition,
-} from "./StellarBody";
-import { StellarBodyPayload, StellarBodySize } from "./StellarBody";
+  CompositionType,
+  StellarBodySize,
+} from "../../assets/data/stellar-bodies/Types";
+import { getStellarBodyColorFromComposition } from "./StellarBody";
+import { StellarBodyPayload } from "./StellarBody";
 
 /** Harvest content given an array of tuples of content types and chance to mine */
 function handleHarvest(

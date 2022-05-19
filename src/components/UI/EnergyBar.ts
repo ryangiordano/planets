@@ -1,48 +1,13 @@
-import { WHITE } from "./../../utility/Constants";
 export class Bar extends Phaser.GameObjects.Container {
-  private barBack: Phaser.GameObjects.Rectangle;
   private barFill: Phaser.GameObjects.Rectangle;
   private barWidth: number = 90;
-  private barBorder: Phaser.GameObjects.RenderTexture;
   constructor(
     scene: Phaser.Scene,
     position: Coords,
     private currentValue: number,
-    private maxValue: number,
-    color: number
+    private maxValue: number
   ) {
     super(scene, position.x, position.y);
-    // this.barBack = new Phaser.GameObjects.Rectangle(
-    //   scene,
-    //   0,
-    //   0,
-    //   this.barWidth,
-    //   7,
-    //   WHITE.hex,
-    //   1
-    // );
-    // this.barFill = new Phaser.GameObjects.Rectangle(
-    //   scene,
-    //   0,
-    //   0,
-    //   this.barWidth,
-    //   7,
-    //   color,
-    //   1
-    // );
-    // this.barFill.width = 0;
-    // this.barBorder = scene.add.nineslice(0, 0, this.barWidth, 15, "bar", 5);
-
-    // this.barBorder.setOrigin(0.5, 0.5);
-    // scene.add.existing(this);
-    // scene.add.existing(this.barBack);
-    // scene.add.existing(this.barFill);
-    // this.add(this.barBack);
-    // this.add(this.barFill);
-    // this.bringToTop(this.barFill);
-    // this.add(this.barBorder);
-    // this.bringToTop(this.barBorder);
-    // this.setBar();
   }
 
   setCurrentValue(newValue: number): Promise<void> {
