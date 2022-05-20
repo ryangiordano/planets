@@ -26,6 +26,10 @@ export class UIScene extends DependentScene {
   preload(): void {}
 
   create(): void {
+    const barDimensions = {
+      barWidth: 128,
+      barHeight: 42,
+    };
     this.blueGasBar = new UIBar({
       scene: this,
       position: { x: 0, y: 0 },
@@ -33,45 +37,50 @@ export class UIScene extends DependentScene {
       maxValue: 10,
       color: 0x4c75d4,
       hasBackground: true,
+      ...barDimensions,
     });
     this.yellowGasBar = new UIBar({
       scene: this,
-      position: { x: 40, y: 0 },
+      position: { x: 0, y: 50 },
       currentValue: 0,
       maxValue: 10,
       color: 0xd9b44e,
       hasBackground: true,
+      ...barDimensions,
     });
     this.redGasBar = new UIBar({
       scene: this,
-      position: { x: 80, y: 0 },
+      position: { x: 0, y: 100 },
       currentValue: 0,
       maxValue: 10,
       color: 0xd44c5a,
       hasBackground: true,
+      ...barDimensions,
     });
 
     this.gasBarContainer = this.add.container(
-      this.game.canvas.width - 150,
-      this.game.canvas.height - 100,
+      this.game.canvas.width - 250,
+      this.game.canvas.height -140,
       [this.blueGasBar, this.yellowGasBar, this.redGasBar]
     );
 
     this.orangeMineralBar = new UIBar({
       scene: this,
-      position: { x: 40, y: 0 },
+      position: { x: 0, y: 50 },
       currentValue: 0,
       maxValue: 10,
       color: 0xeba836,
       hasBackground: true,
+      ...barDimensions,
     });
     this.greenMineralBar = new UIBar({
       scene: this,
-      position: { x: 80, y: 0 },
+      position: { x: 0, y: 100 },
       currentValue: 0,
       maxValue: 10,
       color: 0x339c4f,
       hasBackground: true,
+      ...barDimensions,
     });
     this.purpleMineralBar = new UIBar({
       scene: this,
@@ -80,11 +89,12 @@ export class UIScene extends DependentScene {
       maxValue: 10,
       color: 0x864dd6,
       hasBackground: true,
+      ...barDimensions,
     });
 
     this.mineralBarContainer = this.add.container(
-      this.game.canvas.width - 150,
-      this.game.canvas.height - 250,
+      this.game.canvas.width - 100,
+      this.game.canvas.height -140,
       [this.orangeMineralBar, this.greenMineralBar, this.purpleMineralBar]
     );
     this.buildContentMap();

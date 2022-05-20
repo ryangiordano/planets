@@ -1,9 +1,12 @@
 import HexTile from "../../../components/system-select/HexTile";
 import { ResourceType } from "../stellar-bodies/Types";
+import { renderSystemNeighbors } from "./StarSystemController";
 import {
   StarSystemObject,
   getStarSystemByCoordinate,
 } from "./StarSystemRepository";
+
+export type HexMap = { [key: string]: HexTile };
 
 export function buildHexMap(
   scene: Phaser.Scene,
@@ -42,12 +45,14 @@ export function playerCanAffordResourceRequirement(
 export function unlockHexTile(
   hex: HexTile,
   providedCurrency: [ResourceType, number][],
+  hexMap: HexMap,
   onSuccessfulUnlock: (remainingBalance: [ResourceType, number][]) => void
 ) {
   if (
     playerCanAffordResourceRequirement(hex.unlockRequirements, providedCurrency)
   ) {
     hex.setPlayerHasAccess(true);
+    renderSystemNeighbors(hex.starSystem.starSystemObject, hexMap);
     const remainingCurrency = calculateDifferenceBetweenResources(
       hex.unlockRequirements,
       providedCurrency

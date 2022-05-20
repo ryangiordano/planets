@@ -53,12 +53,12 @@ export class StateScene extends DependentScene {
     );
   }
 
-  public incrementResource(key: ResourceType, value: number) {
-    this.setResource(key, value + this[key].current);
+  public incrementResource(key: ResourceType, valueToAdd: number) {
+    this.setResource(key, valueToAdd + this[key].current);
   }
 
-  public decrementResource(key: ResourceType, value: number) {
-    this.setResource(key, this[key].current - value);
+  public decrementResource(key: ResourceType, valueToSubtract: number) {
+    this.setResource(key, this[key].current - valueToSubtract);
   }
 
   public setResource(key: ResourceType, value: number) {

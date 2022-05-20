@@ -3,6 +3,8 @@ import StellarBody, {
 } from "../../../components/planet/StellarBody";
 import HexTile from "../../../components/system-select/HexTile";
 import { ResourceType } from "../stellar-bodies/Types";
+import { EVEN_ROW_HEX_NEIGHBORS, getHexNeighbors } from "./Constants";
+import { HexMap } from "./HexMapController";
 import { createRandomSystem } from "./RandomGeneration";
 
 import {
@@ -128,21 +130,13 @@ export function renderSystem(
   renderSystemNeighbors(system, hexMap);
 }
 
-const neighbors = [
-  [0, -1],
-  [1, -1],
-  [1, 0],
-  [1, 1],
-  [0, 1],
-  [-1, 0],
-];
-
 export function renderSystemNeighbors(
   system: StarSystemObject,
-  hexMap: { [key: string]: HexTile }
+  hexMap: HexMap
 ) {
   const [originX, originY] = system.coordinates;
-  neighbors.forEach(([x, y]) => {
+
+  getHexNeighbors(originY).forEach(([x, y]) => {
     const hexTile = hexMap[`${originX + x},${originY + y}`];
     if (!hexTile || hexTile?.hasStarSystem()) {
       return;
@@ -167,11 +161,11 @@ function prepareHex(
   hexTile.setPlayerHasAccess(playerHasAccess);
   //TODO: Polish up how we set unlock requirements
   const g = [
-    ...(starSystem.sun.composition.gas.map((f) => [f[0], 0.01]) as [
+    ...(starSystem.sun.composition.gas.map((f) => [f[0], 0.0]) as [
       ResourceType,
       number
     ][]),
-    ...(starSystem.sun.composition.mineral.map((f) => [f[0], 0.01]) as [
+    ...(starSystem.sun.composition.mineral.map((f) => [f[0], 0.0]) as [
       ResourceType,
       number
     ][]),

@@ -17,6 +17,7 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
   public focusColor: number = 0xbddebd;
   public color: number = 0x6e6e6e;
 
+  public coordinates: [number, number];
   public unlockRequirements: [ResourceType, number][];
   constructor({ scene, x, y }: { scene: Phaser.Scene; x: number; y: number }) {
     super(scene, 0, 0, "hex-tile");
@@ -27,6 +28,7 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
     this.setY((y * this.height) / 1.4);
     this.setVisible(false);
 
+    this.coordinates = [x, y];
     this.body.setCircle(50, 15, 15);
   }
 
@@ -63,27 +65,5 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
 
   setUnlockRequirements(requirements: [ResourceType, number][]) {
     this.unlockRequirements = requirements;
-  }
-
-  unlockHexTile(providedCurrency: [ResourceType, number][]): boolean {
-    /** No requirements, panel is unlocked */
-    if (!this.unlockRequirements) {
-      this.setPlayerHasAccess(true);
-      return true;
-    }
-    const temp = [...this.unlockRequirements];
-    for (let requirement of temp) {
-      const f = providedCurrency.find((p) => p[0] === requirement[0]);
-      if (f) {
-        requirement[1] = Math.max(0, requirement[1] - f[1]);
-      }
-    }
-
-    return (
-      temp.reduce<number>((acc, t) => {
-        acc += t[1];
-        return acc;
-      }, 0) === 0
-    );
   }
 }

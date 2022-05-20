@@ -2,7 +2,7 @@
  * Module of helper functions for randomly generating stellar bodies and star systems
  */
 
-import { getRandomInt } from "../../../utility/Utility";
+import { getRandomInt, isWinningRoll } from "../../../utility/Utility";
 import { MAX_STELLAR_BODY_SIZE } from "../stellar-bodies/Constants";
 import {
   StellarBodyObject,
@@ -17,7 +17,7 @@ import {
 } from "./Constants";
 import { StarSystemObject, setStarSystem } from "./StarSystemRepository";
 
-type PossibleCompositionValues = 1 | 2 | 3;
+type PossibleCompositionValues = 0 | 1 | 2 | 3;
 
 /** Generate gas or mineral values at random for a planet
  *
@@ -45,12 +45,16 @@ export function generateRandomCompositionValues<
   }
 }
 
+function getRandomCompositionValue() {
+  return getRandomInt(1, 3) as PossibleCompositionValues;
+}
+
 /** Creates a random stellar body object within the given configuration
  * and value clamps. Reasonable defaults are provided.
  */
 function createRandomStellarBodyObject({
-  hasMinerals = true,
-  hasGas = true,
+  numberOfMinerals,
+  numberOfGasElements,
   numberOfStellarBodiesInOrbit = 0,
   minSize = 0,
   maxSize = MAX_STELLAR_BODY_SIZE,
@@ -59,8 +63,8 @@ function createRandomStellarBodyObject({
   minRotationSpeed = MIN_ROTATION_SPEED,
   maxRotationSpeed = MAX_ROTATION_SPEED,
 }: {
-  hasMinerals?: boolean;
-  hasGas?: boolean;
+  numberOfMinerals?: PossibleCompositionValues;
+  numberOfGasElements?: PossibleCompositionValues;
   numberOfStellarBodiesInOrbit?: number;
   minSize?: number;
   maxSize?: number;
@@ -69,23 +73,27 @@ function createRandomStellarBodyObject({
   minRotationSpeed?: number;
   maxRotationSpeed?: number;
 }): StellarBodyObject {
+  if (!numberOfMinerals && !numberOfGasElements) {
+    const hasMinerals = isWinningRoll(0.5);
+    numberOfMinerals = hasMinerals ? 1 : 0;
+    numberOfGasElements = hasMinerals ? 0 : 1;
+  }
+
   const size = getRandomInt(minSize, maxSize) as StellarBodySize;
   const distanceFromCenter = getRandomInt(
     minDistanceFromCenter,
     maxDistanceFromCenter
   );
 
-  const numberOfGasElements = getRandomInt(1, 3) as PossibleCompositionValues;
-  const numberOfMinerals = getRandomInt(1, 3) as PossibleCompositionValues;
   const composition = {
-    mineral: hasMinerals
+    mineral: numberOfMinerals
       ? generateRandomCompositionValues<MineralType>(numberOfMinerals, [
           "purple",
           "orange",
           "green",
         ])
       : [],
-    gas: hasGas
+    gas: numberOfGasElements
       ? generateRandomCompositionValues<GasType>(numberOfGasElements, [
           "red",
           "yellow",
@@ -99,8 +107,8 @@ function createRandomStellarBodyObject({
     // Push satellites into orbit
     orbit.push(
       createRandomStellarBodyObject({
-        hasMinerals: true,
-        hasGas: false,
+        numberOfMinerals: 1,
+        numberOfGasElements: 0,
         maxSize: getRandomInt(minSize, size - 1),
         minDistanceFromCenter: 25,
         maxDistanceFromCenter: 50,
@@ -129,7 +137,7 @@ export function createRandomSystem(
   /** The coordinates at which the star system should exist within the context of the game's Hex Map */
   coordinates: [number, number]
 ): StarSystemObject {
-  const sun = createRandomStellarBodyObject({minSize: 3});
+  const sun = createRandomStellarBodyObject({ minSize: 3 });
 
   const numberOfPlanets = getRandomInt(1, 10);
   const planets: StellarBodyObject[] = [];
@@ -137,8 +145,6 @@ export function createRandomSystem(
     const numberOfMoons = getRandomInt(0, 3);
 
     const planet = createRandomStellarBodyObject({
-      hasMinerals: true,
-      hasGas: true,
       numberOfStellarBodiesInOrbit: numberOfMoons,
       minSize: 1,
       maxSize: sun.size - 1,

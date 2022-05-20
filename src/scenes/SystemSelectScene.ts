@@ -43,29 +43,33 @@ export class SystemSelectScene extends DependentScene {
   }
   create(): void {
     const cursors = this.input.keyboard.createCursorKeys();
-
-    cursors.space.addListener("down", () => {
-      const hex = this.focusedHex;
-      if (hex.playerHasAccess) {
-        this.scene.sleep("SystemSelectScene");
-        this.scene.run("StarSystemScene", hex.starSystem.systemObject);
-        return;
-      }
-
-      const stateScene = this.scene.get("StateScene") as StateScene;
-      unlockHexTile(hex, stateScene.getAllResources(), (remainingBalance) => {
-        remainingBalance.forEach((resource) => {
-          this.game.events.emit("resource-spent", resource);
-        });
-      });
-    });
-    this.paintStars();
-
     const hexMap = buildHexMap(this, 25);
     const save = getSaveData();
 
     const homeSystem = save.startingSystem;
     renderSystem(homeSystem, hexMap);
+
+    cursors.space.addListener("down", () => {
+      const hex = this.focusedHex;
+      if (hex.playerHasAccess) {
+        this.scene.sleep("SystemSelectScene");
+        this.scene.run("StarSystemScene", hex.starSystem.starSystemObject);
+        return;
+      }
+
+      const stateScene = this.scene.get("StateScene") as StateScene;
+      unlockHexTile(
+        hex,
+        stateScene.getAllResources(),
+        hexMap,
+        (remainingBalance) => {
+          remainingBalance.forEach((resource) => {
+            this.game.events.emit("resource-spent", resource);
+          });
+        }
+      );
+    });
+    this.paintStars();
 
     this.ship = new Ship({ scene: this, x: 500, y: 500 });
     this.playerGroup = new Phaser.GameObjects.Group(this, [this.ship]);
