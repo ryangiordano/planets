@@ -24,13 +24,13 @@ module.exports = {
           }
         ]
       },
-      // {
-      //   test: /phaser\.js$/, use: [{ loader: "expose-loader?Phaser" }],
-      // }
+      {
+        test: /phaser\.js$/, use: [{ loader: "expose-loader?Phaser" }],
+      }
     ]
   },
   devServer: {
-    devMiddleware:{
+    devMiddleware: {
       publicPath: "/dist/",
     },
     static: path.resolve(__dirname, "./"),

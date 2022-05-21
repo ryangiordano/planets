@@ -161,16 +161,15 @@ function prepareHex(
   hexTile.setPlayerHasAccess(playerHasAccess);
   //TODO: Polish up how we set unlock requirements
   const g = [
-    ...(starSystem.sun.composition.gas.map((f) => [f[0], 0.0]) as [
+    ...(starSystem.sun.composition.gas.map((f) => [f[0], 0.5]) as [
       ResourceType,
       number
     ][]),
-    ...(starSystem.sun.composition.mineral.map((f) => [f[0], 0.0]) as [
+    ...(starSystem.sun.composition.mineral.map((f) => [f[0], 0.5]) as [
       ResourceType,
       number
     ][]),
   ];
-
   hexTile.setUnlockRequirements(g);
   return hexTile;
 }

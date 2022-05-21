@@ -40,7 +40,7 @@ function handleHarvest(
  * A planetary body or star that has other StellarBodies to rotate around it.
  * Other bodies must be smaller than the parent StellarBody
  */
-export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
+export default class LargeStellarBody extends Phaser.Physics.Arcade.Sprite {
   public distanceFromCenter: number;
   private composition: CompositionType;
   static spriteDependencies: SpriteDependency[] = [
@@ -66,7 +66,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     scene: Phaser.Scene;
     x?: number;
     y?: number;
-    orbit?: StellarBody[];
+    orbit?: LargeStellarBody[];
     distanceFromCenter?: number;
     rotationSpeed?: number;
     size: StellarBodySize;

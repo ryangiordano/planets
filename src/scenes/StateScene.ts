@@ -38,13 +38,10 @@ export class StateScene extends DependentScene {
       }
     );
 
-    this.game.events.on(
-      "resource-spent",
-      (resource: [ResourceType, number]) => {
-        const [resourceType, value] = resource;
-        this.decrementResource(resourceType, value);
-      }
-    );
+    this.game.events.on("set-resource", (resource: [ResourceType, number]) => {
+      const [resourceType, value] = resource;
+      this.setResource(resourceType, value);
+    });
 
     ["purple", "orange", "green", "red", "blue", "yellow"].forEach(
       (resource: ResourceType) => {

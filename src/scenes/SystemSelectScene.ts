@@ -6,7 +6,10 @@ import {
   buildHexMap,
   unlockHexTile,
 } from "../assets/data/star-systems/HexMapController";
-import { renderSystem } from "../assets/data/star-systems/StarSystemController";
+import {
+  renderSystem,
+  renderSystemNeighbors,
+} from "../assets/data/star-systems/StarSystemController";
 import { getSaveData } from "../assets/data/player/SaveController";
 import { StateScene } from "./StateScene";
 
@@ -58,16 +61,12 @@ export class SystemSelectScene extends DependentScene {
       }
 
       const stateScene = this.scene.get("StateScene") as StateScene;
-      unlockHexTile(
-        hex,
-        stateScene.getAllResources(),
-        hexMap,
-        (remainingBalance) => {
-          remainingBalance.forEach((resource) => {
-            this.game.events.emit("resource-spent", resource);
-          });
-        }
-      );
+      unlockHexTile(hex, stateScene.getAllResources(), (remainingBalance) => {
+        renderSystemNeighbors(hex.starSystem.starSystemObject, hexMap);
+        remainingBalance.forEach((resource) => {
+          this.game.events.emit("set-resource", resource);
+        });
+      });
     });
     this.paintStars();
 
