@@ -24,9 +24,6 @@ module.exports = {
           }
         ]
       },
-      {
-        test: /phaser\.js$/, use: [{ loader: "expose-loader?Phaser" }],
-      }
     ]
   },
   devServer: {
