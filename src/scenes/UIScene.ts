@@ -1,13 +1,48 @@
 import { ResourceType } from "../assets/data/stellar-bodies/Types";
 import { UIBar } from "../components/UI/UIBar";
-import { GREEN, PURPLE, ORANGE, RED, BLUE, YELLOW } from "../utility/Constants";
+import {
+  GREEN,
+  PURPLE,
+  ORANGE,
+  RED,
+  BLUE,
+  YELLOW,
+  WHITE,
+} from "../utility/Constants";
 import DependentScene from "./DependentScene";
 import { StateResourceObject, StateScene } from "./StateScene";
 
+function buildBorder({
+  x,
+  y,
+  scene,
+  width,
+  height,
+}: {
+  x: number;
+  y: number;
+  scene: Phaser.Scene;
+  width: number;
+  height: number;
+}) {
+  return scene.add.nineslice(x, y, width, height, "UI_box", 5);
+}
+
+function buildResourceBorder(scene: Phaser.Scene, x: number, y: number) {
+  return buildBorder({
+    scene,
+    x,
+    y,
+    width: 150,
+    height: 200,
+  });
+}
 export class UIScene extends DependentScene {
   private gasBarContainer: Phaser.GameObjects.Container;
   private mineralBarContainer: Phaser.GameObjects.Container;
   private energyContainer: Phaser.GameObjects.Container;
+  private resourceContainer: Phaser.GameObjects.Container;
+  private UIParent: Phaser.GameObjects.Container;
   private blueGasBar: UIBar;
   private yellowGasBar: UIBar;
   private redGasBar: UIBar;
@@ -29,10 +64,15 @@ export class UIScene extends DependentScene {
   preload(): void {}
 
   create(): void {
+    this.buildUIParent();
     this.buildEnergyUI();
     this.buildResourceUI();
     this.buildContentMap();
     this.setSceneListeners();
+  }
+
+  private buildUIParent() {
+    this.UIParent = this.add.container(60, this.game.canvas.height - 100);
   }
 
   private buildEnergyUI() {
@@ -47,11 +87,9 @@ export class UIScene extends DependentScene {
       hasBackground: true,
     });
 
-    this.energyContainer = this.add.container(
-      80,
-      this.game.canvas.height - 90,
-      [this.energyBar]
-    );
+    this.energyContainer = this.add.container(0, 0, [this.energyBar]);
+
+    this.UIParent.add(this.energyContainer);
   }
 
   private buildResourceUI() {
@@ -87,11 +125,21 @@ export class UIScene extends DependentScene {
       ...barDimensions,
     });
 
-    this.gasBarContainer = this.add.container(
-      this.game.canvas.width - 250,
-      this.game.canvas.height - 140,
-      [this.blueGasBar, this.yellowGasBar, this.redGasBar]
-    );
+    const gasBorder = buildResourceBorder(this, -75, -60);
+
+    const gasText = this.add.text(-65, -55, "gas", {
+      fontFamily: "pixel",
+      fontSize: "25px",
+      color: WHITE.str,
+    });
+
+    this.gasBarContainer = this.add.container(0, 0, [
+      this.blueGasBar,
+      this.yellowGasBar,
+      this.redGasBar,
+      gasBorder,
+      gasText,
+    ]);
 
     this.orangeMineralBar = new UIBar({
       scene: this,
@@ -121,11 +169,27 @@ export class UIScene extends DependentScene {
       ...barDimensions,
     });
 
-    this.mineralBarContainer = this.add.container(
-      this.game.canvas.width - 100,
-      this.game.canvas.height - 140,
-      [this.orangeMineralBar, this.greenMineralBar, this.purpleMineralBar]
+    const mineralText = this.add.text(-65, -55, "minerals", {
+      fontFamily: "pixel",
+      fontSize: "25px",
+      color: WHITE.str,
+    });
+    const mineralBorder = buildResourceBorder(this, -75, -60);
+    this.mineralBarContainer = this.add.container(147, 0, [
+      this.orangeMineralBar,
+      this.greenMineralBar,
+      this.purpleMineralBar,
+      mineralBorder,
+      mineralText,
+    ]);
+
+    this.resourceContainer = this.add.container(
+      this.game.canvas.width - 350,
+      -70,
+      [this.gasBarContainer, this.mineralBarContainer]
     );
+
+    this.UIParent.add(this.resourceContainer);
   }
 
   /** Map the ui displays to their content type property */
