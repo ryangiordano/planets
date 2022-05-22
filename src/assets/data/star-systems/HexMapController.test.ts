@@ -3,8 +3,6 @@ import {
   playerCanAffordResourceRequirement,
 } from "./HexMapController";
 import { ResourceType } from "../stellar-bodies/Types";
-import HexTile from "../../../components/system-select/HexTile";
-import StellarBody from "../../../components/planet/StellarBody";
 
 jest.mock("../../../components/planet/StellarBody", () => {
   return {

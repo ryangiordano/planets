@@ -76,11 +76,6 @@ export default class LargeStellarBody extends Phaser.Physics.Arcade.Sprite {
     onHarvest: (payload: StellarBodyPayload) => void;
   }) {
     super(scene, x, y, "planet_large", size);
-    // if (orbit.length) {
-    //TODO:Implement
-    //   orbit.forEach((o) => this.addToOrbit(o));
-    // }
-
     this.composition = composition;
 
     this.scene.add.existing(this);

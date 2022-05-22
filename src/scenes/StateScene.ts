@@ -2,8 +2,6 @@ import DependentScene from "./DependentScene";
 import { StellarBodyPayload } from "../components/planet/StellarBody";
 import { ResourceType } from "../assets/data/stellar-bodies/Types";
 
-type State = {};
-
 export type StateResourceObject = {
   current: number;
   max: number;
@@ -43,11 +41,23 @@ export class StateScene extends DependentScene {
       this.setResource(resourceType, value);
     });
 
-    ["purple", "orange", "green", "red", "blue", "yellow"].forEach(
+    this.game.events.on(
+      "resource-spent",
+      (resource: [ResourceType, number]) => {
+        const [resourceType, value] = resource;
+        this.decrementResource(resourceType, value);
+      }
+    );
+
+    ["purple", "orange", "green", "red", "blue", "yellow", "energy"].forEach(
       (resource: ResourceType) => {
         this.setResourceMaxValue(resource, this[resource].max);
       }
     );
+
+    setInterval(() => {
+      this.incrementResource("energy", 0.1);
+    }, 1000);
   }
 
   public incrementResource(key: ResourceType, valueToAdd: number) {
