@@ -1,4 +1,5 @@
 export const MAX_STELLAR_BODY_SIZE = 7;
+/** Map of colors from light to dark */
 export const COLOR_MAP = {
   red: [0xdb9b97, 0xde8883, 0xde665f, 0xde473e, 0x9c3028],
   yellow: [0xd9d9a5, 0xd6d986, 0xcfd453, 0xd1d930, 0xb4bd08],

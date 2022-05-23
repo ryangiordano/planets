@@ -16,6 +16,7 @@ import {
 import LargeStellarBody from "../components/planet/LargeStellarBody";
 
 export class StellarBodyScene extends DependentScene {
+  private stellarBodyContainer: Phaser.GameObjects.Container;
   constructor() {
     super({
       key: "StellarBodyScene",
@@ -47,6 +48,9 @@ export class StellarBodyScene extends DependentScene {
       throw new Error(`Stellar Body does not exist at ${stellarBodyId}`);
     }
     this.paintStars();
+    const centerX = this.game.canvas.width / 2;
+    const centerY = this.game.canvas.height / 2;
+    this.stellarBodyContainer = this.add.container(centerX, centerY);
 
     this.renderStellarBody(stellarBodyObject);
 
@@ -58,9 +62,11 @@ export class StellarBodyScene extends DependentScene {
     });
   }
 
-  private renderStellarBody(stellarBodyObject: StellarBodyObject) {
-    const centerX = this.game.canvas.width / 2;
-    const centerY = this.game.canvas.height / 2;
+  private renderStellarBody(
+    stellarBodyObject: StellarBodyObject,
+    centerX = 0,
+    centerY = 0
+  ) {
     const stellarBody = new LargeStellarBody({
       scene: this,
       x: centerX,
@@ -73,7 +79,50 @@ export class StellarBodyScene extends DependentScene {
       },
       composition: stellarBodyObject.composition,
     });
-    this.add.existing(stellarBody);
+
+    this.stellarBodyContainer.add(stellarBody);
+    if (stellarBodyObject.orbit) {
+      stellarBodyObject.orbit.forEach((sbo) => {
+        const moon = this.renderStellarBody(
+          sbo,
+          stellarBody.x + stellarBody.displayWidth,
+          getRandomInt(-(stellarBody.height / 6), stellarBody.height / 6)
+        );
+
+        this.stellarBodyContainer.add(moon);
+
+        this.startMoonOrbit(
+          moon as LargeStellarBody,
+          getRandomInt(0, 3) % 2 === 0,
+          stellarBody.displayWidth * getRandomInt(2, 4),
+          sbo.rotationSpeed
+        );
+      });
+    }
+    return stellarBody;
+  }
+
+  private startMoonOrbit(
+    moon: LargeStellarBody,
+    top: boolean = true,
+    distance,
+    rotationSpeed
+  ) {
+    if (top) {
+      this.stellarBodyContainer.sendToBack(moon);
+    } else {
+      this.stellarBodyContainer.bringToTop(moon);
+    }
+
+    this.tweens.add({
+      targets: [moon],
+      ease: "Linear",
+      duration: rotationSpeed * 150,
+      x: top ? `-=${distance}` : `+=${distance}`,
+      onComplete: () => {
+        this.startMoonOrbit(moon, !top, distance, rotationSpeed);
+      },
+    });
   }
 
   update(time: number, delta: number): void {}

@@ -40,15 +40,15 @@ function handleHarvest(
  * A planetary body or star that has other StellarBodies to rotate around it.
  * Other bodies must be smaller than the parent StellarBody
  */
-export default class LargeStellarBody extends Phaser.Physics.Arcade.Sprite {
+export default class LargeStellarBody extends Phaser.GameObjects.Sprite {
   public distanceFromCenter: number;
   private composition: CompositionType;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 512,
       frameWidth: 512,
-      key: "planet_large",
-      url: "/src/assets/sprites/planet_large.png",
+      key: "planet_large_single",
+      url: "/src/assets/sprites/planet_large_single.png",
     },
   ];
   constructor({
@@ -75,11 +75,15 @@ export default class LargeStellarBody extends Phaser.Physics.Arcade.Sprite {
     composition?: CompositionType;
     onHarvest: (payload: StellarBodyPayload) => void;
   }) {
-    super(scene, x, y, "planet_large", size);
+    super(scene, x, y, "planet_large_single", 0);
     this.composition = composition;
-
     this.scene.add.existing(this);
 
+    let baseSize = 50;
+    let modifier = size + 1;
+
+    this.displayHeight = baseSize * modifier;
+    this.displayWidth = baseSize * modifier;
     this.setTint(color);
     if (composition) {
       this.setTint(getStellarBodyColorFromComposition(composition));
@@ -87,6 +91,7 @@ export default class LargeStellarBody extends Phaser.Physics.Arcade.Sprite {
 
     if (onHarvest && composition) {
       this.setInteractive();
+
       this.on("pointerdown", () => {
         const contentArray = [
           ...this.composition.gas,

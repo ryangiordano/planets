@@ -1,9 +1,11 @@
 import { COLOR_MAP } from "../../assets/data/stellar-bodies/Constants";
-import { CompositionType, ResourceType, StellarBodySize } from "../../assets/data/stellar-bodies/Types";
+import {
+  CompositionType,
+  ResourceType,
+  StellarBodySize,
+} from "../../assets/data/stellar-bodies/Types";
 import { getRandomInt } from "../../utility/Utility";
 import { rotatePoint } from "./shared";
-
-
 
 export function getStellarBodyColorFromComposition(
   composition: CompositionType
@@ -16,9 +18,9 @@ export function getStellarBodyColorFromComposition(
     }
     return acc;
   }, undefined);
-
   const colorArr = COLOR_MAP[dominantType[0]];
-  const index = Math.floor(dominantType[1] * (colorArr.length - 1));
+  //TODO: Make this return a color indicative of the richness of the planet's composition
+  const index = getRandomInt(0, colorArr.length);
   const randomColor = colorArr[index];
 
   return randomColor;

@@ -36,7 +36,7 @@ export function generateRandomCompositionValues<
   while (arr.length) {
     const i = getRandomInt(0, arr.length);
     const type = arr.splice(i, 1)[0];
-    const value = Math.random();
+    const value = getRandomInt(1, 4);
     result.push([type, value]);
 
     if (result.length >= numberToGenerate) {

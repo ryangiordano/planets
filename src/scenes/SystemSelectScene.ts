@@ -61,6 +61,7 @@ export class SystemSelectScene extends DependentScene {
       }
 
       const stateScene = this.scene.get("StateScene") as StateScene;
+      
       unlockHexTile(hex, stateScene.getAllResources(), (remainingBalance) => {
         renderSystemNeighbors(hex.starSystem.starSystemObject, hexMap);
         remainingBalance.forEach((resource) => {

@@ -10,14 +10,14 @@ export type StateResourceObject = {
 //TODO: Make this a function of the ship's upgrades
 const RESOURCE_GATHER_SIZE = 0.5;
 export class StateScene extends DependentScene {
-  private purple: StateResourceObject = { max: 3, current: 0 };
-  private orange: StateResourceObject = { max: 3, current: 0 };
-  private green: StateResourceObject = { max: 3, current: 0 };
-  private red: StateResourceObject = { max: 3, current: 0 };
-  private blue: StateResourceObject = { max: 3, current: 0 };
-  private yellow: StateResourceObject = { max: 3, current: 0 };
+  private purple: StateResourceObject = { max: 20, current: 0 };
+  private orange: StateResourceObject = { max: 20, current: 0 };
+  private green: StateResourceObject = { max: 20, current: 0 };
+  private red: StateResourceObject = { max: 20, current: 0 };
+  private blue: StateResourceObject = { max: 20, current: 0 };
+  private yellow: StateResourceObject = { max: 20, current: 0 };
 
-  private energy: StateResourceObject = { max: 3, current: 0 };
+  private energy: StateResourceObject = { max: 20, current: 0 };
 
   constructor() {
     super({
@@ -31,8 +31,9 @@ export class StateScene extends DependentScene {
     this.game.events.on(
       "resource-gathered",
       ({ content }: StellarBodyPayload) => {
-        const [resourceType] = content;
-        this.incrementResource(resourceType, RESOURCE_GATHER_SIZE);
+        const [resourceType, value] = content;
+        console.log(content)
+        this.incrementResource(resourceType, value);
       }
     );
 
