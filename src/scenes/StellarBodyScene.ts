@@ -84,7 +84,10 @@ export class StellarBodyScene extends DependentScene {
           stateScene.resourceGatherSize
         );
         stellarBody.decrementRemainingYield(totalMined);
-        setRemainingYield(stellarBodyObject.id, totalMined);
+        setRemainingYield(
+          stellarBodyObject.id,
+          Math.max(0, remainingYield - totalMined)
+        );
         this.game.events.emit("resource-gathered", {
           resourceType,
           totalMined,
