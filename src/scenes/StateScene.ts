@@ -1,6 +1,9 @@
 import DependentScene from "./DependentScene";
 import { StellarBodyPayload } from "../components/planet/StellarBody";
-import { ResourceType } from "../assets/data/stellar-bodies/Types";
+import {
+  ResourceType,
+  MineableResourceType,
+} from "../assets/data/stellar-bodies/Types";
 
 export type StateResourceObject = {
   current: number;
@@ -8,7 +11,7 @@ export type StateResourceObject = {
 };
 
 //TODO: Make this a function of the ship's upgrades
-const RESOURCE_GATHER_SIZE = 0.5;
+const RESOURCE_GATHER_SIZE = 0.25;
 export class StateScene extends DependentScene {
   private purple: StateResourceObject = { max: 20, current: 0 };
   private orange: StateResourceObject = { max: 20, current: 0 };
@@ -19,6 +22,8 @@ export class StateScene extends DependentScene {
 
   private energy: StateResourceObject = { max: 20, current: 0 };
 
+  private systemLevel: number = 1;
+  public resourceGatherSize: number = RESOURCE_GATHER_SIZE;
   constructor() {
     super({
       key: "StateScene",
@@ -30,10 +35,14 @@ export class StateScene extends DependentScene {
   create(): void {
     this.game.events.on(
       "resource-gathered",
-      ({ content }: StellarBodyPayload) => {
-        const [resourceType, value] = content;
-        console.log(content)
-        this.incrementResource(resourceType, value);
+      ({
+        resourceType,
+        totalMined,
+      }: {
+        resourceType: MineableResourceType;
+        totalMined: number;
+      }) => {
+        this.incrementResource(resourceType, totalMined);
       }
     );
 
@@ -67,6 +76,18 @@ export class StateScene extends DependentScene {
 
   public decrementResource(key: ResourceType, valueToSubtract: number) {
     this.setResource(key, this[key].current - valueToSubtract);
+  }
+
+  public incrementSystemLevel() {
+    this.systemLevel++;
+  }
+
+  public decrementSystemLevel() {
+    this.systemLevel = Math.max(0, this.systemLevel - 1);
+  }
+
+  public getSystemLevel() {
+    return this.systemLevel;
   }
 
   public setResource(key: ResourceType, value: number) {

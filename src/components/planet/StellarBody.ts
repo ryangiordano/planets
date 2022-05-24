@@ -1,24 +1,16 @@
 import { COLOR_MAP } from "../../assets/data/stellar-bodies/Constants";
 import {
-  CompositionType,
   ResourceType,
   StellarBodySize,
 } from "../../assets/data/stellar-bodies/Types";
 import { getRandomInt } from "../../utility/Utility";
 import { rotatePoint } from "./shared";
+import { MineableResourceType } from "../../assets/data/stellar-bodies/Types";
 
-export function getStellarBodyColorFromComposition(
-  composition: CompositionType
+export function getStellarBodyColorFromResourceType(
+  composition: MineableResourceType
 ) {
-  const dominantType = [...composition.gas, ...composition.mineral].reduce<
-    [ResourceType, number]
-  >((acc, k) => {
-    if (!acc || k[1] > acc?.[1]) {
-      acc = k;
-    }
-    return acc;
-  }, undefined);
-  const colorArr = COLOR_MAP[dominantType[0]];
+  const colorArr = COLOR_MAP[composition];
   //TODO: Make this return a color indicative of the richness of the planet's composition
   const index = getRandomInt(0, colorArr.length);
   const randomColor = colorArr[index];
@@ -26,9 +18,10 @@ export function getStellarBodyColorFromComposition(
   return randomColor;
 }
 
-export type StellarBodyPayload = { content: [ResourceType, number] } & {
+export type StellarBodyPayload = { resourceType: MineableResourceType } & {
   /** TODO: the ID of an artifact mined from the planet */
   artifact: number | null;
+  remainingYield: number;
 };
 /**
  * A planetary body or star that has other StellarBodies to rotate around it.
@@ -40,7 +33,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
   private rotationSpeed: number;
   private parentBody?: StellarBody;
   public id: number;
-  private composition: CompositionType;
+  private resourceType: MineableResourceType;
 
   static spriteDependencies: SpriteDependency[] = [
     {
@@ -62,7 +55,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     rotationSpeed,
     color = 0xffffff,
     id,
-    composition,
+    resourceType,
   }: {
     scene: Phaser.Scene;
     x?: number;
@@ -73,7 +66,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     size: StellarBodySize;
     color?: number;
     id: number;
-    composition?: CompositionType;
+    resourceType?: MineableResourceType;
   }) {
     super(scene, x, y, "planet", size);
     if (orbit.length) {
@@ -85,11 +78,11 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
     this.setTint(color);
-    if (composition) {
-      this.setTint(getStellarBodyColorFromComposition(composition));
+    if (resourceType) {
+      this.setTint(getStellarBodyColorFromResourceType(resourceType));
     }
     this.id = id;
-    this.composition = composition;
+    this.resourceType = resourceType;
   }
 
   private isRotatingWithSatelites() {

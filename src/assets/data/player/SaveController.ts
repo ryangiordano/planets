@@ -34,6 +34,6 @@ export function getSaveData(id?: number): SaveObject {
 }
 /** In the absence of save data, generate a random world state */
 export function generateInitialGameState(startingCoordinates) {
-  const system = createRandomSystem(startingCoordinates);
+  const system = createRandomSystem(startingCoordinates, 1);
   return system;
 }

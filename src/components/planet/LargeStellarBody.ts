@@ -2,47 +2,20 @@ import {
   ResourceType,
   CompositionType,
   StellarBodySize,
+  MineableResourceType,
 } from "../../assets/data/stellar-bodies/Types";
-import { getStellarBodyColorFromComposition } from "./StellarBody";
+import { getStellarBodyColorFromResourceType } from "./StellarBody";
 import { StellarBodyPayload } from "./StellarBody";
-
-/** Harvest content given an array of tuples of content types and chance to mine */
-function handleHarvest(
-  contentArray: [ResourceType, number][],
-  callback: (payload: StellarBodyPayload) => void
-) {
-  contentArray.sort(([_, a], [__, b]) => a - b);
-  const maxRoll = contentArray.reduce<number>(
-    (acc, [_, value]) => (acc += value),
-    0
-  );
-
-  const roll = Math.random() * maxRoll;
-
-  let rollingSum = 0;
-
-  const content = contentArray.find(([_, value], index, array) => {
-    rollingSum += value;
-    const hasNext = !!array[index + 1];
-    if (hasNext) {
-      return roll <= rollingSum;
-    }
-    return true;
-  });
-
-  callback({
-    content,
-    artifact: null,
-  });
-}
 
 /**
  * A planetary body or star that has other StellarBodies to rotate around it.
  * Other bodies must be smaller than the parent StellarBody
  */
 export default class LargeStellarBody extends Phaser.GameObjects.Sprite {
-  public distanceFromCenter: number;
-  private composition: CompositionType;
+  private resourceType: MineableResourceType;
+  private remainingYield: number;
+  private maxYield: number;
+
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 512,
@@ -56,27 +29,30 @@ export default class LargeStellarBody extends Phaser.GameObjects.Sprite {
     x = 0,
     y = 0,
     size,
-    orbit = [],
-    rotationSpeed,
     color = 0xffffff,
-    id,
     onHarvest,
-    composition,
+    onHarvestFailure,
+    resourceType,
+    maxYield,
+    remainingYield,
   }: {
     scene: Phaser.Scene;
     x?: number;
     y?: number;
-    orbit?: LargeStellarBody[];
-    distanceFromCenter?: number;
-    rotationSpeed?: number;
     size: StellarBodySize;
     color?: number;
-    id: number;
-    composition?: CompositionType;
+    resourceType?: MineableResourceType;
+    maxYield: number;
+    remainingYield: number;
     onHarvest: (payload: StellarBodyPayload) => void;
+    onHarvestFailure: () => void;
   }) {
     super(scene, x, y, "planet_large_single", 0);
-    this.composition = composition;
+    console.log(maxYield, remainingYield);
+    this.maxYield = maxYield;
+    this.remainingYield = remainingYield;
+
+    this.resourceType = resourceType;
     this.scene.add.existing(this);
 
     let baseSize = 50;
@@ -85,25 +61,35 @@ export default class LargeStellarBody extends Phaser.GameObjects.Sprite {
     this.displayHeight = baseSize * modifier;
     this.displayWidth = baseSize * modifier;
     this.setTint(color);
-    if (composition) {
-      this.setTint(getStellarBodyColorFromComposition(composition));
+    if (resourceType) {
+      this.setTint(getStellarBodyColorFromResourceType(resourceType));
     }
 
-    if (onHarvest && composition) {
+    if (onHarvest && resourceType) {
       this.setInteractive();
 
       this.on("pointerdown", () => {
-        const contentArray = [
-          ...this.composition.gas,
-          ...this.composition.mineral,
-        ];
+        if (this.noYieldLeft()) {
+          return onHarvestFailure();
+        }
 
-        handleHarvest(contentArray, onHarvest);
+        console.log(this.maxYield, this.remainingYield);
+        onHarvest({
+          resourceType,
+          artifact: null,
+          remainingYield: this.remainingYield,
+        });
       });
     }
   }
 
-  generateHarvestFromComposition() {}
+  public decrementRemainingYield(value: number) {
+    this.remainingYield = Math.max(0, this.remainingYield - value);
+  }
+
+  private noYieldLeft() {
+    return this.remainingYield <= 0;
+  }
 
   update(time: number, delta: number) {}
 }

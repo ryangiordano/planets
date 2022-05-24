@@ -1,5 +1,5 @@
 import StellarBody, {
-  getStellarBodyColorFromComposition,
+  getStellarBodyColorFromResourceType,
 } from "../../../components/planet/StellarBody";
 import HexTile from "../../../components/system-select/HexTile";
 import { ResourceType } from "../stellar-bodies/Types";
@@ -43,7 +43,7 @@ export function buildStarSystemFromId(
     size: ss.sun.size,
     id: ss.sun.id,
     color: ss.sun.color,
-    composition: ss.sun.composition,
+    resourceType: ss.sun.resourceType,
     distanceFromCenter:
       ss.system.reduce((acc, o) => {
         acc = Math.max(acc, o.distanceFromCenter);
@@ -56,7 +56,7 @@ export function buildStarSystemFromId(
     centerX,
     centerY,
     sun.getOrbitSize(),
-    getStellarBodyColorFromComposition(ss.sun.composition)
+    getStellarBodyColorFromResourceType(ss.sun.resourceType)
   );
 
   ss.system.forEach(
@@ -67,7 +67,7 @@ export function buildStarSystemFromId(
       distanceFromCenter,
       rotationSpeed,
       id,
-      composition,
+      resourceType,
     }) => {
       const sb = new StellarBody({
         scene,
@@ -76,14 +76,14 @@ export function buildStarSystemFromId(
         rotationSpeed,
         color,
         id,
-        composition,
+        resourceType,
       });
       createOrbitRing(
         scene,
         centerX,
         centerY,
         sb.getOrbitSize(),
-        getStellarBodyColorFromComposition(composition)
+        getStellarBodyColorFromResourceType(resourceType)
       );
       if (orbit.length) {
         orbit.forEach(
@@ -93,7 +93,7 @@ export function buildStarSystemFromId(
             distanceFromCenter,
             rotationSpeed,
             id,
-            composition,
+            resourceType,
           }) =>
             sb.addToOrbit(
               new StellarBody({
@@ -103,7 +103,7 @@ export function buildStarSystemFromId(
                 distanceFromCenter,
                 rotationSpeed,
                 id,
-                composition,
+                resourceType,
               })
             )
         );
@@ -118,7 +118,8 @@ export function buildStarSystemFromId(
 export function renderSystem(
   system: StarSystemObject,
   hexMap: { [key: string]: HexTile },
-  playerHasAccess = true
+  playerHasAccess = true,
+  systemLevel: number
 ) {
   const [x, y] = system.coordinates;
   const hexTile = hexMap[`${x},${y}`];
@@ -127,12 +128,13 @@ export function renderSystem(
   }
   prepareHex(system, hexTile, playerHasAccess);
 
-  renderSystemNeighbors(system, hexMap);
+  renderSystemNeighbors(system, hexMap, systemLevel);
 }
 
 export function renderSystemNeighbors(
   system: StarSystemObject,
-  hexMap: HexMap
+  hexMap: HexMap,
+  systemLevel: number
 ) {
   const [originX, originY] = system.coordinates;
 
@@ -145,7 +147,7 @@ export function renderSystemNeighbors(
     hexTile.setUnexplored();
     let starSystem = getStarSystemByCoordinate([originX + x, originY + y]);
     if (!starSystem) {
-      starSystem = createRandomSystem(coordinates);
+      starSystem = createRandomSystem(coordinates, systemLevel);
     }
 
     prepareHex(starSystem, hexTile, false);
@@ -160,16 +162,9 @@ function prepareHex(
   hexTile.addSystem(starSystem);
   hexTile.setPlayerHasAccess(playerHasAccess);
   //TODO: Polish up how we set unlock requirements
-  const g = [
-    ...(starSystem.sun.composition.gas.map((f) => [f[0], 5]) as [
-      ResourceType,
-      number
-    ][]),
-    ...(starSystem.sun.composition.mineral.map((f) => [f[0], 5]) as [
-      ResourceType,
-      number
-    ][]),
-  ];
-  hexTile.setUnlockRequirements(g);
+  hexTile.setUnlockRequirements([
+    starSystem.sun.resourceType,
+    starSystem.sun.maxYield,
+  ]);
   return hexTile;
 }

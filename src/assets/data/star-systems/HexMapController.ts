@@ -19,24 +19,14 @@ export function buildHexMap(
 }
 
 export function playerCanAffordResourceRequirement(
-  unlockRequirements: [ResourceType, number][],
+  unlockRequirements: [ResourceType, number],
   providedCurrency: [ResourceType, number][]
 ) {
-  const u = unlockRequirements.map((f) => [...f] as [ResourceType, number]);
-  const p = providedCurrency.map((f) => [...f] as [ResourceType, number]);
-  for (let requirement of u) {
-    const f = p.find((p) => p[0] === requirement[0]);
-    if (f) {
-      requirement[1] = Math.max(0, requirement[1] - f[1]);
-    }
-  }
-
-  return (
-    u.reduce<number>((acc, t) => {
-      acc += t[1];
-      return acc;
-    }, 0) === 0
+  const currencyType = providedCurrency.find(
+    (p) => p[0] === unlockRequirements[0]
   );
+
+  return unlockRequirements?.[1] - currencyType?.[1] <= 0;
 }
 
 export function unlockHexTile(
@@ -62,16 +52,14 @@ export function unlockHexTile(
  * If the provided currency is not sufficient, return the provided currency.
  */
 export function calculateDifferenceBetweenResources(
-  unlockRequirements: [ResourceType, number][],
+  unlockRequirement: [ResourceType, number],
   providedCurrency: [ResourceType, number][]
 ): [ResourceType, number][] {
-  const u = unlockRequirements.map((f) => [...f] as [ResourceType, number]);
   const p = providedCurrency.map((f) => [...f] as [ResourceType, number]);
-  if (playerCanAffordResourceRequirement(u, p))
+  if (playerCanAffordResourceRequirement(unlockRequirement, providedCurrency))
     for (let currency of p) {
-      const requirement = u.find((p) => p[0] === currency[0]);
-      if (requirement) {
-        currency[1] = Math.max(0, currency[1] - requirement[1]);
+      if (unlockRequirement[0] === currency[0]) {
+        currency[1] = Math.max(0, currency[1] - unlockRequirement[1]);
       }
     }
 

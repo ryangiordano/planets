@@ -46,11 +46,12 @@ export class SystemSelectScene extends DependentScene {
   }
   create(): void {
     const cursors = this.input.keyboard.createCursorKeys();
+    const stateScene = this.scene.get("StateScene") as StateScene;
     const hexMap = buildHexMap(this, 25);
     const save = getSaveData();
 
     const homeSystem = save.startingSystem;
-    renderSystem(homeSystem, hexMap);
+    renderSystem(homeSystem, hexMap, true, stateScene.getSystemLevel());
 
     cursors.space.addListener("down", () => {
       const hex = this.focusedHex;
@@ -61,9 +62,14 @@ export class SystemSelectScene extends DependentScene {
       }
 
       const stateScene = this.scene.get("StateScene") as StateScene;
-      
+
       unlockHexTile(hex, stateScene.getAllResources(), (remainingBalance) => {
-        renderSystemNeighbors(hex.starSystem.starSystemObject, hexMap);
+        stateScene.incrementSystemLevel();
+        renderSystemNeighbors(
+          hex.starSystem.starSystemObject,
+          hexMap,
+          stateScene.getSystemLevel()
+        );
         remainingBalance.forEach((resource) => {
           this.game.events.emit("set-resource", resource);
         });

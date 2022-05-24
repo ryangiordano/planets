@@ -1,17 +1,19 @@
 import planets, { StellarBodyData } from "./planets";
-import { StellarBodySize, CompositionType } from "./Types";
+import { StellarBodySize, MineableResourceType } from "./Types";
 
 const inMemoryData = { ...planets };
 
 export type StellarBodyObject = {
   name: string;
   distanceFromCenter?: number;
+  remainingYield: number;
+  maxYield: number;
   rotationSpeed?: number;
   color?: number;
   orbit: StellarBodyObject[];
   size: StellarBodySize;
   id: number;
-  composition?: CompositionType;
+  resourceType: MineableResourceType;
 };
 
 export function getStellarBodyData(stellarBodyId: number): StellarBodyData {
@@ -38,6 +40,12 @@ export function mapToStellarBodyObject(
   );
 
   return result;
+}
+
+export function setRemainingYield(id: number, remainingYield: number) {
+  const sbd = getStellarBodyData(id);
+  sbd.remainingYield = remainingYield;
+  setStellarBodyData(sbd);
 }
 
 export function getStellarBody(stellarBodyId: number): StellarBodyObject {

@@ -14,6 +14,8 @@ import {
   StellarBodyObject,
 } from "../assets/data/stellar-bodies/StellarBodyRepository";
 import LargeStellarBody from "../components/planet/LargeStellarBody";
+import { setRemainingYield } from "../assets/data/stellar-bodies/StellarBodyRepository";
+import { StateScene } from "./StateScene";
 
 export class StellarBodyScene extends DependentScene {
   private stellarBodyContainer: Phaser.GameObjects.Container;
@@ -73,11 +75,26 @@ export class StellarBodyScene extends DependentScene {
       y: centerY,
       size: stellarBodyObject.size,
       color: stellarBodyObject.color,
-      id: stellarBodyObject.id,
-      onHarvest: ({ content }) => {
-        this.game.events.emit("resource-gathered", { content });
+      maxYield: stellarBodyObject.maxYield,
+      remainingYield: stellarBodyObject.remainingYield,
+      onHarvest: ({ resourceType, remainingYield }) => {
+        const stateScene = this.scene.get("StateScene") as StateScene;
+        const totalMined = Math.min(
+          remainingYield,
+          stateScene.resourceGatherSize
+        );
+        stellarBody.decrementRemainingYield(totalMined);
+        setRemainingYield(stellarBodyObject.id, totalMined);
+        this.game.events.emit("resource-gathered", {
+          resourceType,
+          totalMined,
+        });
       },
-      composition: stellarBodyObject.composition,
+      onHarvestFailure: () => {
+        //TODO: Fire off a notif
+        console.log("No elements left");
+      },
+      resourceType: stellarBodyObject.resourceType,
     });
 
     this.stellarBodyContainer.add(stellarBody);

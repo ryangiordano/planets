@@ -18,7 +18,7 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
   public color: number = 0x6e6e6e;
 
   public coordinates: [number, number];
-  public unlockRequirements: [ResourceType, number][];
+  public unlockRequirements: [ResourceType, number];
   constructor({ scene, x, y }: { scene: Phaser.Scene; x: number; y: number }) {
     super(scene, 0, 0, "hex-tile");
     this.scene.add.existing(this);
@@ -63,7 +63,7 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
     this.setFrame(this.playerHasAccess ? 0 : 1);
   }
 
-  setUnlockRequirements(requirements: [ResourceType, number][]) {
+  setUnlockRequirements(requirements: [ResourceType, number]) {
     this.unlockRequirements = requirements;
   }
 }

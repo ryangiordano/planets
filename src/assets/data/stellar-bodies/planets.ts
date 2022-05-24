@@ -1,14 +1,16 @@
-import { StellarBodySize, CompositionType } from "./Types";
+import { StellarBodySize, MineableResourceType } from "./Types";
 
 export type StellarBodyData = {
   name: string;
   distanceFromCenter?: number;
+  remainingYield: number;
+  maxYield: number;
   rotationSpeed?: number;
   color?: number;
   orbit?: number[];
   size: StellarBodySize;
   id: number;
-  composition?: CompositionType;
+  resourceType: MineableResourceType;
 };
 
 const data: {

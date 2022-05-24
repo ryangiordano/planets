@@ -8,10 +8,9 @@ const data: {
     size: 6,
     distanceFromCenter: 1000,
     id: 0,
-    composition: {
-      gas: [["yellow", 0.5]],
-      mineral: [],
-    },
+    resourceType: "yellow",
+    remainingYield: 100,
+    maxYield: 100,
   },
   "1": {
     name: "Andy IV",
@@ -19,16 +18,9 @@ const data: {
     rotationSpeed: 15,
     size: 3,
     orbit: [1.1],
-    composition: {
-      gas: [
-        ["blue", 0.8],
-        ["red", 0.2],
-      ],
-      mineral: [
-        ["purple", 0.5],
-        ["orange", 0.3],
-      ],
-    },
+    resourceType: "blue",
+    remainingYield: 100,
+    maxYield: 100,
     id: 1,
   },
   "2": {
@@ -36,10 +28,9 @@ const data: {
     distanceFromCenter: 250,
     rotationSpeed: 25,
     size: 2,
-    composition: {
-      gas: [["red", 1]],
-      mineral: [],
-    },
+    resourceType: "red",
+    remainingYield: 100,
+    maxYield: 100,
     id: 2,
   },
   "3": {
@@ -47,10 +38,9 @@ const data: {
     distanceFromCenter: 350,
     rotationSpeed: 10,
     size: 4,
-    composition: {
-      gas: [["yellow", 0.8]],
-      mineral: [["green", 0.2]],
-    },
+    resourceType: "yellow",
+    remainingYield: 100,
+    maxYield: 100,
     id: 3,
   },
   "1.1": {
@@ -58,20 +48,18 @@ const data: {
     distanceFromCenter: 30,
     rotationSpeed: 100,
     size: 0,
-    composition: {
-      gas: [],
-      mineral: [["purple", 0.1]],
-    },
+    resourceType: "purple",
+    remainingYield: 100,
+    maxYield: 100,
     id: 1.1,
   },
   "4": {
     name: "Odie",
     size: 6,
     distanceFromCenter: 1000,
-    composition: {
-      gas: [["red", 0.1]],
-      mineral: [["orange", 0.1]],
-    },
+    resourceType: "red",
+    remainingYield: 100,
+    maxYield: 100,
     id: 4,
   },
   "5": {
@@ -79,13 +67,9 @@ const data: {
     distanceFromCenter: 150,
     rotationSpeed: 15,
     size: 3,
-    composition: {
-      gas: [],
-      mineral: [
-        ["purple", 0.2],
-        ["green", 0.7],
-      ],
-    },
+    resourceType: "green",
+    remainingYield: 100,
+    maxYield: 100,
     id: 5,
   },
   "6": {
@@ -94,13 +78,9 @@ const data: {
     rotationSpeed: 25,
     size: 2,
     orbit: [6.1],
-    composition: {
-      gas: [],
-      mineral: [
-        ["purple", 0.1],
-        ["green", 0.3],
-      ],
-    },
+    resourceType: "green",
+    remainingYield: 100,
+    maxYield: 100,
     id: 6,
   },
   "7": {
@@ -108,10 +88,9 @@ const data: {
     distanceFromCenter: 350,
     rotationSpeed: 10,
     size: 4,
-    composition: {
-      gas: [["blue", 0.9]],
-      mineral: [],
-    },
+    resourceType: "blue",
+    remainingYield: 100,
+    maxYield: 100,
     id: 7,
   },
   "6.1": {
@@ -119,10 +98,9 @@ const data: {
     distanceFromCenter: 30,
     rotationSpeed: 100,
     size: 0,
-    composition: {
-      gas: [],
-      mineral: [["purple", 1]],
-    },
+    resourceType: "purple",
+    remainingYield: 100,
+    maxYield: 100,
     id: 6.1,
   },
   "8": {
@@ -130,10 +108,9 @@ const data: {
     distanceFromCenter: 350,
     rotationSpeed: 10,
     size: 4,
-    composition: {
-      gas: [],
-      mineral: [["orange", 0.4]],
-    },
+    resourceType: "orange",
+    remainingYield: 100,
+    maxYield: 100,
     id: 8,
   },
 };
