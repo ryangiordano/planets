@@ -5,7 +5,6 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
-
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,
@@ -47,7 +46,14 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
   }
 
   public setInputs() {
-    this.cursors = this.scene.input.keyboard.createCursorKeys();
+    this.cursors = {
+      up: this.scene.input.keyboard.addKey("W"),
+      left: this.scene.input.keyboard.addKey("A"),
+      down: this.scene.input.keyboard.addKey("S"),
+      right: this.scene.input.keyboard.addKey("D"),
+      space: this.scene.input.keyboard.addKey("space"),
+      shift: this.scene.input.keyboard.addKey("shift"),
+    };
 
     this.cursors.down.addListener("down", () => {
       this.startEngine();
