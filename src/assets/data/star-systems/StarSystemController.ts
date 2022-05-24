@@ -4,7 +4,7 @@ import StellarBody, {
 import HexTile from "../../../components/system-select/HexTile";
 import { ResourceType } from "../stellar-bodies/Types";
 import { EVEN_ROW_HEX_NEIGHBORS, getHexNeighbors } from "./Constants";
-import { HexMap } from "./HexMapController";
+import { HexMap, prepareHex } from "./HexMapController";
 import { createRandomSystem } from "./RandomGeneration";
 
 import {
@@ -152,19 +152,4 @@ export function renderSystemNeighbors(
 
     prepareHex(starSystem, hexTile, false);
   });
-}
-
-function prepareHex(
-  starSystem: StarSystemObject,
-  hexTile: HexTile,
-  playerHasAccess: boolean
-): HexTile {
-  hexTile.addSystem(starSystem);
-  hexTile.setPlayerHasAccess(playerHasAccess);
-  //TODO: Polish up how we set unlock requirements
-  hexTile.setUnlockRequirements([
-    starSystem.sun.resourceType,
-    starSystem.sun.maxYield,
-  ]);
-  return hexTile;
 }

@@ -23,32 +23,6 @@ type PossibleCompositionValues = 0 | 1 | 2 | 3;
  *
  * T expects a MineralType or GasType to inform the return value of the random composition
  */
-export function generateRandomCompositionValues_DEPRECATED<
-  T extends MineralType | GasType
->(
-  /** Number of elements that the stellar body is composed of */
-  numberToGenerate: PossibleCompositionValues,
-  /** Actual elements to choose from when randomly creating the value */
-  valueBank: T[]
-) {
-  const result: [T, number][] = [];
-  const arr = [...valueBank];
-  while (arr.length) {
-    const i = getRandomInt(0, arr.length);
-    const type = arr.splice(i, 1)[0];
-    const value = getRandomInt(1, 4);
-    result.push([type, value]);
-
-    if (result.length >= numberToGenerate) {
-      return result;
-    }
-  }
-}
-
-/** Generate gas or mineral values at random for a planet
- *
- * T expects a MineralType or GasType to inform the return value of the random composition
- */
 export function generateRandomResourceType<T>(
   /** Actual elements to choose from when randomly creating the value */
   valueBank: T[]
@@ -68,8 +42,8 @@ function generateSystemProperties(systemLevel: number): {
   mineralYield: number;
   gasYield: number;
 } {
-  const mineralYield = Math.random() * systemLevel * 2 + systemLevel / 2;
-  const gasYield = Math.random() * systemLevel * 2 + systemLevel / 2;
+  const mineralYield = Math.random() * systemLevel + systemLevel / 2;
+  const gasYield = Math.random() * systemLevel + systemLevel / 2;
 
   return {
     mineralYield,

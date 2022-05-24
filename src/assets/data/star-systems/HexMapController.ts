@@ -1,5 +1,6 @@
 import HexTile from "../../../components/system-select/HexTile";
 import { ResourceType } from "../stellar-bodies/Types";
+import { StarSystemObject } from "./StarSystemRepository";
 
 export type HexMap = { [key: string]: HexTile };
 
@@ -64,4 +65,19 @@ export function calculateDifferenceBetweenResources(
     }
 
   return p;
+}
+
+export function prepareHex(
+  starSystem: StarSystemObject,
+  hexTile: HexTile,
+  playerHasAccess: boolean
+): HexTile {
+  hexTile.addSystem(starSystem);
+  hexTile.setPlayerHasAccess(playerHasAccess);
+  //TODO: Polish up how we set unlock requirements
+  hexTile.setUnlockRequirements([
+    starSystem.sun.resourceType,
+    starSystem.sun.maxYield / 2,
+  ]);
+  return hexTile;
 }

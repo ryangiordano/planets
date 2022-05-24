@@ -13,14 +13,14 @@ export type StateResourceObject = {
 //TODO: Make this a function of the ship's upgrades
 const RESOURCE_GATHER_SIZE = 0.25;
 export class StateScene extends DependentScene {
-  private purple: StateResourceObject = { max: 20, current: 0 };
-  private orange: StateResourceObject = { max: 20, current: 0 };
-  private green: StateResourceObject = { max: 20, current: 0 };
-  private red: StateResourceObject = { max: 20, current: 0 };
-  private blue: StateResourceObject = { max: 20, current: 0 };
-  private yellow: StateResourceObject = { max: 20, current: 0 };
+  private purple: StateResourceObject = { max: 10, current: 0 };
+  private orange: StateResourceObject = { max: 10, current: 0 };
+  private green: StateResourceObject = { max: 10, current: 0 };
+  private red: StateResourceObject = { max: 10, current: 0 };
+  private blue: StateResourceObject = { max: 10, current: 0 };
+  private yellow: StateResourceObject = { max: 10, current: 0 };
 
-  private energy: StateResourceObject = { max: 20, current: 0 };
+  private energy: StateResourceObject = { max: 10, current: 0 };
 
   private systemLevel: number = 1;
   public resourceGatherSize: number = RESOURCE_GATHER_SIZE;
