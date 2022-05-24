@@ -49,6 +49,7 @@ export function buildStarSystemFromId(
         acc = Math.max(acc, o.distanceFromCenter);
         return acc;
       }, 0) * 2,
+    maxYield: ss.sun.maxYield,
   });
 
   createOrbitRing(
@@ -56,7 +57,7 @@ export function buildStarSystemFromId(
     centerX,
     centerY,
     sun.getOrbitSize(),
-    getStellarBodyColorFromResourceType(ss.sun.resourceType)
+    getStellarBodyColorFromResourceType(ss.sun.resourceType, ss.sun.maxYield)
   );
 
   ss.system.forEach(
@@ -68,6 +69,7 @@ export function buildStarSystemFromId(
       rotationSpeed,
       id,
       resourceType,
+      maxYield,
     }) => {
       const sb = new StellarBody({
         scene,
@@ -77,13 +79,14 @@ export function buildStarSystemFromId(
         color,
         id,
         resourceType,
+        maxYield,
       });
       createOrbitRing(
         scene,
         centerX,
         centerY,
         sb.getOrbitSize(),
-        getStellarBodyColorFromResourceType(resourceType)
+        getStellarBodyColorFromResourceType(resourceType, maxYield)
       );
       if (orbit.length) {
         orbit.forEach(
@@ -104,6 +107,7 @@ export function buildStarSystemFromId(
                 rotationSpeed,
                 id,
                 resourceType,
+                maxYield,
               })
             )
         );

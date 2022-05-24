@@ -26,7 +26,10 @@ export default class StarSystem extends Phaser.Physics.Arcade.Sprite {
     this.starSystemObject = systemObject;
 
     this.setTint(
-      getStellarBodyColorFromResourceType(systemObject.sun.resourceType)
+      getStellarBodyColorFromResourceType(
+        systemObject.sun.resourceType,
+        systemObject.sun.maxYield
+      )
     );
   }
 }

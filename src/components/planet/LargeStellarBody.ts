@@ -62,7 +62,9 @@ export default class LargeStellarBody extends Phaser.GameObjects.Sprite {
     this.displayWidth = baseSize * modifier;
     this.setTint(color);
     if (resourceType) {
-      this.setTint(getStellarBodyColorFromResourceType(resourceType));
+      this.setTint(
+        getStellarBodyColorFromResourceType(resourceType, this.maxYield)
+      );
     }
 
     if (onHarvest && resourceType) {

@@ -7,14 +7,25 @@ import { getRandomInt } from "../../utility/Utility";
 import { rotatePoint } from "./shared";
 import { MineableResourceType } from "../../assets/data/stellar-bodies/Types";
 
+//TODO: Rethink how we're doing this because this sucks.
 export function getStellarBodyColorFromResourceType(
-  composition: MineableResourceType
+  resourceType: MineableResourceType,
+  yieldValue: number
 ) {
-  const colorArr = COLOR_MAP[composition];
+  const colorArr = COLOR_MAP[resourceType];
+  const roundedYield =
+    yieldValue > colorArr.length - 1
+      ? Math.ceil(Math.ceil(yieldValue) / colorArr.length - 1)
+      : Math.ceil(yieldValue);
   //TODO: Make this return a color indicative of the richness of the planet's composition
-  const index = getRandomInt(0, colorArr.length);
-  const randomColor = colorArr[index];
+  const index = !roundedYield
+    ? roundedYield
+    : Math.round(
+        Math.max(roundedYield, colorArr.length - 1) /
+          Math.min(roundedYield, colorArr.length - 1)
+      );
 
+  const randomColor = colorArr[index];
   return randomColor;
 }
 
@@ -56,6 +67,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     color = 0xffffff,
     id,
     resourceType,
+    maxYield,
   }: {
     scene: Phaser.Scene;
     x?: number;
@@ -67,6 +79,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     color?: number;
     id: number;
     resourceType?: MineableResourceType;
+    maxYield: number;
   }) {
     super(scene, x, y, "planet", size);
     if (orbit.length) {
@@ -79,7 +92,7 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.add.existing(this);
     this.setTint(color);
     if (resourceType) {
-      this.setTint(getStellarBodyColorFromResourceType(resourceType));
+      this.setTint(getStellarBodyColorFromResourceType(resourceType, maxYield));
     }
     this.id = id;
     this.resourceType = resourceType;
