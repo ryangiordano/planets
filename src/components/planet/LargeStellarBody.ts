@@ -48,7 +48,6 @@ export default class LargeStellarBody extends Phaser.GameObjects.Sprite {
     onHarvestFailure: () => void;
   }) {
     super(scene, x, y, "planet_large_single", 0);
-    console.log(maxYield, remainingYield);
     this.maxYield = maxYield;
     this.remainingYield = remainingYield;
 
@@ -75,7 +74,6 @@ export default class LargeStellarBody extends Phaser.GameObjects.Sprite {
           return onHarvestFailure();
         }
 
-        console.log(this.maxYield, this.remainingYield);
         onHarvest({
           resourceType,
           artifact: null,

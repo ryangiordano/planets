@@ -77,7 +77,7 @@ export class SystemSelectScene extends DependentScene {
     });
     this.paintStars();
 
-    this.ship = new Ship({ scene: this, x: 500, y: 500 });
+    this.ship = new Ship({ scene: this, x: 500, y: 500, canFire: false });
     this.playerGroup = new Phaser.GameObjects.Group(this, [this.ship]);
     this.hexGroup = new Phaser.GameObjects.Group(this, [
       ...Object.keys(hexMap).map((k) => hexMap[k]),

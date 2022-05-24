@@ -16,6 +16,8 @@ export class StarSystemScene extends DependentScene {
   private ship: Ship;
   private playerGroup: Phaser.GameObjects.Group;
   private planetGroup: Phaser.GameObjects.Group;
+  private laserGroup: Phaser.GameObjects.Group;
+  private enemyGroup: Phaser.GameObjects.Group;
   private focusedStellarBody: StellarBody;
   constructor() {
     super({
@@ -68,9 +70,14 @@ export class StarSystemScene extends DependentScene {
       scene: this,
       x: this.sun.x - this.sun.distanceFromCenter / 1.5,
       y: this.sun.y - this.sun.distanceFromCenter / 1.5,
+      onFire: (laser) => {
+        this.laserGroup.add(laser);
+      },
     });
     this.playerGroup = new Phaser.GameObjects.Group(this, [this.ship]);
     this.planetGroup = new Phaser.GameObjects.Group(this, this.sun.orbit);
+    this.laserGroup = new Phaser.GameObjects.Group(this, []);
+    this.enemyGroup = new Phaser.GameObjects.Group(this, []);
 
     this.physics.add.overlap(
       this.playerGroup,
@@ -86,6 +93,9 @@ export class StarSystemScene extends DependentScene {
         }, 500);
       }
     );
+
+
+    
 
     withProximity({
       scene: this,

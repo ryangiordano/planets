@@ -1,10 +1,13 @@
+import Laser from "./Laser";
 import { tweenToAngle } from "./shared";
+import { createShipAttackModule } from "./ShipAttack";
 const SHIP_VELOCITY = 250;
 
 export default class Ship extends Phaser.Physics.Arcade.Sprite {
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private emitter: Phaser.GameObjects.Particles.ParticleEmitter;
-
+  private canFire: boolean = false;
+  private onFire: (laser: Laser) => void;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,
@@ -12,13 +15,28 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
       key: "ship",
       url: "/src/assets/sprites/ship.png",
     },
+    ...Laser.spriteDependencies,
   ];
-  constructor({ scene, x, y }: { scene: Phaser.Scene; x: number; y: number }) {
+  constructor({
+    scene,
+    x,
+    y,
+    onFire,
+    canFire = true,
+  }: {
+    scene: Phaser.Scene;
+    x: number;
+    y: number;
+    onFire?: (laser: Laser) => void;
+    canFire?: boolean;
+  }) {
     super(scene, x, y, "ship");
     scene.physics.add.existing(this);
     scene.add.existing(this);
     this.setDrag(250);
     this.setMaxVelocity(250);
+    this.onFire = onFire;
+    this.canFire = canFire;
     this.setInputs();
 
     const particles = this.scene.add.particles("ship", 1);
@@ -100,6 +118,12 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
       this.setAccelerationX(0);
       tweenToAngle(this.cursors, this.scene, this);
     });
+
+    if (this.canFire) {
+      createShipAttackModule(this, this.scene, 500, (laser) =>
+        this.onFire(laser)
+      );
+    }
   }
   keyIsDown() {
     return Object.keys(this.cursors).some((key) => {
