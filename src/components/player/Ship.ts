@@ -1,6 +1,9 @@
 import Laser from "./Laser";
 import { tweenToAngle } from "./shared";
-import { createShipAttackModule } from "./ShipAttack";
+import {
+  createShipAttackModule,
+  getAngleDegreesBetweenPoints,
+} from "./ShipAttack";
 const SHIP_VELOCITY = 250;
 
 export default class Ship extends Phaser.Physics.Arcade.Sprite {
@@ -120,9 +123,21 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
     });
 
     if (this.canFire) {
-      createShipAttackModule(this, this.scene, 500, (laser) =>
-        this.onFire(laser)
-      );
+      const throttledFire = createShipAttackModule(500, (pointer) => {
+        const pos = this.getCanvasPosition();
+        const angleDeg = getAngleDegreesBetweenPoints(pointer, pos);
+        const laser = new Laser({
+          scene: this.scene,
+          angle: angleDeg + 180,
+          x: this.x,
+          y: this.y,
+        });
+        this.onFire(laser);
+      });
+
+      this.scene.input.on("pointerdown", (pointer) => {
+        throttledFire(pointer);
+      });
     }
   }
   keyIsDown() {
@@ -135,6 +150,14 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
           return this.cursors[key].isDown;
       }
     });
+  }
+
+  private getCanvasPosition() {
+    const camera = this.scene.cameras.main;
+    return {
+      x: (this.x - camera.worldView.x) * camera.zoom,
+      y: (this.y - camera.worldView.y) * camera.zoom,
+    };
   }
 
   update() {}

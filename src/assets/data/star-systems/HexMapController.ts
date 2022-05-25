@@ -63,7 +63,6 @@ export function calculateDifferenceBetweenResources(
         currency[1] = Math.max(0, currency[1] - unlockRequirement[1]);
       }
     }
-
   return p;
 }
 

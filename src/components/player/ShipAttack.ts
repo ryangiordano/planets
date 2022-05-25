@@ -1,38 +1,12 @@
 import { throttle } from "lodash";
-import Laser from "./Laser";
-import Ship from "./Ship";
 
 export function createShipAttackModule(
-  ship: Ship,
-  scene: Phaser.Scene,
   rate: number,
-  onFire: (gameObject: Laser) => void
+  onFire: (pointerCoords: { x: number; y: number }) => void
 ) {
-  throttleFire(
-    scene,
-    () => {
-      onFire(fireLaser(scene, ship.angle, ship.x, ship.y));
-    },
-    rate
-  );
+  return throttle(onFire, rate);
 }
 
-function throttleFire(
-  scene: Phaser.Scene,
-  handleFire: () => void,
-  rate: number
-) {
-  const throttledAttack = throttle(handleFire, rate);
-  scene.input.on("pointerdown", throttledAttack);
-}
-
-function fireLaser(
-  scene: Phaser.Scene,
-  angle: number,
-  x: number,
-  y: number
-): Laser {
-  return scene.add.existing(
-    new Laser({ scene, angle: angle - 90, x, y })
-  ) as Laser;
+export function getAngleDegreesBetweenPoints(a: Coords, b: Coords) {
+  return Phaser.Math.Angle.BetweenPoints(a, b) * (180 / Math.PI);
 }

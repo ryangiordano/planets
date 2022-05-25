@@ -1,10 +1,5 @@
-import StellarBody from "../components/planet/StellarBody";
 import DependentScene from "./DependentScene";
-import {
-  getStarSystem,
-  StarSystemObject,
-} from "../assets/data/star-systems/StarSystemRepository";
-import { buildStarSystemFromId } from "../assets/data/star-systems/StarSystemController";
+import { getStarSystem } from "../assets/data/star-systems/StarSystemRepository";
 import Ship from "../components/player/Ship";
 import { getRandomInt } from "../utility/Utility";
 import { withProximity } from "../utility/Proximity";

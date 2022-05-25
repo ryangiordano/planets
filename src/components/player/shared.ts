@@ -68,3 +68,22 @@ export function tweenToAngle(
     },
   });
 }
+
+export function rotateGameObject(
+  scene: Phaser.Scene,
+  gameObject: Phaser.Physics.Arcade.Sprite | Phaser.GameObjects.Sprite,
+  byAngle: number
+) {
+
+  gameObject.angle = gameObject.angle+byAngle;
+  // scene.add.tween({
+  //   targets: [gameObject],
+  //   duration: 100,
+  //   props: {
+  //     angle: {
+  //       from: gameObject.angle,
+  //       to: gameObject.angle + byAngle,
+  //     },
+  //   },
+  // });
+}

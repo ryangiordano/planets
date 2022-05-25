@@ -100,5 +100,7 @@ export class SystemSelectScene extends DependentScene {
     this.ship.setY(startTile.y);
   }
 
-  update(time: number, delta: number): void {}
+  update(time: number, delta: number): void {
+    this.ship.update();
+  }
 }
