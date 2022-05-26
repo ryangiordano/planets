@@ -2,14 +2,23 @@ import StellarBody from "../components/planet/StellarBody";
 import DependentScene from "./DependentScene";
 import {
   getStarSystem,
+  setStarSystemData,
   StarSystemObject,
 } from "../assets/data/star-systems/StarSystemRepository";
-import { buildStarSystemFromId } from "../assets/data/star-systems/StarSystemController";
+import {
+  buildStarSystemFromId,
+  removeEnemyFromSystem,
+} from "../assets/data/star-systems/StarSystemController";
 import Ship from "../components/player/Ship";
 import { withProximity } from "../utility/Proximity";
 import { paintStars } from "./utility/index";
 import LaserMine from "../components/enemies/LaserMine";
 import Laser from "../components/player/Laser";
+import {
+  EnemyObject,
+  EnemyTypeMap,
+} from "../assets/data/Enemy/EnemyController";
+import { getRandomInt } from "../utility/Utility";
 
 const MAX_SYSTEM_SIZE = 2000;
 
@@ -55,6 +64,7 @@ export class StarSystemScene extends DependentScene {
     );
   }
   create(systemObject: StarSystemObject): void {
+    console.log(systemObject);
     const cursors = this.input.keyboard.createCursorKeys();
 
     cursors.space.addListener("down", () => {
@@ -79,22 +89,11 @@ export class StarSystemScene extends DependentScene {
       },
     });
 
-    const mine = this.add.existing(
-      new LaserMine({
-        scene: this,
-        x: this.sun.x + 50,
-        y: this.sun.y + 50,
-        onFire: (laser) => {
-          this.enemyLaserGroup.add(laser);
-        },
-      })
-    );
-
     this.playerGroup = new Phaser.GameObjects.Group(this, [this.ship]);
     this.planetGroup = new Phaser.GameObjects.Group(this, this.sun.orbit);
     this.playerLaserGroup = new Phaser.GameObjects.Group(this, []);
     this.enemyLaserGroup = new Phaser.GameObjects.Group(this, []);
-    this.enemyGroup = new Phaser.GameObjects.Group(this, [mine]);
+    this.enemyGroup = new Phaser.GameObjects.Group(this, []);
 
     this.physics.add.overlap(
       this.playerGroup,
@@ -111,6 +110,8 @@ export class StarSystemScene extends DependentScene {
       }
     );
 
+    this.renderEnemies(systemObject.enemies);
+
     this.physics.add.overlap(
       this.playerGroup,
       this.enemyLaserGroup,
@@ -123,8 +124,10 @@ export class StarSystemScene extends DependentScene {
       this.enemyGroup,
       this.playerLaserGroup,
       (enemy: Phaser.GameObjects.GameObject, laser: Laser) => {
+        removeEnemyFromSystem(enemy["enemyId"], systemObject.id);
         enemy.destroy();
         laser.destroy();
+        this.game.events.emit("update-hex-map");
       }
     );
 
@@ -145,5 +148,24 @@ export class StarSystemScene extends DependentScene {
 
   update(time: number, delta: number): void {
     this.sun.update(time, delta);
+  }
+
+  private renderEnemies(enemyObjects: EnemyObject[]) {
+    enemyObjects.forEach((eo) => {
+      const cls = EnemyTypeMap.get(eo.enemyTemplate.enemyType);
+      console.log(cls, eo.enemyTemplate.enemyType, EnemyTypeMap);
+      const enemy = this.add.existing(
+        new cls({
+          scene: this,
+          x: this.sun.x + getRandomInt(-500, 500),
+          y: this.sun.y + getRandomInt(-500, 500),
+          onFire: (laser) => {
+            this.enemyLaserGroup.add(laser);
+          },
+          id: eo.id,
+        })
+      );
+      this.enemyGroup.add(enemy);
+    });
   }
 }

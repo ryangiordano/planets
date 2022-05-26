@@ -6,6 +6,11 @@ import { ResourceType } from "../stellar-bodies/Types";
 import { EVEN_ROW_HEX_NEIGHBORS, getHexNeighbors } from "./Constants";
 import { HexMap, prepareHex } from "./HexMapController";
 import { createRandomSystem } from "./RandomGeneration";
+import {
+  getStarSystemDataById,
+  setStarSystemData,
+} from "./StarSystemRepository";
+import { getEnemyById } from "../Enemy/EnemyRepository";
 
 import {
   getStarSystem,
@@ -156,4 +161,18 @@ export function renderSystemNeighbors(
 
     prepareHex(starSystem, hexTile, false);
   });
+}
+
+export function assignEnemyToSystem(enemyId: number, starSystemId: number) {
+  const starSystemData = getStarSystemDataById(starSystemId);
+  starSystemData.enemies.push(enemyId);
+  setStarSystemData(starSystemData);
+}
+
+export function removeEnemyFromSystem(enemyId: number, starSystemId: number) {
+  const starSystemData = getStarSystemDataById(starSystemId);
+  starSystemData.enemies = starSystemData.enemies.filter(
+    (id) => id !== enemyId
+  );
+  setStarSystemData(starSystemData);
 }

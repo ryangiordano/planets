@@ -2,6 +2,7 @@ import { COLOR_MAP } from "../../assets/data/stellar-bodies/Constants";
 import { getRandomInt } from "../../utility/Utility";
 import Laser from "../player/Laser";
 export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
+  private firingInterval: NodeJS.Timer;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 64,
@@ -11,24 +12,27 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
     },
     ...Laser.spriteDependencies,
   ];
+  public enemyId: number;
   constructor({
     scene,
     x,
     y,
     onFire,
+    id,
   }: {
     scene: Phaser.Scene;
     x: number;
     y: number;
     onFire: (laser: Laser) => void;
+    id: number;
   }) {
     super(scene, x, y, "enemy", 0);
-
+    this.enemyId = id;
     scene.physics.add.existing(this);
 
     this.setTint(COLOR_MAP.red[0]);
 
-    setInterval(() => {
+    this.firingInterval = setInterval(() => {
       const randomAngle = getRandomInt(0, 361);
       onFire(
         new Laser({
@@ -39,5 +43,9 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
         })
       );
     }, 1000);
+
+    this.on("destroy", () => {
+      clearTimeout(this.firingInterval);
+    });
   }
 }

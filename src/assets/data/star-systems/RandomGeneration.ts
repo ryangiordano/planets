@@ -15,7 +15,8 @@ import {
   MIN_ROTATION_SPEED,
   MAX_ROTATION_SPEED,
 } from "./Constants";
-import { StarSystemObject, setStarSystem } from "./StarSystemRepository";
+import { StarSystemObject, setStarSystemData } from "./StarSystemRepository";
+import { randomlyCreateEnemyData } from "../Enemy/EnemyController";
 
 type PossibleCompositionValues = 0 | 1 | 2 | 3;
 
@@ -180,12 +181,21 @@ export function createRandomSystem(
 
     planets.push(planet);
   }
+  /** Randomly determine if the system has enemies.
+   * If it does, determine which type and how many by the system level.
+   */
+  const enemies: number[] = [];
+  /** For now, let's just say there is a 100% chance the system has enemies */
+  if (isWinningRoll(1)) {
+    enemies.push(0, 0, 0);
+  }
 
   const starSystemObject = {
     id: Math.random(),
     sun,
     system: planets,
     coordinates,
+    enemies: enemies.map((e) => randomlyCreateEnemyData(e)),
   };
 
   const starSystemData = {
@@ -195,8 +205,11 @@ export function createRandomSystem(
     system: planets.map((p) => {
       return p.id;
     }),
+    enemies: starSystemObject.enemies.map((e) => e.id),
   };
-  setStarSystem(starSystemData);
+  setStarSystemData(starSystemData);
 
   return starSystemObject;
 }
+
+/**  */
