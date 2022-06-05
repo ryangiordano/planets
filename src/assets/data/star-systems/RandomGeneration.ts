@@ -16,7 +16,11 @@ import {
   MAX_ROTATION_SPEED,
 } from "./Constants";
 import { StarSystemObject, setStarSystemData } from "./StarSystemRepository";
-import { randomlyCreateEnemyData } from "../Enemy/EnemyController";
+import {
+  randomlyCreateEnemyData,
+  addStarSystemEnemy,
+  createStarSystemEnemies,
+} from "../Enemy/EnemyController";
 
 type PossibleCompositionValues = 0 | 1 | 2 | 3;
 
@@ -190,12 +194,20 @@ export function createRandomSystem(
     enemies.push(0, 0, 0);
   }
 
+  const systemEnemies = enemies.map((e) => randomlyCreateEnemyData(e));
+  const starSystemId = Math.random();
+
+  const starSystemEnemies = createStarSystemEnemies(
+    starSystemId,
+    systemEnemies.map((e) => e.id)
+  );
+
   const starSystemObject = {
-    id: Math.random(),
+    id: starSystemId,
     sun,
     system: planets,
     coordinates,
-    enemies: enemies.map((e) => randomlyCreateEnemyData(e)),
+    enemies: systemEnemies,
   };
 
   const starSystemData = {
@@ -205,11 +217,9 @@ export function createRandomSystem(
     system: planets.map((p) => {
       return p.id;
     }),
-    enemies: starSystemObject.enemies.map((e) => e.id),
+    systemEnemies: starSystemEnemies.id,
   };
   setStarSystemData(starSystemData);
 
   return starSystemObject;
 }
-
-/**  */

@@ -1,5 +1,6 @@
 import enemies from "./enemies";
 import enemyTemplates from "./enemy-templates";
+import systemEnemies from "./system-enemies";
 
 export type EnemyData = {
   id: number;
@@ -13,11 +14,20 @@ export type EnemyTemplateData = {
   enemyType: EnemyType;
 };
 
+export type SystemEnemiesData = {
+  id: number;
+  /** Array of enemy ids */
+  enemies: number[];
+  /** id of the system the group of enemies belong to */
+  system: number;
+};
+
 export enum EnemyType {
   laserMine,
 }
 
-const inMemoryData = { ...enemies };
+const inMemoryEnemyData = { ...enemies };
+const inMemoryStarSystemEnemiesData = { ...systemEnemies };
 
 export function getEnemyTemplateById(id: number): EnemyTemplateData {
   if (!enemyTemplates[id]) {
@@ -27,11 +37,57 @@ export function getEnemyTemplateById(id: number): EnemyTemplateData {
 }
 
 export function getEnemyById(id: number): EnemyData {
-  const enemy = inMemoryData[id];
+  const enemy = inMemoryEnemyData[id];
   if (!enemy) throw new Error(`Enemy not found at id: ${id}`);
   return enemy;
 }
 
 export function setEnemy(enemyData: EnemyData) {
-  inMemoryData[enemyData.id] = { ...enemyData };
+  inMemoryEnemyData[enemyData.id] = { ...enemyData };
+}
+
+export function getStarSystemEnemiesByStarSystemId(
+  starSystemId: number
+): SystemEnemiesData {
+  const k = Object.keys(inMemoryStarSystemEnemiesData).find(
+    (key) => inMemoryStarSystemEnemiesData[key].system === starSystemId
+  );
+  if (!k)
+    throw new Error(
+      `Star System Enemies not found for system id ${starSystemId}`
+    );
+
+  return inMemoryStarSystemEnemiesData[k];
+}
+
+export function getStarSystemEnemiesById(
+  starSystemEnemiesId: number
+): SystemEnemiesData {
+  const k = Object.keys(inMemoryStarSystemEnemiesData).find(
+    (key) => inMemoryStarSystemEnemiesData[key].id === starSystemEnemiesId
+  );
+  if (!k)
+    throw new Error(
+      `Star System Enemies not found for system id ${starSystemEnemiesId}`
+    );
+
+  return inMemoryStarSystemEnemiesData[k];
+}
+
+export function setStarSystemEnemies(
+  starSystemId: number,
+  enemies: number[]
+): SystemEnemiesData {
+  const id = Math.random();
+
+  const starSystemEnemies = {
+    id,
+    system: starSystemId,
+    enemies,
+  };
+
+  inMemoryStarSystemEnemiesData[starSystemEnemies.id] = {
+    ...starSystemEnemies,
+  };
+  return starSystemEnemies;
 }

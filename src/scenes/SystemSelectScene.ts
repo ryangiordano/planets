@@ -57,7 +57,9 @@ export class SystemSelectScene extends DependentScene {
       const hex = this.focusedHex;
       if (hex.playerHasAccess) {
         this.scene.sleep("SystemSelectScene");
-        this.scene.run("StarSystemScene", hex.starSystem.starSystemObject);
+        this.scene.run("StarSystemScene", {
+          starSystemId: hex.starSystem.starSystemObject.id,
+        });
         return;
       }
 
@@ -98,10 +100,6 @@ export class SystemSelectScene extends DependentScene {
     const startTile = hexMap[`10,10`];
     this.ship.setX(startTile.x);
     this.ship.setY(startTile.y);
-
-    this.game.events.on('test',()=>{
-      console.log("Hey guys")
-    })
   }
 
   update(time: number, delta: number): void {

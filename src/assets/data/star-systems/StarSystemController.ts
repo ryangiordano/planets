@@ -11,6 +11,10 @@ import {
   setStarSystemData,
 } from "./StarSystemRepository";
 import { getEnemyById } from "../Enemy/EnemyRepository";
+import {
+  addStarSystemEnemy,
+  removeStarSystemEnemy,
+} from "../Enemy/EnemyController";
 
 import {
   getStarSystem,
@@ -164,15 +168,9 @@ export function renderSystemNeighbors(
 }
 
 export function assignEnemyToSystem(enemyId: number, starSystemId: number) {
-  const starSystemData = getStarSystemDataById(starSystemId);
-  starSystemData.enemies.push(enemyId);
-  setStarSystemData(starSystemData);
+  addStarSystemEnemy(starSystemId, enemyId);
 }
 
-export function removeEnemyFromSystem(enemyId: number, starSystemId: number) {
-  const starSystemData = getStarSystemDataById(starSystemId);
-  starSystemData.enemies = starSystemData.enemies.filter(
-    (id) => id !== enemyId
-  );
-  setStarSystemData(starSystemData);
+export function getStarSystemById(starSystemId: number) {
+  return getStarSystem(starSystemId);
 }

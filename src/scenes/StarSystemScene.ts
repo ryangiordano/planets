@@ -7,7 +7,7 @@ import {
 } from "../assets/data/star-systems/StarSystemRepository";
 import {
   buildStarSystemFromId,
-  removeEnemyFromSystem,
+  getStarSystemById,
 } from "../assets/data/star-systems/StarSystemController";
 import Ship from "../components/player/Ship";
 import { withProximity } from "../utility/Proximity";
@@ -19,6 +19,7 @@ import {
   EnemyTypeMap,
 } from "../assets/data/Enemy/EnemyController";
 import { getRandomInt } from "../utility/Utility";
+import { removeStarSystemEnemy } from "../assets/data/Enemy/EnemyController";
 
 const MAX_SYSTEM_SIZE = 2000;
 
@@ -63,8 +64,8 @@ export class StarSystemScene extends DependentScene {
       MAX_SYSTEM_SIZE
     );
   }
-  create(systemObject: StarSystemObject): void {
-    console.log(systemObject);
+  create({ starSystemId }: { starSystemId: number }): void {
+    const systemObject = getStarSystemById(starSystemId);
     const cursors = this.input.keyboard.createCursorKeys();
 
     cursors.space.addListener("down", () => {
@@ -124,9 +125,11 @@ export class StarSystemScene extends DependentScene {
       this.enemyGroup,
       this.playerLaserGroup,
       (enemy: Phaser.GameObjects.GameObject, laser: Laser) => {
-        removeEnemyFromSystem(enemy["enemyId"], systemObject.id);
+        removeStarSystemEnemy(systemObject.id, enemy["enemyId"]);
+
         enemy.destroy();
         laser.destroy();
+
         this.game.events.emit("update-hex-map");
       }
     );
@@ -153,7 +156,6 @@ export class StarSystemScene extends DependentScene {
   private renderEnemies(enemyObjects: EnemyObject[]) {
     enemyObjects.forEach((eo) => {
       const cls = EnemyTypeMap.get(eo.enemyTemplate.enemyType);
-      console.log(cls, eo.enemyTemplate.enemyType, EnemyTypeMap);
       const enemy = this.add.existing(
         new cls({
           scene: this,
