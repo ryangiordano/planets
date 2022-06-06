@@ -16,6 +16,7 @@ export default class LargeStellarBody extends Phaser.Physics.Arcade.Sprite {
   public remainingYield: number;
   private maxYield: number;
   public stellarBodyId: number;
+  public color: number;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 512,
@@ -58,28 +59,15 @@ export default class LargeStellarBody extends Phaser.Physics.Arcade.Sprite {
 
     this.displayHeight = baseSize * modifier;
     this.displayWidth = baseSize * modifier;
-    this.setTint(color);
+
+    this.color = color;
     if (resourceType) {
-      this.setTint(
-        getStellarBodyColorFromResourceType(resourceType, this.maxYield)
+      this.color = getStellarBodyColorFromResourceType(
+        resourceType,
+        this.maxYield
       );
     }
-
-    // if (onHarvest && resourceType) {
-    //   this.setInteractive();
-
-    //   this.on("pointerdown", () => {
-    //     if (this.noYieldLeft()) {
-    //       return onHarvestFailure();
-    //     }
-
-    //     onHarvest({
-    //       resourceType,
-    //       artifact: null,
-    //       remainingYield: this.remainingYield,
-    //     });
-    //   });
-    // }
+    this.setTint(this.color);
   }
 
   public decrementRemainingYield(value: number) {

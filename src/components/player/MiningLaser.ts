@@ -61,7 +61,7 @@ export class LaserImpact extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, null);
     scene.physics.add.existing(this);
     scene.add.existing(this);
-    // this.setAlpha(0);
+    this.setAlpha(0);
 
     setTimeout(() => {
       this.destroy?.();

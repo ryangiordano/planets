@@ -12,6 +12,7 @@ import { setRemainingYield } from "../assets/data/stellar-bodies/StellarBodyRepo
 import { StateScene } from "./StateScene";
 import { LaserImpact, LaserTarget } from "../components/player/MiningLaser";
 import MiningLaser from "../components/player/MiningLaser";
+import { BLACK } from "../utility/Constants";
 
 export class StellarBodyScene extends DependentScene {
   private stellarBodyContainer: Phaser.GameObjects.Container;
@@ -93,13 +94,19 @@ export class StellarBodyScene extends DependentScene {
       this.laserImpactGroup,
       this.stellarBodyGroup,
       (laserImpact: LaserImpact, stellarBody: LargeStellarBody) => {
-        laserImpact.destroy();
         if (stellarBody.noYieldLeft()) {
           //TODO: Fire off a notif
           console.log("No elements left");
         } else {
-          this.harvestStellarBody(stellarBody);
+          const totalMined = this.harvestStellarBody(stellarBody);
+          spawnElementDebris(
+            this,
+            stellarBody.color,
+            totalMined * 50,
+            laserImpact
+          );
         }
+        laserImpact.destroy();
       }
     );
 
@@ -184,6 +191,7 @@ export class StellarBodyScene extends DependentScene {
     const stateScene = this.scene.get("StateScene") as StateScene;
     const totalMined = Math.min(remainingYield, stateScene.resourceGatherSize);
     stellarBody.decrementRemainingYield(totalMined);
+
     setRemainingYield(
       stellarBody.stellarBodyId,
       Math.max(0, remainingYield - totalMined)
@@ -191,6 +199,37 @@ export class StellarBodyScene extends DependentScene {
     this.game.events.emit("resource-gathered", {
       resourceType,
       totalMined,
+    });
+
+    return totalMined;
+  }
+}
+
+function spawnElementDebris(
+  scene: Phaser.Scene,
+  color: number,
+  numberToSpawn: number,
+  coords: { x: number; y: number }
+) {
+  for (let i = 0; i <= numberToSpawn; i++) {
+    console.log("Spawning", coords, color);
+    const circle = scene.add.circle(
+      coords.x,
+      coords.y,
+      getRandomInt(5, 10),
+      color
+    );
+
+    circle.setStrokeStyle(3, BLACK.hex);
+    scene.tweens.add({
+      targets: [circle],
+      x: { from: coords.x, to: getRandomInt(coords.x - 100, coords.x + 100) },
+      y: { from: coords.y, to: getRandomInt(coords.y - 100, coords.y + 100) },
+      duration: getRandomInt(300, 500),
+      ease: "Power4",
+      onComplete: () => {
+        circle.destroy();
+      },
     });
   }
 }
