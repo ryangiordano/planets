@@ -2,7 +2,6 @@ import DependentScene from "./DependentScene";
 import { getStarSystem } from "../assets/data/star-systems/StarSystemRepository";
 import Ship from "../components/player/Ship";
 import { getRandomInt } from "../utility/Utility";
-import { withProximity } from "../utility/Proximity";
 import { paintStars } from "./utility/index";
 import {
   getStellarBody,
@@ -11,9 +10,16 @@ import {
 import LargeStellarBody from "../components/planet/LargeStellarBody";
 import { setRemainingYield } from "../assets/data/stellar-bodies/StellarBodyRepository";
 import { StateScene } from "./StateScene";
+import { LaserImpact, LaserTarget } from "../components/player/MiningLaser";
+import MiningLaser from "../components/player/MiningLaser";
 
 export class StellarBodyScene extends DependentScene {
   private stellarBodyContainer: Phaser.GameObjects.Container;
+  private laserTargetGroup: Phaser.GameObjects.Group;
+  private laserImpactGroup: Phaser.GameObjects.Group;
+  private laserGroup: Phaser.GameObjects.Group;
+  private stellarBodyGroup: Phaser.GameObjects.Group;
+
   constructor() {
     super({
       key: "StellarBodyScene",
@@ -23,6 +29,7 @@ export class StellarBodyScene extends DependentScene {
   static spriteDependencies: SpriteDependency[] = [
     ...LargeStellarBody.spriteDependencies,
     ...Ship.spriteDependencies,
+    ...MiningLaser.spriteDependencies,
     {
       frameHeight: 128,
       frameWidth: 128,
@@ -40,6 +47,11 @@ export class StellarBodyScene extends DependentScene {
     paintStars(this, { x: centerX, y: centerY }, 500, 2000, 2000);
   }
   create({ stellarBodyId, referringSystemId }): void {
+    this.laserTargetGroup = new Phaser.GameObjects.Group(this, []);
+    this.laserImpactGroup = new Phaser.GameObjects.Group(this, []);
+    this.laserGroup = new Phaser.GameObjects.Group(this, []);
+    this.stellarBodyGroup = new Phaser.GameObjects.Group(this, []);
+
     const stellarBodyObject = getStellarBody(stellarBodyId);
     if (!stellarBodyObject) {
       throw new Error(`Stellar Body does not exist at ${stellarBodyId}`);
@@ -57,6 +69,51 @@ export class StellarBodyScene extends DependentScene {
       this.scene.stop();
       this.scene.run("StarSystemScene", getStarSystem(referringSystemId));
     });
+
+    let fireCount = 0;
+    this.input.on("pointerdown", (pointer) => {
+      /** Alternating parts of the screen to fire from */
+      fireCount++;
+      const placeholderCoords = {
+        x: this.game.canvas.width / (fireCount % 2 ? 4 : 1.25),
+        y: this.game.canvas.height,
+      };
+
+      const miningLaser = new MiningLaser({
+        scene: this,
+        ...placeholderCoords,
+        targetX: pointer.x,
+        targetY: pointer.y,
+      });
+      this.laserGroup.add(miningLaser);
+      this.laserTargetGroup.add(new LaserTarget(this, pointer.x, pointer.y));
+    });
+
+    this.physics.add.overlap(
+      this.laserImpactGroup,
+      this.stellarBodyGroup,
+      (laserImpact: LaserImpact, stellarBody: LargeStellarBody) => {
+        laserImpact.destroy();
+        if (stellarBody.noYieldLeft()) {
+          //TODO: Fire off a notif
+          console.log("No elements left");
+        } else {
+          this.harvestStellarBody(stellarBody);
+        }
+      }
+    );
+
+    this.physics.add.overlap(
+      this.laserGroup,
+      this.laserTargetGroup,
+      (laser: MiningLaser, laserTarget: LaserTarget) => {
+        laser.destroy();
+        this.laserImpactGroup.add(
+          new LaserImpact(this, laserTarget.x, laserTarget.y)
+        );
+        laserTarget.destroy();
+      }
+    );
   }
 
   private renderStellarBody(
@@ -72,29 +129,11 @@ export class StellarBodyScene extends DependentScene {
       color: stellarBodyObject.color,
       maxYield: stellarBodyObject.maxYield,
       remainingYield: stellarBodyObject.remainingYield,
-      onHarvest: ({ resourceType, remainingYield }) => {
-        const stateScene = this.scene.get("StateScene") as StateScene;
-        const totalMined = Math.min(
-          remainingYield,
-          stateScene.resourceGatherSize
-        );
-        stellarBody.decrementRemainingYield(totalMined);
-        setRemainingYield(
-          stellarBodyObject.id,
-          Math.max(0, remainingYield - totalMined)
-        );
-        this.game.events.emit("resource-gathered", {
-          resourceType,
-          totalMined,
-        });
-      },
-      onHarvestFailure: () => {
-        //TODO: Fire off a notif
-        console.log("No elements left");
-      },
       resourceType: stellarBodyObject.resourceType,
+      stellarBodyId: stellarBodyObject.id,
     });
 
+    this.stellarBodyGroup.add(stellarBody);
     this.stellarBodyContainer.add(stellarBody);
     if (stellarBodyObject.orbit) {
       stellarBodyObject.orbit.forEach((sbo) => {
@@ -140,5 +179,18 @@ export class StellarBodyScene extends DependentScene {
     });
   }
 
-  update(time: number, delta: number): void {}
+  private harvestStellarBody(stellarBody: LargeStellarBody) {
+    const { remainingYield, resourceType } = stellarBody;
+    const stateScene = this.scene.get("StateScene") as StateScene;
+    const totalMined = Math.min(remainingYield, stateScene.resourceGatherSize);
+    stellarBody.decrementRemainingYield(totalMined);
+    setRemainingYield(
+      stellarBody.stellarBodyId,
+      Math.max(0, remainingYield - totalMined)
+    );
+    this.game.events.emit("resource-gathered", {
+      resourceType,
+      totalMined,
+    });
+  }
 }

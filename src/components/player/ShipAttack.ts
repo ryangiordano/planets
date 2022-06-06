@@ -6,7 +6,3 @@ export function createShipAttackModule(
 ) {
   return throttle(onFire, rate);
 }
-
-export function getAngleDegreesBetweenPoints(a: Coords, b: Coords) {
-  return Phaser.Math.Angle.BetweenPoints(a, b) * (180 / Math.PI);
-}

@@ -75,3 +75,17 @@ export function getFuzzyValue(value: number, weight: number = 0.25): number {
 
   return value + (isPlusModifier ? modifier : modifier * -1);
 }
+
+export function getCanvasPosition(
+  camera: Phaser.Cameras.Scene2D.Camera,
+  { x, y }: { x: number; y: number }
+) {
+  return {
+    x: (x - camera.worldView.x) * camera.zoom,
+    y: (y - camera.worldView.y) * camera.zoom,
+  };
+}
+
+export function getAngleDegreesBetweenPoints(a: Coords, b: Coords) {
+  return Phaser.Math.Angle.BetweenPoints(a, b) * (180 / Math.PI);
+}
