@@ -3,16 +3,17 @@ import { getStarSystem } from "../assets/data/star-systems/StarSystemRepository"
 import Ship from "../components/player/Ship";
 import { getRandomInt } from "../utility/Utility";
 import { paintStars } from "./utility/index";
-import {
-  getStellarBody,
-  StellarBodyObject,
-} from "../assets/data/stellar-bodies/StellarBodyRepository";
 import LargeStellarBody from "../components/planet/LargeStellarBody";
-import { setRemainingYield } from "../assets/data/stellar-bodies/StellarBodyRepository";
+import {
+  setRemainingYield,
+  StellarBodyObject,
+  getStellarBody,
+} from "../assets/data/stellar-bodies/StellarBodyRepository";
 import { StateScene } from "./StateScene";
 import { LaserImpact, LaserTarget } from "../components/player/MiningLaser";
 import MiningLaser from "../components/player/MiningLaser";
 import { BLACK } from "../utility/Constants";
+import { UIScene } from "./UIScene";
 
 export class StellarBodyScene extends DependentScene {
   private stellarBodyContainer: Phaser.GameObjects.Container;
@@ -31,6 +32,7 @@ export class StellarBodyScene extends DependentScene {
     ...LargeStellarBody.spriteDependencies,
     ...Ship.spriteDependencies,
     ...MiningLaser.spriteDependencies,
+    ...LaserImpact.spriteDependencies,
     {
       frameHeight: 128,
       frameWidth: 128,
@@ -97,16 +99,11 @@ export class StellarBodyScene extends DependentScene {
         if (stellarBody.noYieldLeft()) {
           //TODO: Fire off a notif
           console.log("No elements left");
-        } else {
-          const totalMined = this.harvestStellarBody(stellarBody);
-          spawnElementDebris(
-            this,
-            stellarBody.color,
-            totalMined * 50,
-            laserImpact
-          );
+        } else if (laserImpact.isActive) {
+          this.handleHarvest(laserImpact, stellarBody);
         }
-        laserImpact.destroy();
+        laserImpact.handleImpact();
+
       }
     );
 
@@ -121,6 +118,14 @@ export class StellarBodyScene extends DependentScene {
         laserTarget.destroy();
       }
     );
+  }
+
+  private handleHarvest(
+    laserImpact: LaserImpact,
+    stellarBody: LargeStellarBody
+  ) {
+    const totalMined = this.harvestStellarBody(stellarBody);
+    spawnElementDebris(this, stellarBody.color, totalMined * 50, laserImpact);
   }
 
   private renderStellarBody(
@@ -212,7 +217,6 @@ function spawnElementDebris(
   coords: { x: number; y: number }
 ) {
   for (let i = 0; i <= numberToSpawn; i++) {
-    console.log("Spawning", coords, color);
     const circle = scene.add.circle(
       coords.x,
       coords.y,
@@ -228,7 +232,26 @@ function spawnElementDebris(
       duration: getRandomInt(300, 500),
       ease: "Power4",
       onComplete: () => {
-        circle.destroy();
+        const randomX = getRandomInt(-270, -170);
+        const randomY = getRandomInt(-150, -100);
+        scene.tweens.add({
+          targets: [circle],
+          x: {
+            from: circle.x,
+            to: scene.game.canvas.width + randomX,
+          },
+          y: {
+            from: circle.y,
+            to: scene.game.canvas.height + randomY,
+          },
+          scale: { from: 1, to: 3 },
+          duration: getRandomInt(500, 800),
+          alpha: { from: 1, to: 0.3 },
+          // ease: "Power4",
+          onComplete: () => {
+            circle.destroy();
+          },
+        });
       },
     });
   }

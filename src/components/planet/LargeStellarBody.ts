@@ -5,7 +5,6 @@ import {
   MineableResourceType,
 } from "../../assets/data/stellar-bodies/Types";
 import { getStellarBodyColorFromResourceType } from "./StellarBody";
-import { StellarBodyPayload } from "./StellarBody";
 
 /**
  * A planetary body or star that has other StellarBodies to rotate around it.

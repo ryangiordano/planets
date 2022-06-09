@@ -1,4 +1,8 @@
-import { getAngleDegreesBetweenPoints } from "../../utility/Utility";
+import { AnimationHelper } from "../../utility/tweens/animation-helper";
+import {
+  getAngleDegreesBetweenPoints,
+  getRandomInt,
+} from "../../utility/Utility";
 
 export default class MiningLaser extends Phaser.Physics.Arcade.Sprite {
   static spriteDependencies: SpriteDependency[] = [
@@ -57,14 +61,55 @@ export class LaserTarget extends Phaser.Physics.Arcade.Sprite {
 }
 
 export class LaserImpact extends Phaser.Physics.Arcade.Sprite {
+  public isActive = true;
+  static spriteDependencies: SpriteDependency[] = [
+    {
+      frameHeight: 128,
+      frameWidth: 128,
+      key: "impact",
+      url: "/src/assets/sprites/impact.png",
+    },
+  ];
   constructor(scene, x, y) {
     super(scene, x, y, null);
     scene.physics.add.existing(this);
     scene.add.existing(this);
     this.setAlpha(0);
 
+    this.setAngle(getRandomInt(0, 359));
+    const animationHelper = new AnimationHelper(this.scene);
+    animationHelper.createGameAnimations([
+      {
+        key: "impact",
+        frames: {
+          typeOfGeneration: 1,
+          frames: [0, 1, 2, 3, 4],
+          key: "impact",
+        },
+        repeat: 0,
+        frameRate: 45,
+      },
+    ]);
     setTimeout(() => {
       this.destroy?.();
-    }, 1000);
+    }, 2000);
+  }
+
+  public handleImpact() {
+    const impact = this.scene.add.existing(
+      new LaserImpact(this.scene, this.x, this.y)
+    ) as LaserImpact;
+    impact.explode();
+    this.destroy();
+  }
+
+  public explode() {
+    this.setAlpha(0.4);
+    this.setScale(Math.random() * (1 - 0.5) + 0.5);
+    this.isActive = false;
+    this.anims.play("impact");
+    this.on("animationcomplete", () => {
+      this.destroy?.();
+    });
   }
 }

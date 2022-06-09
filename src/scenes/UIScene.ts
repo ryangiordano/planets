@@ -51,7 +51,7 @@ export class UIScene extends DependentScene {
   private purpleMineralBar: UIBar;
   private energyBar: UIBar;
 
-  private contentMap: Map<ResourceType, UIBar> = new Map();
+  public contentMap: Map<ResourceType, UIBar> = new Map();
   constructor() {
     super({
       key: "UIScene",

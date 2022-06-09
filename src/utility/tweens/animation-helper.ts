@@ -59,14 +59,14 @@ interface AnimationData {
   frames: Frame;
   repeat: number;
   frameRate: number;
-  defaultTextureKey;
-  duration;
-  skipMissedFrames;
-  delay;
-  repeatDelay;
-  yoyo;
-  showOnStart;
-  hideOnComplete;
+  defaultTextureKey?;
+  duration?;
+  skipMissedFrames?;
+  delay?;
+  repeatDelay?;
+  yoyo?;
+  showOnStart?;
+  hideOnComplete?;
 }
 
 enum GenerationTypes {
