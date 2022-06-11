@@ -1,8 +1,13 @@
 import DependentScene from "./DependentScene";
 import { getStarSystem } from "../assets/data/star-systems/StarSystemRepository";
 import Ship from "../components/player/Ship";
-import { getRandomInt } from "../utility/Utility";
-import { paintStars } from "./utility/index";
+import {
+  getAngleDegreesBetweenPoints,
+  getRandomInt,
+  getRandomPointOnCircle,
+  getRandomQuadrantOnCircle,
+} from "../utility/Utility";
+import { paintStars, warpOutStar, warpInStar } from "./utility/index";
 import LargeStellarBody from "../components/planet/LargeStellarBody";
 import {
   setRemainingYield,
@@ -16,6 +21,7 @@ import { BLACK } from "../utility/Constants";
 import { UIScene } from "./UIScene";
 
 export class StellarBodyScene extends DependentScene {
+  private stars: Phaser.GameObjects.Sprite[];
   private stellarBodyContainer: Phaser.GameObjects.Container;
   private laserTargetGroup: Phaser.GameObjects.Group;
   private laserImpactGroup: Phaser.GameObjects.Group;
@@ -47,9 +53,9 @@ export class StellarBodyScene extends DependentScene {
   private paintStars() {
     const centerX = this.game.canvas.width / 2;
     const centerY = this.game.canvas.height / 2;
-    paintStars(this, { x: centerX, y: centerY }, 500, 2000, 2000);
+    this.stars = paintStars(this, { x: centerX, y: centerY }, 500, 2000, 2000);
   }
-  create({ stellarBodyId, referringSystemId }): void {
+  async create({ stellarBodyId, referringSystemId }): Promise<void> {
     this.laserTargetGroup = new Phaser.GameObjects.Group(this, []);
     this.laserImpactGroup = new Phaser.GameObjects.Group(this, []);
     this.laserGroup = new Phaser.GameObjects.Group(this, []);
@@ -66,9 +72,15 @@ export class StellarBodyScene extends DependentScene {
 
     this.renderStellarBody(stellarBodyObject);
 
+    await this.warpIn();
+    const approachTween = this.approach();
+
     const esc = this.input.keyboard.addKey("ESC");
 
-    esc.on("down", () => {
+    esc.on("down", async () => {
+      approachTween.stop();
+
+      await this.warpOut();
       this.scene.stop();
       this.scene.run("StarSystemScene", getStarSystem(referringSystemId));
     });
@@ -103,7 +115,6 @@ export class StellarBodyScene extends DependentScene {
           this.handleHarvest(laserImpact, stellarBody);
         }
         laserImpact.handleImpact();
-
       }
     );
 
@@ -149,45 +160,87 @@ export class StellarBodyScene extends DependentScene {
     this.stellarBodyContainer.add(stellarBody);
     if (stellarBodyObject.orbit) {
       stellarBodyObject.orbit.forEach((sbo) => {
-        const moon = this.renderStellarBody(
-          sbo,
-          stellarBody.x + stellarBody.displayWidth,
-          getRandomInt(-(stellarBody.height / 6), stellarBody.height / 6)
+        const { x, y } = getRandomPointOnCircle(
+          { x: centerX, y: centerY },
+          stellarBody.displayWidth * getRandomInt(1, 3)
         );
+        const moon = this.renderStellarBody(sbo, x, y);
 
         this.stellarBodyContainer.add(moon);
-
-        this.startMoonOrbit(
-          moon as LargeStellarBody,
-          getRandomInt(0, 3) % 2 === 0,
-          stellarBody.displayWidth * getRandomInt(2, 4),
-          sbo.rotationSpeed
-        );
       });
     }
     return stellarBody;
   }
+  private warpIn() {
+    const centerX = this.game.canvas.width / 2;
+    const centerY = this.game.canvas.height / 2;
 
-  private startMoonOrbit(
-    moon: LargeStellarBody,
-    top: boolean = true,
-    distance,
-    rotationSpeed
-  ) {
-    if (top) {
-      this.stellarBodyContainer.sendToBack(moon);
-    } else {
-      this.stellarBodyContainer.bringToTop(moon);
-    }
+    this.cameras.main.fadeIn(250, 56, 56, 56);
+    this.stars.forEach((star) =>
+      warpInStar(
+        this,
+        { x: centerX, y: centerY },
+        star,
+        getRandomInt(500, 1500),
+        "Power1"
+      )
+    );
+    return new Promise<void>((resolve) => {
+      this.add.tween({
+        targets: [this.stellarBodyContainer],
+        scale: {
+          from: 0,
+          to: 1,
+        },
+        duration: 1000,
+        ease: "Power4",
+        onComplete: () => {
+          resolve();
+        },
+      });
+    });
+  }
 
-    this.tweens.add({
-      targets: [moon],
-      ease: "Linear",
-      duration: rotationSpeed * 150,
-      x: top ? `-=${distance}` : `+=${distance}`,
-      onComplete: () => {
-        this.startMoonOrbit(moon, !top, distance, rotationSpeed);
+  private warpOut() {
+    const centerX = this.game.canvas.width / 2;
+    const centerY = this.game.canvas.height / 2;
+    this.cameras.main.fadeOut(1000, 56, 56, 56);
+
+    this.stars.forEach((star) =>
+      warpOutStar(
+        this,
+        { x: centerX, y: centerY },
+        star,
+        getRandomInt(500, 1000),
+        "Sine.easeIn"
+      )
+    );
+    return new Promise<void>((resolve) => {
+      this.add.tween({
+        targets: [this.stellarBodyContainer],
+        scale: {
+          from: this.stellarBodyContainer.scale,
+          to: 0,
+        },
+        duration: 1000,
+        ease: "Power4",
+        onComplete: () => {
+          resolve();
+        },
+      });
+    });
+  }
+
+  private approach() {
+    return this.add.tween({
+      targets: [this.stellarBodyContainer],
+      scale: {
+        from: 1,
+        to: 2,
       },
+      duration: 20000,
+      ease: "Quad.easeOut",
+      onCompleted: () => {},
     });
   }
 

@@ -26,6 +26,7 @@ export function paintStars(
   height: number,
   width: number
 ) {
+  const stars = [];
   for (let i = 0; i < totalStars; i++) {
     const star = new Phaser.GameObjects.Sprite(
       scene,
@@ -37,5 +38,52 @@ export function paintStars(
     star.setScale(0.5, 0.5);
     star.setAlpha(0.5);
     scene.add.existing(star);
+    stars.push(star);
   }
+
+  return stars as Phaser.GameObjects.Sprite[];
+}
+
+export function warpOutStar(
+  scene: Phaser.Scene,
+  centerCoords: Coords,
+  star: Phaser.GameObjects.Sprite,
+  duration: number,
+  ease: string
+) {
+  scene.add.tween({
+    targets: [star],
+    x: {
+      to: centerCoords.x,
+      from: star.x,
+    },
+    y: {
+      to: centerCoords.y,
+      from: star.y,
+    },
+    duration,
+    ease,
+  });
+}
+
+export function warpInStar(
+  scene: Phaser.Scene,
+  centerCoords: Coords,
+  star: Phaser.GameObjects.Sprite,
+  duration: number,
+  ease: string
+) {
+  scene.add.tween({
+    targets: [star],
+    x: {
+      from: centerCoords.x,
+      to: star.x,
+    },
+    y: {
+      from: centerCoords.y,
+      to: star.y,
+    },
+    duration,
+    ease,
+  });
 }

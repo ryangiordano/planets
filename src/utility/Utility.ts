@@ -89,3 +89,25 @@ export function getCanvasPosition(
 export function getAngleDegreesBetweenPoints(a: Coords, b: Coords) {
   return Phaser.Math.Angle.BetweenPoints(a, b) * (180 / Math.PI);
 }
+
+export function getRandomQuadrantOnCircle(
+  centerCoord: { x: number; y: number },
+  radius: number
+) {
+  const coord = { x: 0, y: 0 };
+  coord.x = centerCoord.x + radius * (getRandomInt(1, 3) % 2 === 0 ? 1 : -1);
+  coord.y = centerCoord.y + radius * (getRandomInt(1, 3) % 2 === 0 ? 1 : -1);
+  return coord;
+}
+
+export function getRandomPointOnCircle(
+  centerCoord: { x: number; y: number },
+  radius: number
+) {
+  const angle = Math.random() * Math.PI * 2;
+
+  return {
+    x: Math.cos(angle) * radius + centerCoord.x,
+    y: Math.sin(angle) * radius + centerCoord.y,
+  };
+}

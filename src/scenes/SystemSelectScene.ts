@@ -12,11 +12,14 @@ import {
 } from "../assets/data/star-systems/StarSystemController";
 import { getSaveData } from "../assets/data/player/SaveController";
 import { StateScene } from "./StateScene";
+import { warpInStar } from "./utility/index";
+import { getRandomInt } from "../utility/Utility";
 
 export class SystemSelectScene extends DependentScene {
   private ship: Ship;
   private focusedHex: HexTile;
   private playerGroup: Phaser.GameObjects.Group;
+  private stars: Phaser.GameObjects.Sprite[];
 
   private hexGroup: Phaser.GameObjects.Group;
   constructor() {
@@ -42,7 +45,7 @@ export class SystemSelectScene extends DependentScene {
   private paintStars() {
     const centerX = this.game.canvas.width / 2;
     const centerY = this.game.canvas.height / 2;
-    paintStars(this, { x: centerX, y: centerY }, 4000, 2000, 2000);
+    this.stars = paintStars(this, { x: centerX, y: centerY }, 4000, 2000, 2000);
   }
   create(): void {
     const cursors = this.input.keyboard.createCursorKeys();
@@ -53,9 +56,10 @@ export class SystemSelectScene extends DependentScene {
     const homeSystem = save.startingSystem;
     renderSystem(homeSystem, hexMap, true, stateScene.getSystemLevel());
 
-    cursors.space.addListener("down", () => {
+    cursors.space.addListener("down", async () => {
       const hex = this.focusedHex;
       if (hex.playerHasAccess) {
+        await this.zoomIn();
         this.scene.sleep("SystemSelectScene");
         this.scene.run("StarSystemScene", {
           starSystemId: hex.starSystem.starSystemObject.id,
@@ -77,6 +81,13 @@ export class SystemSelectScene extends DependentScene {
         });
       });
     });
+
+    this.events.on("wake", async () => {
+      await this.zoomOut();
+    });
+
+    this.initialZoom();
+
     this.paintStars();
 
     this.ship = new Ship({ scene: this, x: 500, y: 500, canFire: false });
@@ -100,6 +111,48 @@ export class SystemSelectScene extends DependentScene {
     const startTile = hexMap[`10,10`];
     this.ship.setX(startTile.x);
     this.ship.setY(startTile.y);
+  }
+
+  private initialZoom() {
+    return new Promise<void>((resolve) => {
+      this.cameras.main.setZoom(0.8);
+      this.cameras.main.zoomTo(1, 2500, "Power4", true, (_, progress) => {
+        if (progress === 1) {
+          resolve();
+        }
+      });
+    });
+  }
+
+  private zoomOut() {
+    return new Promise<void>((resolve) => {
+      this.cameras.main.fadeIn(350, 56, 56, 56);
+
+      this.cameras.main.setZoom(1.5);
+      this.cameras.main.zoomTo(1, 500, "Quint.easeOut", true, (_, progress) => {
+        if (progress === 1) {
+          resolve();
+        }
+      });
+    });
+  }
+
+  private zoomIn() {
+    return new Promise<void>((resolve) => {
+      this.cameras.main.fadeOut(650, 56, 56, 56);
+
+      this.cameras.main.zoomTo(
+        1.5,
+        500,
+        "Quint.easeIn",
+        true,
+        (_, progress) => {
+          if (progress === 1) {
+            resolve();
+          }
+        }
+      );
+    });
   }
 
   update(time: number, delta: number): void {

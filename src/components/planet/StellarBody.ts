@@ -3,7 +3,7 @@ import {
   ResourceType,
   StellarBodySize,
 } from "../../assets/data/stellar-bodies/Types";
-import { getRandomInt } from "../../utility/Utility";
+import { getRandomInt, getRandomQuadrantOnCircle } from "../../utility/Utility";
 import { rotatePoint } from "./shared";
 import { MineableResourceType } from "../../assets/data/stellar-bodies/Types";
 
@@ -162,14 +162,13 @@ export default class StellarBody extends Phaser.Physics.Arcade.Sprite {
 
   /** Add the bodies to the orbit at a random quadrant */
   private _addToOrbit(stellarBody: StellarBody) {
-    stellarBody.setX(
-      this.getX() +
-        stellarBody.distanceFromCenter * (getRandomInt(1, 3) % 2 === 0 ? 1 : -1)
+    const { x, y } = getRandomQuadrantOnCircle(
+      { x: this.getX(), y: this.getY() },
+      stellarBody.distanceFromCenter
     );
-    stellarBody.setY(
-      this.getY() +
-        stellarBody.distanceFromCenter * (getRandomInt(1, 3) % 2 === 0 ? 1 : -1)
-    );
+
+    stellarBody.setX(x);
+    stellarBody.setY(y);
     this.orbit.push(stellarBody);
     stellarBody.parentBody = this;
     if (this.isRotatingWithSatelites()) {

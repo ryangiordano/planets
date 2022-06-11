@@ -65,11 +65,13 @@ export class StarSystemScene extends DependentScene {
     );
   }
   create({ starSystemId }: { starSystemId: number }): void {
+    this.zoomInFromFar();
     const systemObject = getStarSystemById(starSystemId);
     const cursors = this.input.keyboard.createCursorKeys();
 
-    cursors.space.addListener("down", () => {
+    cursors.space.addListener("down", async () => {
       if (this.focusedStellarBody) {
+        await this.zoomIn();
         this.scene.sleep("StarSystemScene");
 
         this.scene.run("StellarBodyScene", {
@@ -77,6 +79,10 @@ export class StarSystemScene extends DependentScene {
           referringSystemId: systemObject.id,
         });
       }
+    });
+
+    this.events.on("wake", () => {
+      this.zoomOut();
     });
 
     this.paintStars();
@@ -139,7 +145,8 @@ export class StarSystemScene extends DependentScene {
       objectWithProximity: this.sun,
       groupToDetect: this.playerGroup,
       onEnter: () => {},
-      onLeave: () => {
+      onLeave: async () => {
+        await this.zoomOutToFar();
         this.scene.run("SystemSelectScene");
         this.scene.stop("StarSystemScene");
       },
@@ -147,6 +154,69 @@ export class StarSystemScene extends DependentScene {
     });
 
     this.cameras.main.startFollow(this.ship);
+  }
+
+  private zoomIn() {
+    return new Promise<void>((resolve) => {
+      this.cameras.main.zoomTo(
+        1.5,
+        250,
+        "Quint.easeIn",
+        true,
+        (_, progress) => {
+          if (progress === 1) {
+            resolve();
+          }
+        }
+      );
+    });
+  }
+
+  private zoomOut() {
+    return new Promise<void>((resolve) => {
+      this.cameras.main.zoomTo(1, 250, "Quint.easeOut", true, (_, progress) => {
+        if (progress === 1) {
+          resolve();
+        }
+      });
+    });
+  }
+
+  private zoomOutToFar() {
+    return new Promise<void>((resolve) => {
+      this.cameras.main.fadeOut(850, 56, 56, 56);
+
+      this.cameras.main.zoomTo(
+        0.5,
+        500,
+        "Quint.easeIn",
+        true,
+        (_, progress) => {
+          if (progress === 1) {
+            resolve();
+          }
+        }
+      );
+    });
+  }
+
+  private zoomInFromFar() {
+    return new Promise<void>((resolve) => {
+      this.cameras.main.fadeIn(350, 56, 56, 56);
+
+      this.cameras.main.setZoom(0.5);
+      this.cameras.main.zoomTo(
+        1,
+        1000,
+        "Quint.easeOut",
+        true,
+        (_, progress) => {
+          if (progress === 1) {
+            resolve();
+          }
+        }
+      );
+    });
   }
 
   update(time: number, delta: number): void {
