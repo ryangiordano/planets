@@ -5,7 +5,7 @@ import { Plugin as NineSlicePlugin } from "phaser3-nineslice";
 import { BLACK } from "./utility/Constants";
 import { BootScene } from "./scenes/BootScene";
 import { SystemSelectScene } from "./scenes/SystemSelectScene";
-import { StellarBodyScene } from "./scenes/StellarBodyScene";
+import { StellarBodyScene } from "./scenes/StellarBodyScene/StellarBodyScene";
 import { UIScene } from "./scenes/UIScene";
 import { StateScene } from "./scenes/StateScene";
 import { getRandomInt } from "./utility/Utility";

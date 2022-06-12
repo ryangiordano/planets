@@ -59,7 +59,7 @@ export class SystemSelectScene extends DependentScene {
     cursors.space.addListener("down", async () => {
       const hex = this.focusedHex;
       if (hex.playerHasAccess) {
-        await this.zoomIn();
+        await this.zoomInToStarSystem();
         this.scene.sleep("SystemSelectScene");
         this.scene.run("StarSystemScene", {
           starSystemId: hex.starSystem.starSystemObject.id,
@@ -83,7 +83,7 @@ export class SystemSelectScene extends DependentScene {
     });
 
     this.events.on("wake", async () => {
-      await this.zoomOut();
+      await this.zoomOutFromStarSystem();
     });
 
     this.initialZoom();
@@ -124,7 +124,7 @@ export class SystemSelectScene extends DependentScene {
     });
   }
 
-  private zoomOut() {
+  private zoomOutFromStarSystem() {
     return new Promise<void>((resolve) => {
       this.cameras.main.fadeIn(350, 56, 56, 56);
 
@@ -137,7 +137,7 @@ export class SystemSelectScene extends DependentScene {
     });
   }
 
-  private zoomIn() {
+  private zoomInToStarSystem() {
     return new Promise<void>((resolve) => {
       this.cameras.main.fadeOut(650, 56, 56, 56);
 
