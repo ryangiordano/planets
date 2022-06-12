@@ -14,7 +14,6 @@ const defaultState: PlayerStateMap = new Map([
   ["red", { max: 3, current: 0 }],
   ["blue", { max: 3, current: 0 }],
   ["yellow", { max: 3, current: 0 }],
-  ["energy", { max: 3, current: 0 }],
 ]);
 
 export function createPlayerState(

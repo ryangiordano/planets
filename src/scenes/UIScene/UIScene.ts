@@ -1,5 +1,5 @@
-import { ResourceType } from "../assets/data/stellar-bodies/Types";
-import { UIBar } from "../components/UI/UIBar";
+import { ResourceType } from "../../assets/data/stellar-bodies/Types";
+import { UIBar } from "../../components/UI/UIBar";
 import {
   GREEN,
   PURPLE,
@@ -8,39 +8,14 @@ import {
   BLUE,
   YELLOW,
   WHITE,
-} from "../utility/Constants";
-import DependentScene from "./DependentScene";
-import { StateResourceObject, StateScene } from "./StateScene";
+} from "../../utility/Constants";
+import DependentScene from "../DependentScene";
+import { StateResourceObject } from "../StateScene";
+import { buildResourceBorder } from "./ResourceUI";
 
-function buildBorder({
-  x,
-  y,
-  scene,
-  width,
-  height,
-}: {
-  x: number;
-  y: number;
-  scene: Phaser.Scene;
-  width: number;
-  height: number;
-}) {
-  return scene.add.nineslice(x, y, width, height, "UI_box", 5);
-}
-
-function buildResourceBorder(scene: Phaser.Scene, x: number, y: number) {
-  return buildBorder({
-    scene,
-    x,
-    y,
-    width: 150,
-    height: 200,
-  });
-}
 export class UIScene extends DependentScene {
   private gasBarContainer: Phaser.GameObjects.Container;
   private mineralBarContainer: Phaser.GameObjects.Container;
-  private energyContainer: Phaser.GameObjects.Container;
   private resourceContainer: Phaser.GameObjects.Container;
   private UIParent: Phaser.GameObjects.Container;
   private blueGasBar: UIBar;
@@ -49,7 +24,6 @@ export class UIScene extends DependentScene {
   private orangeMineralBar: UIBar;
   private greenMineralBar: UIBar;
   private purpleMineralBar: UIBar;
-  private energyBar: UIBar;
 
   public contentMap: Map<ResourceType, UIBar> = new Map();
   constructor() {
@@ -65,7 +39,6 @@ export class UIScene extends DependentScene {
 
   create(): void {
     this.buildUIParent();
-    this.buildEnergyUI();
     this.buildResourceUI();
     this.buildContentMap();
     this.setSceneListeners();
@@ -73,23 +46,6 @@ export class UIScene extends DependentScene {
 
   private buildUIParent() {
     this.UIParent = this.add.container(60, this.game.canvas.height - 100);
-  }
-
-  private buildEnergyUI() {
-    this.energyBar = new UIBar({
-      scene: this,
-      position: { x: 0, y: 0 },
-      currentValue: 0,
-      maxValue: 10,
-      color: YELLOW.hex,
-      barHeight: 144,
-      barWidth: 40,
-      hasBackground: true,
-    });
-
-    this.energyContainer = this.add.container(0, 0, [this.energyBar]);
-
-    this.UIParent.add(this.energyContainer);
   }
 
   private buildResourceUI() {
@@ -202,7 +158,6 @@ export class UIScene extends DependentScene {
       ["yellow", this.yellowGasBar],
       ["green", this.greenMineralBar],
       ["blue", this.blueGasBar],
-      ["energy", this.energyBar],
     ].forEach(([contentType, uiBar]) =>
       this.contentMap.set(contentType as ResourceType, uiBar as UIBar)
     );

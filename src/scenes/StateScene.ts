@@ -20,8 +20,6 @@ export class StateScene extends DependentScene {
   private blue: StateResourceObject = { max: 10, current: 0 };
   private yellow: StateResourceObject = { max: 10, current: 0 };
 
-  private energy: StateResourceObject = { max: 10, current: 0 };
-
   private systemLevel: number = 1;
   public resourceGatherSize: number = RESOURCE_GATHER_SIZE;
   constructor() {
@@ -59,15 +57,11 @@ export class StateScene extends DependentScene {
       }
     );
 
-    ["purple", "orange", "green", "red", "blue", "yellow", "energy"].forEach(
+    ["purple", "orange", "green", "red", "blue", "yellow"].forEach(
       (resource: ResourceType) => {
         this.setResourceMaxValue(resource, this[resource].max);
       }
     );
-
-    setInterval(() => {
-      this.incrementResource("energy", 0.1);
-    }, 1000);
   }
 
   public incrementResource(key: ResourceType, valueToAdd: number) {
@@ -125,7 +119,7 @@ export class StateScene extends DependentScene {
   }
 
   public getAllResources(): [ResourceType, number][] {
-    return ["purple", "orange", "green", "red", "blue", "yellow", "energy"].map(
+    return ["purple", "orange", "green", "red", "blue", "yellow"].map(
       (resourceType: ResourceType) => {
         return [resourceType, this.getValue(resourceType)];
       }

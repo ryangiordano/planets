@@ -4,7 +4,7 @@ export type GasType = "blue" | "yellow" | "red";
 export type MineralType = "green" | "orange" | "purple";
 
 export type MineableResourceType = GasType | MineralType;
-export type ResourceType = MineableResourceType | "energy";
+export type ResourceType = MineableResourceType;
 
 export type CompositionType = {
   /** Array of tuples of GasType and value*/

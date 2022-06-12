@@ -1,5 +1,5 @@
 export * from "./StateScene";
-export * from "./UIScene";
+export * from "./UIScene/UIScene";
 export * from "./StellarBodyScene/StellarBodyScene";
 export * from "./StarSystemScene";
 export * from "./SystemSelectScene";
