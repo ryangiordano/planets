@@ -1,4 +1,7 @@
-import { ResourceType } from "./../../assets/data/stellar-bodies/Types";
+import {
+  MineableResourceType,
+  ResourceType,
+} from "./../../assets/data/stellar-bodies/Types";
 import { UIBar } from "../../components/UI/UIBar";
 import {
   BLUE,
@@ -9,6 +12,7 @@ import {
   GREEN,
   PURPLE,
 } from "../../utility/Constants";
+import { ResourceStateObject } from "../StateScene/ResourceManagement";
 
 function buildBorder({
   x,
@@ -68,6 +72,35 @@ const UIBarData = [
     position: { x: 0, y: 100 },
   },
 ];
+
+function setResourceManagementEvents(
+  scene: Phaser.Scene,
+  contentMap: Map<MineableResourceType, UIBar>
+) {
+  scene.game.events.on(
+    "resource-value-change",
+    ({
+      key,
+      resource,
+    }: {
+      key: ResourceType;
+      resource: ResourceStateObject;
+    }) => {
+      const bar = contentMap.get(key);
+      if (bar) {
+        bar.setCurrentValue(resource.current);
+      }
+    }
+  );
+
+  scene.game.events.on(
+    "resource-max-value-change",
+    ({ key, newMaxValue }: { key: ResourceType; newMaxValue: number }) => {
+      const bar = contentMap.get(key);
+      bar.setMaxValue(newMaxValue);
+    }
+  );
+}
 
 /** UI for displaying the player's resources in the bottom right of the screen
  * Function returns the container with all the properly rendered UI
@@ -139,6 +172,8 @@ export function buildResourceUI(scene: Phaser.Scene) {
     -70,
     [gasBarContainer, mineralBarContainer]
   );
+
+  setResourceManagementEvents(scene, contentMap);
 
   return { resourceContainer, contentMap };
 }

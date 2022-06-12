@@ -20,6 +20,8 @@ import {
 } from "../assets/data/Enemy/EnemyController";
 import { getRandomInt } from "../utility/Utility";
 import { removeStarSystemEnemy } from "../assets/data/Enemy/EnemyController";
+import { NotificationTypes } from "./StateScene/NotificationManagement";
+import { StateScene } from "./StateScene/StateScene";
 
 const MAX_SYSTEM_SIZE = 2000;
 
@@ -65,6 +67,12 @@ export class StarSystemScene extends DependentScene {
     );
   }
   create({ starSystemId }: { starSystemId: number }): void {
+    const state = this.scene.get("StateScene") as StateScene;
+
+    state.notificationManager.addNotification(
+      `Entering system.`,
+      NotificationTypes.default
+    );
     this.zoomInFromFar();
     const systemObject = getStarSystemById(starSystemId);
     const cursors = this.input.keyboard.createCursorKeys();

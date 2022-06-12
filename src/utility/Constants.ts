@@ -7,6 +7,7 @@ export const BLUE = { str: "#778eff", hex: 0x4c75d4 };
 export const ORANGE = { str: "#f1942a", hex: 0xeba836 };
 export const RED = { str: "#ff777a", hex: 0xd44c5a };
 export const LIGHT_GREY = { str: "#bfbfbf", hex: 0xbfbfbf };
+export const DARK_GREY = { str: "#636363", hex: 0x636363 };
 
 export const TILE_SIZE = 64;
 

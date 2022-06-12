@@ -56,7 +56,6 @@ export class BootScene extends Phaser.Scene {
         fontFamily: "pixel",
         fontSize: "20px",
         color: BLACK.str,
-        fontStyle: "strong",
       });
 
       setTimeout(() => {

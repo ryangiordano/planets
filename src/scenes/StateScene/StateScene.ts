@@ -1,5 +1,9 @@
 import DependentScene from "../DependentScene";
 import {
+  buildNotificationManagement,
+  NotificationManager,
+} from "./NotificationManagement";
+import {
   buildResourceManagement,
   ResourceStateManager,
 } from "./ResourceManagement";
@@ -11,6 +15,7 @@ export class StateScene extends DependentScene {
   private systemLevel: number = 1;
   public resourceGatherSize: number = RESOURCE_GATHER_SIZE;
   public resourceManager: ResourceStateManager;
+  public notificationManager: NotificationManager;
   constructor() {
     super({
       key: "StateScene",
@@ -21,9 +26,8 @@ export class StateScene extends DependentScene {
 
   create(): void {
     this.resourceManager = buildResourceManagement(this);
+    this.notificationManager = buildNotificationManagement(this);
   }
-
-  public getAllResources() {}
 
   public incrementSystemLevel() {
     this.systemLevel++;
