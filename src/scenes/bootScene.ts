@@ -5,7 +5,7 @@ import DependentScene from "./DependentScene";
 import { SystemSelectScene } from "./SystemSelectScene";
 import { StellarBodyScene } from "./StellarBodyScene/StellarBodyScene";
 import { UIScene } from "./UIScene/UIScene";
-import { StateScene } from "./StateScene";
+import { StateScene } from "./StateScene/StateScene";
 
 function preloadSceneDependencies(
   bootScene: Phaser.Scene,

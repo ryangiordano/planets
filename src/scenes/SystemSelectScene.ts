@@ -11,7 +11,7 @@ import {
   renderSystemNeighbors,
 } from "../assets/data/star-systems/StarSystemController";
 import { getSaveData } from "../assets/data/player/SaveController";
-import { StateScene } from "./StateScene";
+import { StateScene } from "./StateScene/StateScene";
 import { warpInStar } from "./utility/index";
 import { getRandomInt } from "../utility/Utility";
 
@@ -69,17 +69,21 @@ export class SystemSelectScene extends DependentScene {
 
       const stateScene = this.scene.get("StateScene") as StateScene;
 
-      unlockHexTile(hex, stateScene.getAllResources(), (remainingBalance) => {
-        stateScene.incrementSystemLevel();
-        renderSystemNeighbors(
-          hex.starSystem.starSystemObject,
-          hexMap,
-          stateScene.getSystemLevel()
-        );
-        remainingBalance.forEach((resource) => {
-          this.game.events.emit("set-resource", resource);
-        });
-      });
+      unlockHexTile(
+        hex,
+        stateScene.resourceManager.getAllResources(),
+        (remainingBalance) => {
+          stateScene.incrementSystemLevel();
+          renderSystemNeighbors(
+            hex.starSystem.starSystemObject,
+            hexMap,
+            stateScene.getSystemLevel()
+          );
+          remainingBalance.forEach((resource) => {
+            this.game.events.emit("set-resource", resource);
+          });
+        }
+      );
     });
 
     this.events.on("wake", async () => {

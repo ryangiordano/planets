@@ -7,7 +7,7 @@ import { BootScene } from "./scenes/BootScene";
 import { SystemSelectScene } from "./scenes/SystemSelectScene";
 import { StellarBodyScene } from "./scenes/StellarBodyScene/StellarBodyScene";
 import { UIScene } from "./scenes/UIScene/UIScene";
-import { StateScene } from "./scenes/StateScene";
+import { StateScene } from "./scenes/StateScene/StateScene";
 import { getRandomInt } from "./utility/Utility";
 export type GameScenes = "BootScene" | "StarSystemScene" | "Audio";
 // main game configuration

@@ -1,4 +1,4 @@
-export * from "./StateScene";
+export * from "./StateScene/StateScene";
 export * from "./UIScene/UIScene";
 export * from "./StellarBodyScene/StellarBodyScene";
 export * from "./StarSystemScene";

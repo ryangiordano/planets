@@ -3,7 +3,7 @@ import LargeStellarBody from "../../components/planet/LargeStellarBody";
 import { LaserImpact } from "../../components/player/MiningLaser";
 import { BLACK } from "../../utility/Constants";
 import { getRandomInt } from "../../utility/Utility";
-import { StateScene } from "../StateScene";
+import { StateScene } from "../StateScene/StateScene";
 
 export function handleHarvest(
   scene: Phaser.Scene,

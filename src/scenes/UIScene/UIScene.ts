@@ -2,8 +2,8 @@ import { ResourceType } from "../../assets/data/stellar-bodies/Types";
 import { UIBar } from "../../components/UI/UIBar";
 
 import DependentScene from "../DependentScene";
-import { StateResourceObject } from "../StateScene";
 import { buildResourceUI } from "./ResourceUI";
+import { ResourceStateObject } from '../StateScene/ResourceManagement';
 
 export class UIScene extends DependentScene {
   private UIParent: Phaser.GameObjects.Container;
@@ -41,7 +41,7 @@ export class UIScene extends DependentScene {
         resource,
       }: {
         key: ResourceType;
-        resource: StateResourceObject;
+        resource: ResourceStateObject;
       }) => {
         const bar = this.contentMap.get(key);
         if (bar) {

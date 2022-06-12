@@ -69,6 +69,11 @@ const UIBarData = [
   },
 ];
 
+/** UI for displaying the player's resources in the bottom right of the screen
+ * Function returns the container with all the properly rendered UI
+ * Also returns a map that related logic can query to get the bars
+ * themselves to feed values into them
+ */
 export function buildResourceUI(scene: Phaser.Scene) {
   const barDimensions = {
     barWidth: 128,
@@ -98,6 +103,7 @@ export function buildResourceUI(scene: Phaser.Scene) {
     return bar;
   });
 
+  /** Gas UI */
   const gasBorder = buildResourceBorder(scene, -75, -60);
   const gasText = scene.add.text(-65, -55, "gas", {
     fontFamily: "pixel",
@@ -113,6 +119,7 @@ export function buildResourceUI(scene: Phaser.Scene) {
     gasText,
   ]);
 
+  /** Mineral UI */
   const mineralText = scene.add.text(-65, -55, "minerals", {
     fontFamily: "pixel",
     fontSize: "25px",
