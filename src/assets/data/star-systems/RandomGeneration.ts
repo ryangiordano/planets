@@ -190,7 +190,7 @@ export function createRandomSystem(
    */
   const enemies: number[] = [];
   /** For now, let's just say there is a 100% chance the system has enemies */
-  if (isWinningRoll(1)) {
+  if (false) {
     enemies.push(0, 0, 0);
   }
 
