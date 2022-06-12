@@ -12,8 +12,6 @@ import {
 } from "../assets/data/star-systems/StarSystemController";
 import { getSaveData } from "../assets/data/player/SaveController";
 import { StateScene } from "./StateScene/StateScene";
-import { warpInStar } from "./utility/index";
-import { getRandomInt } from "../utility/Utility";
 
 export class SystemSelectScene extends DependentScene {
   private ship: Ship;

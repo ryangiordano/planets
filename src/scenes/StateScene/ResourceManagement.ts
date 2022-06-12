@@ -17,6 +17,7 @@ export type ResourceStateManager = {
   decrementResource: (key: ResourceType, valueToSubtract: number) => void;
 };
 
+/** Module for maintaining game state */
 export function buildResourceManagement(
   scene: Phaser.Scene
 ): ResourceStateManager {
