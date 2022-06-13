@@ -1,7 +1,7 @@
 import LargeStellarBody from "../../components/planet/LargeStellarBody";
 import { LaserImpact } from "../../components/player/MiningLaser";
 
-/** Establishes basic behavior on hitting a stellar body with a laser */
+/** Establishes basic behavior on hitting a stellar body with a la */
 export function buildLaserImpactStellarBodyBehavior(
   scene: Phaser.Scene,
   laserImpactGroup: Phaser.GameObjects.Group,
@@ -15,10 +15,7 @@ export function buildLaserImpactStellarBodyBehavior(
     laserImpactGroup,
     stellarBodyGroup,
     (laserImpact: LaserImpact, stellarBody: LargeStellarBody) => {
-      if (stellarBody.noYieldLeft()) {
-        //TODO: Fire off a notif
-        console.log("No elements left");
-      } else if (laserImpact.isActive) {
+      if (laserImpact.isActive) {
         onHitStellarBody(laserImpact, stellarBody);
       }
       laserImpact.handleImpact();

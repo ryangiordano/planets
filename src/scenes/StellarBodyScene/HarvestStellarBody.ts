@@ -8,15 +8,21 @@ import { StateScene } from "../StateScene/StateScene";
 export function handleHarvest(
   scene: Phaser.Scene,
   laserImpact: LaserImpact,
-  stellarBody: LargeStellarBody
+  stellarBody: LargeStellarBody,
+  onStellarBodyYieldExhausted: (stellarBodyId: number) => void
 ) {
-  const totalMined = harvestStellarBody(scene, stellarBody);
+  const totalMined = harvestStellarBody(
+    scene,
+    stellarBody,
+    onStellarBodyYieldExhausted
+  );
   spawnElementDebris(scene, stellarBody.color, totalMined * 50, laserImpact);
 }
 
 function harvestStellarBody(
   scene: Phaser.Scene,
-  stellarBody: LargeStellarBody
+  stellarBody: LargeStellarBody,
+  onStellarBodyYieldExhausted: (stellarBodyId: number) => void
 ) {
   const { remainingYield, resourceType } = stellarBody;
   const stateScene = scene.scene.get("StateScene") as StateScene;
@@ -27,6 +33,10 @@ function harvestStellarBody(
     stellarBody.stellarBodyId,
     Math.max(0, remainingYield - totalMined)
   );
+
+  if (stellarBody.remainingYield <= 0) {
+    onStellarBodyYieldExhausted(stellarBody.stellarBodyId);
+  }
   scene.game.events.emit("resource-gathered", {
     resourceType,
     totalMined,

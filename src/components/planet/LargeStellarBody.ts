@@ -5,6 +5,7 @@ import {
   MineableResourceType,
 } from "../../assets/data/stellar-bodies/Types";
 import { getStellarBodyColorFromResourceType } from "./StellarBody";
+import { getCanvasPosition } from "../../utility/Utility";
 
 /**
  * A planetary body or star that has other StellarBodies to rotate around it.
@@ -16,6 +17,7 @@ export default class LargeStellarBody extends Phaser.Physics.Arcade.Sprite {
   private maxYield: number;
   public stellarBodyId: number;
   public color: number;
+  private stellarBodySize: StellarBodySize;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 512,
@@ -58,7 +60,7 @@ export default class LargeStellarBody extends Phaser.Physics.Arcade.Sprite {
 
     this.displayHeight = baseSize * modifier;
     this.displayWidth = baseSize * modifier;
-
+    this.stellarBodySize = size;
     this.color = color;
     if (resourceType) {
       this.color = getStellarBodyColorFromResourceType(
@@ -75,6 +77,30 @@ export default class LargeStellarBody extends Phaser.Physics.Arcade.Sprite {
 
   public noYieldLeft() {
     return this.remainingYield <= 0;
+  }
+
+  public bodyExhausted() {
+    const sprite = this.scene.add.sprite(this.x, this.y, "planet_large_single");
+    sprite.displayHeight = this.displayHeight;
+    sprite.displayWidth = this.displayWidth;
+    sprite.setTint(this.color);
+    this.parentContainer.add(sprite);
+    this.scene.add.tween({
+      targets: sprite,
+      ease: "Quint.easeOut",
+      scale: {
+        from: 0,
+        to: Math.max(2, this.stellarBodySize / 1.5),
+      },
+      alpha: {
+        from: 0.7,
+        to: 0,
+      },
+      duration: 1000,
+      onComplete: () => {
+        sprite.destroy();
+      },
+    });
   }
 
   update(time: number, delta: number) {}

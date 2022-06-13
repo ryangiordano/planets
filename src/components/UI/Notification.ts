@@ -1,4 +1,5 @@
 import { NotificationTypes } from "../../scenes/StateScene/NotificationManagement";
+import { GREEN } from "../../utility/Constants";
 import {
   WHITE,
   BLUE,
@@ -15,7 +16,7 @@ const NotificationTypeColorMap = new Map<
     hex: number;
   }
 >([
-  [NotificationTypes.default, LIGHT_GREY],
+  [NotificationTypes.default, GREEN],
   [NotificationTypes.positive, BLUE],
   [NotificationTypes.negative, RED],
   [NotificationTypes.urgent, YELLOW],
@@ -28,7 +29,7 @@ const NotificationFontColorMap = new Map<
     hex: number;
   }
 >([
-  [NotificationTypes.default, DARK_GREY],
+  [NotificationTypes.default, WHITE],
   [NotificationTypes.positive, WHITE],
   [NotificationTypes.negative, WHITE],
   [NotificationTypes.urgent, DARK_GREY],

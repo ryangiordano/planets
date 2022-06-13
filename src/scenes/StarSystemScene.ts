@@ -1,11 +1,6 @@
 import StellarBody from "../components/planet/StellarBody";
 import DependentScene from "./DependentScene";
 import {
-  getStarSystem,
-  setStarSystemData,
-  StarSystemObject,
-} from "../assets/data/star-systems/StarSystemRepository";
-import {
   buildStarSystemFromId,
   getStarSystemById,
 } from "../assets/data/star-systems/StarSystemController";
@@ -20,8 +15,7 @@ import {
 } from "../assets/data/Enemy/EnemyController";
 import { getRandomInt } from "../utility/Utility";
 import { removeStarSystemEnemy } from "../assets/data/Enemy/EnemyController";
-import { NotificationTypes } from "./StateScene/NotificationManagement";
-import { StateScene } from "./StateScene/StateScene";
+import { addNotification } from "./StateScene/NotificationManagement";
 
 const MAX_SYSTEM_SIZE = 2000;
 
@@ -67,14 +61,13 @@ export class StarSystemScene extends DependentScene {
     );
   }
   create({ starSystemId }: { starSystemId: number }): void {
-    const state = this.scene.get("StateScene") as StateScene;
-
-    state.notificationManager.addNotification(
-      `Entering system.`,
-      NotificationTypes.default
-    );
     this.zoomInFromFar();
     const systemObject = getStarSystemById(starSystemId);
+
+    setTimeout(() => {
+      addNotification(this, `Entering the ${systemObject.sun.name} system.`);
+    }, 500);
+
     const cursors = this.input.keyboard.createCursorKeys();
 
     cursors.space.addListener("down", async () => {

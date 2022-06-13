@@ -11,6 +11,11 @@ import { buildFiringBehavior } from "./Firing";
 import { buildLaserImpactStellarBodyBehavior } from "./LaserImpactStellarBody";
 import { handleHarvest } from "./HarvestStellarBody";
 import { renderStellarBody } from "./RenderStellarBody";
+import { StateScene } from "../StateScene";
+import {
+  addNotification,
+  NotificationTypes,
+} from "../StateScene/NotificationManagement";
 
 /** Scene where the action takes place in the game.
  * Currently players can mine planets and moons.
@@ -67,13 +72,25 @@ export class StellarBodyScene extends DependentScene {
 
     this.setSceneKeyEvents(referringSystemId);
 
+    const stellarBodyObject = getStellarBody(stellarBodyId);
     buildLaserImpactStellarBodyBehavior(
       this,
       this.laserImpactGroup,
       this.stellarBodyGroup,
       (laserImpact, stellarBody) =>
-        handleHarvest(this, laserImpact, stellarBody)
+        handleHarvest(this, laserImpact, stellarBody, () => {
+          const sbi = getStellarBody(stellarBody.stellarBodyId);
+          stellarBody.bodyExhausted();
+          addNotification(
+            this,
+            `${sbi.name}'s resources completely mined!`,
+            NotificationTypes.positive
+          );
+        })
     );
+    setTimeout(() => {
+      addNotification(this, `Approaching  ${stellarBodyObject.name}`);
+    }, 500);
 
     renderStellarBody({
       scene: this,

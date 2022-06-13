@@ -1,3 +1,5 @@
+import { StateScene } from "./StateScene";
+
 export enum NotificationTypes {
   default,
   positive,
@@ -12,7 +14,6 @@ export type NotificationManager = {
 
 export function buildNotificationManagement(scene: Phaser.Scene) {
   function addNotification(text: string, notificationType: NotificationTypes) {
-    console.log("Adding");
     scene.game.events.emit("notification-added", {
       notification: {
         text,
@@ -29,4 +30,14 @@ export function buildNotificationManagement(scene: Phaser.Scene) {
     addNotification,
     removeNotification,
   };
+}
+
+/** Convenience function for setting notifications */
+export function addNotification(
+  scene: Phaser.Scene,
+  text: string,
+  notificationType: NotificationTypes = NotificationTypes.default
+) {
+  const state = scene.scene.get("StateScene") as StateScene;
+  state.notificationManager.addNotification(text, notificationType);
 }
