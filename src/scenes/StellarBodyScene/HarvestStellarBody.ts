@@ -35,6 +35,7 @@ function harvestStellarBody(
   );
 
   if (stellarBody.remainingYield <= 0) {
+    console.log("????");
     onStellarBodyYieldExhausted(stellarBody.stellarBodyId);
   }
   scene.game.events.emit("resource-gathered", {

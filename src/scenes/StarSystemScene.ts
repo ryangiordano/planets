@@ -16,7 +16,7 @@ import {
 import { getRandomInt } from "../utility/Utility";
 import { removeStarSystemEnemy } from "../assets/data/Enemy/EnemyController";
 import { addNotification } from "./StateScene/NotificationManagement";
-
+ 
 const MAX_SYSTEM_SIZE = 2000;
 
 export class StarSystemScene extends DependentScene {

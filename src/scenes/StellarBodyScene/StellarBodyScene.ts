@@ -78,6 +78,7 @@ export class StellarBodyScene extends DependentScene {
       this.laserImpactGroup,
       this.stellarBodyGroup,
       (laserImpact, stellarBody) =>
+        !stellarBody.noYieldLeft() &&
         handleHarvest(this, laserImpact, stellarBody, () => {
           const sbi = getStellarBody(stellarBody.stellarBodyId);
           stellarBody.bodyExhausted();
