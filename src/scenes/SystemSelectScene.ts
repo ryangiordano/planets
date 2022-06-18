@@ -14,6 +14,9 @@ import { getSaveData } from "../assets/data/player/SaveController";
 import { StateScene } from "./StateScene/StateScene";
 import { NotificationTypes } from "./StateScene/NotificationManagement";
 import { getRandomInt } from "../utility/Utility";
+import UnlockedSystemDetailsTooltip from "../components/UI/UnlockedSystemDetailsTooltip";
+import LockedSystemDetailsTooltip from "../components/UI/LockedSystemDetailsTooltip";
+import { throttle } from "lodash";
 
 export class SystemSelectScene extends DependentScene {
   private ship: Ship;
@@ -87,6 +90,7 @@ export class SystemSelectScene extends DependentScene {
     });
 
     this.events.on("wake", async () => {
+      this.focusedHex = null;
       await this.zoomOutFromStarSystem();
     });
 
@@ -100,14 +104,35 @@ export class SystemSelectScene extends DependentScene {
       ...Object.keys(hexMap).map((k) => hexMap[k]),
     ]);
 
-    this.physics.add.overlap(
-      this.playerGroup,
-      this.hexGroup,
-      (player: Ship, hex: HexTile) => {
+    const playerHexCallback = throttle((_: Ship, hex: HexTile) => {
+      if (this.focusedHex !== hex) {
         this.focusedHex?.setSelected(false);
         hex.setSelected(true);
         this.focusedHex = hex;
+        if (this.focusedHex.playerHasAccess) {
+          this.game.events.emit("show-tooltip", {
+            tooltip: new UnlockedSystemDetailsTooltip({
+              scene: this,
+              starSystemId: hex.starSystem.starSystemObject.id,
+            }),
+          });
+        } else if (this.focusedHex.discovered) {
+          this.game.events.emit("show-tooltip", {
+            tooltip: new LockedSystemDetailsTooltip({
+              scene: this,
+              hex,
+            }),
+          });
+        } else {
+          this.game.events.emit("hide-tooltip");
+        }
       }
+    }, 250);
+
+    this.physics.add.overlap(
+      this.playerGroup,
+      this.hexGroup,
+      playerHexCallback
     );
 
     this.cameras.main.startFollow(this.ship);
@@ -142,6 +167,7 @@ export class SystemSelectScene extends DependentScene {
   }
 
   private zoomInToStarSystem() {
+    this.game.events.emit("hide-tooltip");
     return new Promise<void>((resolve) => {
       this.cameras.main.fadeOut(650, 56, 56, 56);
 

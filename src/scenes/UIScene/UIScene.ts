@@ -5,6 +5,7 @@ import DependentScene from "../DependentScene";
 import { buildResourceUI } from "./ResourceUI";
 import { buildNotificationUI } from "./NotificationUI";
 import NotificationView from "../../components/UI/Notification";
+import { buildTooltipUI } from "./TooltipUI";
 
 export class UIScene extends DependentScene {
   private UIParent: Phaser.GameObjects.Container;
@@ -28,6 +29,7 @@ export class UIScene extends DependentScene {
     const { resourceContainer, contentMap } = buildResourceUI(this);
 
     buildNotificationUI(this);
+    buildTooltipUI(this);
     this.UIParent.add(resourceContainer);
     this.contentMap = contentMap;
   }

@@ -21,3 +21,4 @@ export enum Directions {
   upRight,
   downRight,
 }
+

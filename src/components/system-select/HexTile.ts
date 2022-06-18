@@ -19,6 +19,7 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
 
   public coordinates: [number, number];
   public unlockRequirements: [ResourceType, number];
+  public discovered: boolean = false;
   constructor({ scene, x, y }: { scene: Phaser.Scene; x: number; y: number }) {
     super(scene, 0, 0, "hex-tile");
     this.scene.add.existing(this);
@@ -33,6 +34,7 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
   }
 
   setUnexplored() {
+    this.discovered = true;
     this.setVisible(true);
     this.setAlpha(0.1);
     this.setFrame(1);
@@ -58,6 +60,7 @@ export default class HexTile extends Phaser.Physics.Arcade.Sprite {
   }
 
   setPlayerHasAccess(hasAccess: boolean) {
+    this.discovered = true;
     this.playerHasAccess = hasAccess;
     this.setAlpha(this.playerHasAccess ? 1 : 0.3);
     this.setFrame(this.playerHasAccess ? 0 : 1);

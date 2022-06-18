@@ -174,3 +174,20 @@ export function assignEnemyToSystem(enemyId: number, starSystemId: number) {
 export function getStarSystemById(starSystemId: number) {
   return getStarSystem(starSystemId);
 }
+
+export function getPercentMined(starSystemObject: StarSystemObject): string {
+  const yieldObject = starSystemObject.system.reduce<{
+    max: number;
+    current: number;
+  }>(
+    (acc, body) => {
+      const { remainingYield, maxYield } = body;
+      acc.max += maxYield;
+      acc.current += remainingYield;
+      return acc;
+    },
+    { max: 0, current: 0 }
+  );
+
+  return ((1 - yieldObject.current / yieldObject.max) * 100).toFixed(0);
+}
