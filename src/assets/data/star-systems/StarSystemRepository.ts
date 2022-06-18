@@ -3,8 +3,8 @@ import {
   getStellarBody,
   StellarBodyObject,
 } from "../stellar-bodies/StellarBodyRepository";
-import { EnemyObject, getEnemyObjectById } from "../Enemy/EnemyController";
-import { getStarSystemEnemiesById } from "../Enemy/EnemyRepository";
+import { EnemyObject, getEnemyObjectById } from "../enemy/EnemyController";
+import { getStarSystemEnemiesById } from "../enemy/EnemyRepository";
 
 const inMemoryData = { ...starSystems };
 

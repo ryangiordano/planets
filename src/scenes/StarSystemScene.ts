@@ -12,9 +12,9 @@ import Laser from "../components/player/Laser";
 import {
   EnemyObject,
   EnemyTypeMap,
-} from "../assets/data/Enemy/EnemyController";
+} from "../assets/data/enemy/EnemyController";
 import { getRandomInt } from "../utility/Utility";
-import { removeStarSystemEnemy } from "../assets/data/Enemy/EnemyController";
+import { removeStarSystemEnemy } from "../assets/data/enemy/EnemyController";
 import { addNotification } from "./StateScene/NotificationManagement";
  
 const MAX_SYSTEM_SIZE = 2000;

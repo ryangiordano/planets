@@ -10,11 +10,11 @@ import {
   getStarSystemDataById,
   setStarSystemData,
 } from "./StarSystemRepository";
-import { getEnemyById } from "../Enemy/EnemyRepository";
+import { getEnemyById } from "../enemy/EnemyRepository";
 import {
   addStarSystemEnemy,
   removeStarSystemEnemy,
-} from "../Enemy/EnemyController";
+} from "../enemy/EnemyController";
 
 import {
   getStarSystem,

@@ -20,7 +20,8 @@ import {
   randomlyCreateEnemyData,
   addStarSystemEnemy,
   createStarSystemEnemies,
-} from "../Enemy/EnemyController";
+} from "../enemy/EnemyController";
+import { createName } from "../names/names";
 
 type PossibleCompositionValues = 0 | 1 | 2 | 3;
 
@@ -137,7 +138,7 @@ function createRandomStellarBodyObject({
   );
   const stellarBodyData = {
     //TODO: Randomly generate names
-    name: "Rando",
+    name: createName(),
     id,
     maxYield: stellarBodyMaxYield,
     remainingYield: stellarBodyMaxYield,
