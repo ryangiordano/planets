@@ -136,9 +136,10 @@ function createRandomStellarBodyObject({
   const stellarBodyMaxYield = generateStellarBodyYield(
     numberOfMinerals ? mineralMaxYield : gasMaxYield
   );
+  const f = createName();
+  console.log(f);
   const stellarBodyData = {
-    //TODO: Randomly generate names
-    name: createName(),
+    name: f,
     id,
     maxYield: stellarBodyMaxYield,
     remainingYield: stellarBodyMaxYield,
