@@ -3,7 +3,6 @@ export type StarSystemData = {
   sun: number;
   system: number[];
   coordinates: [number, number];
-  systemEnemies: number;
 };
 export default {
   // "0": {

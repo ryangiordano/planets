@@ -1,5 +1,7 @@
+import { EnemyObject, getEnemyObjectById } from "../enemy/EnemyController";
 import planets, { StellarBodyData } from "./planets";
 import { StellarBodySize, MineableResourceType } from "./Types";
+import { getStellarEnemiesById } from "../enemy/EnemyRepository";
 
 const inMemoryData = { ...planets };
 
@@ -14,6 +16,7 @@ export type StellarBodyObject = {
   size: StellarBodySize;
   id: number;
   resourceType: MineableResourceType;
+  stellarEnemies?: EnemyObject[];
 };
 
 export function getStellarBodyData(stellarBodyId: number): StellarBodyData {
@@ -31,7 +34,15 @@ export function setStellarBodyData(sbd: StellarBodyData) {
 export function mapToStellarBodyObject(
   stellarBodyData: StellarBodyData
 ): StellarBodyObject {
-  const result = { ...stellarBodyData, orbit: [] };
+  const result = {
+    ...stellarBodyData,
+    orbit: [],
+    stellarEnemies: stellarBodyData.stellarEnemies
+      ? getStellarEnemiesById(stellarBodyData.stellarEnemies)?.enemies.map(
+          (id) => getEnemyObjectById(id)
+        )
+      : [],
+  };
   result.orbit.push(
     ...(stellarBodyData.orbit?.map((stellarBodyId) => {
       const stellarBodyData = getStellarBodyData(stellarBodyId);

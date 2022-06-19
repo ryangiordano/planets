@@ -36,7 +36,7 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
     this.enemyId = id;
     scene.physics.add.existing(this);
     scene.add.existing(this);
-    this.setTint(COLOR_MAP.red[2]);
+    this.setTint(WHITE.hex);
     this.setScale(0.3);
     this.createMovementPatterns();
 
@@ -73,14 +73,17 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
 
   public takeDamage(
     damageToTake: number,
-    impactCoords: { x: number; y: number }
+    impactCoords: { x: number; y: number },
+    onResolvedHit: (isDestroyed: boolean) => void
   ) {
     this.currentHP = Math.max(0, this.currentHP - damageToTake);
 
     if (this.currentHP === 0) {
       this.explode(impactCoords);
+      onResolvedHit(true);
     } else {
       sparkImpact(this.scene, WHITE.hex, getRandomInt(10, 20), impactCoords);
+      onResolvedHit(false);
     }
   }
 

@@ -17,9 +17,8 @@ import {
 } from "./Constants";
 import { StarSystemObject, setStarSystemData } from "./StarSystemRepository";
 import {
+  createstellarEnemies as createStellarEnemies,
   randomlyCreateEnemyData,
-  addStarSystemEnemy,
-  createStarSystemEnemies,
 } from "../enemy/EnemyController";
 import { createName } from "../names/names";
 
@@ -76,6 +75,7 @@ function createRandomStellarBodyObject({
   maxRotationSpeed = MAX_ROTATION_SPEED,
   mineralMaxYield,
   gasMaxYield,
+  hasEnemies,
 }: {
   numberOfMinerals?: PossibleCompositionValues;
   numberOfGasElements?: PossibleCompositionValues;
@@ -88,6 +88,7 @@ function createRandomStellarBodyObject({
   maxRotationSpeed?: number;
   mineralMaxYield: number;
   gasMaxYield: number;
+  hasEnemies?: boolean;
 }): StellarBodyObject {
   if (!numberOfMinerals && !numberOfGasElements) {
     const hasMinerals = isWinningRoll(0.5);
@@ -136,10 +137,27 @@ function createRandomStellarBodyObject({
   const stellarBodyMaxYield = generateStellarBodyYield(
     numberOfMinerals ? mineralMaxYield : gasMaxYield
   );
-  const f = createName();
-  console.log(f);
+
+  let stellarEnemies;
+
+  if (hasEnemies) {
+    /** Randomly determine if the system has enemies.
+     * If it does, determine which type and how many by the system level.
+     */
+    const enemies: number[] = [];
+    /** For now, let's just say there is a 100% chance the system has enemies */
+    enemies.push(0, 0, 0);
+
+    const systemEnemies = enemies.map((e) => randomlyCreateEnemyData(e));
+
+    stellarEnemies = createStellarEnemies(
+      id,
+      systemEnemies.map((e) => e.id)
+    );
+  }
+
   const stellarBodyData = {
-    name: f,
+    name: createName(),
     id,
     maxYield: stellarBodyMaxYield,
     remainingYield: stellarBodyMaxYield,
@@ -148,6 +166,7 @@ function createRandomStellarBodyObject({
     rotationSpeed: getRandomInt(minRotationSpeed, maxRotationSpeed),
     resourceType,
     orbit: orbit.map((o) => o.id),
+    stellarEnemies: stellarEnemies?.id,
   };
 
   /** Register it to our internal database */
@@ -183,33 +202,18 @@ export function createRandomSystem(
       maxSize: sun.size - 1,
       gasMaxYield,
       mineralMaxYield,
+      hasEnemies: isWinningRoll(1),
     });
 
     planets.push(planet);
   }
-  /** Randomly determine if the system has enemies.
-   * If it does, determine which type and how many by the system level.
-   */
-  const enemies: number[] = [];
-  /** For now, let's just say there is a 100% chance the system has enemies */
-  if (false) {
-    enemies.push(0, 0, 0);
-  }
 
-  const systemEnemies = enemies.map((e) => randomlyCreateEnemyData(e));
   const starSystemId = Math.random();
-
-  const starSystemEnemies = createStarSystemEnemies(
-    starSystemId,
-    systemEnemies.map((e) => e.id)
-  );
-
   const starSystemObject = {
     id: starSystemId,
     sun,
     system: planets,
     coordinates,
-    enemies: systemEnemies,
   };
 
   const starSystemData = {
@@ -219,7 +223,6 @@ export function createRandomSystem(
     system: planets.map((p) => {
       return p.id;
     }),
-    systemEnemies: starSystemEnemies.id,
   };
   setStarSystemData(starSystemData);
 

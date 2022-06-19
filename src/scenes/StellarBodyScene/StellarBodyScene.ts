@@ -19,6 +19,11 @@ import {
 import LaserMine from "../../components/enemies/LaserMine";
 import { WHITE } from "../../utility/Constants";
 import { sparkImpact } from "./EnemyImpact";
+import {
+  removeStellarEnemy,
+  EnemyObject,
+  EnemyTypeMap,
+} from "../../assets/data/enemy/EnemyController";
 
 /** Scene where the action takes place in the game.
  * Currently players can mine planets and moons.
@@ -99,7 +104,15 @@ export class StellarBodyScene extends DependentScene {
       this.laserImpactGroup,
       this.enemyTargetGroup,
       (laserImpact: LaserImpact, laserMine: LaserMine) => {
-        laserMine.takeDamage(laserImpact.potency, laserImpact);
+        laserMine.takeDamage(
+          laserImpact.potency,
+          laserImpact,
+          (isDestroyed: boolean) => {
+            if (isDestroyed) {
+              removeStellarEnemy(stellarBodyId, laserMine["enemyId"]);
+            }
+          }
+        );
         laserImpact.destroy();
       }
     );
@@ -112,32 +125,9 @@ export class StellarBodyScene extends DependentScene {
       centerX: 0,
       centerY: 0,
     });
-    const laserMine = this.add.existing(
-      new LaserMine({
-        scene: this,
-        x: -150,
-        y: -150,
-        onLaserFire: (laser) => {
-          laser.destroy();
-        },
-        id: 0,
-      })
-    );
-    const laserMine2 = this.add.existing(
-      new LaserMine({
-        scene: this,
-        x: 150,
-        y: 150,
-        onLaserFire: (laser) => {
-          laser.destroy();
-        },
-        id: 0,
-      })
-    );
-    this.enemyTargetGroup.add(laserMine);
-    this.enemyTargetGroup.add(laserMine2);
-    this.stellarBodyContainer.add(laserMine);
-    this.stellarBodyContainer.add(laserMine2);
+
+    this.renderEnemies(stellarBodyObject.stellarEnemies);
+
     await this.warpIn();
 
     this.approachStellarBody();
@@ -149,6 +139,27 @@ export class StellarBodyScene extends DependentScene {
         addNotification(this, `Hostiles present`, NotificationTypes.urgent);
       }, 1000);
     }
+  }
+
+  private renderEnemies(enemyObjects: EnemyObject[]) {
+    console.log(enemyObjects);
+
+    enemyObjects.forEach((eo) => {
+      const cls = EnemyTypeMap.get(eo.enemyTemplate.enemyType);
+      const enemy = this.add.existing(
+        new cls({
+          scene: this,
+          x: getRandomInt(-200, 200),
+          y: getRandomInt(-200, 200),
+          onLaserFire: (laser) => {
+            laser.destroy();
+          },
+          id: eo.id,
+        })
+      );
+      this.enemyTargetGroup.add(enemy);
+      this.stellarBodyContainer.add(enemy);
+    });
   }
 
   /** Set escape and firing behavior */

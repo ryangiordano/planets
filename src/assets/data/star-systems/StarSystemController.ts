@@ -2,19 +2,11 @@ import StellarBody, {
   getStellarBodyColorFromResourceType,
 } from "../../../components/planet/StellarBody";
 import HexTile from "../../../components/system-select/HexTile";
-import { ResourceType } from "../stellar-bodies/Types";
-import { EVEN_ROW_HEX_NEIGHBORS, getHexNeighbors } from "./Constants";
+import { getHexNeighbors } from "./Constants";
 import { HexMap, prepareHex } from "./HexMapController";
 import { createRandomSystem } from "./RandomGeneration";
-import {
-  getStarSystemDataById,
-  setStarSystemData,
-} from "./StarSystemRepository";
-import { getEnemyById } from "../enemy/EnemyRepository";
-import {
-  addStarSystemEnemy,
-  removeStarSystemEnemy,
-} from "../enemy/EnemyController";
+
+import { addStellarEnemy } from "../enemy/EnemyController";
 
 import {
   getStarSystem,
@@ -167,8 +159,11 @@ export function renderSystemNeighbors(
   });
 }
 
-export function assignEnemyToSystem(enemyId: number, starSystemId: number) {
-  addStarSystemEnemy(starSystemId, enemyId);
+export function assignEnemyToStellarBody(
+  enemyId: number,
+  stellarBodyId: number
+) {
+  addStellarEnemy(stellarBodyId, enemyId);
 }
 
 export function getStarSystemById(starSystemId: number) {

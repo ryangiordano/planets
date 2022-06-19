@@ -1,6 +1,6 @@
 import enemies from "./enemies";
 import enemyTemplates from "./enemy-templates";
-import systemEnemies from "./system-enemies";
+import stellarEnemies from "./stellar-enemies";
 
 export type EnemyData = {
   id: number;
@@ -14,12 +14,12 @@ export type EnemyTemplateData = {
   enemyType: EnemyType;
 };
 
-export type SystemEnemiesData = {
+export type StellarEnemiesData = {
   id: number;
   /** Array of enemy ids */
   enemies: number[];
-  /** id of the system the group of enemies belong to */
-  system: number;
+  /** id of the stellar body the group of enemies belong to */
+  stellarBody: number;
 };
 
 export enum EnemyType {
@@ -27,7 +27,7 @@ export enum EnemyType {
 }
 
 const inMemoryEnemyData = { ...enemies };
-const inMemoryStarSystemEnemiesData = { ...systemEnemies };
+const inMemoryStellarEnemiesData = { ...stellarEnemies };
 
 export function getEnemyTemplateById(id: number): EnemyTemplateData {
   if (!enemyTemplates[id]) {
@@ -46,48 +46,46 @@ export function setEnemy(enemyData: EnemyData) {
   inMemoryEnemyData[enemyData.id] = { ...enemyData };
 }
 
-export function getStarSystemEnemiesByStarSystemId(
-  starSystemId: number
-): SystemEnemiesData {
-  const k = Object.keys(inMemoryStarSystemEnemiesData).find(
-    (key) => inMemoryStarSystemEnemiesData[key].system === starSystemId
+export function getStellarEnemiesByStellarBodyId(
+  stellarBodyId: number
+): StellarEnemiesData {
+  const k = Object.keys(inMemoryStellarEnemiesData).find(
+    (key) => inMemoryStellarEnemiesData[key].stellarBody === stellarBodyId
+  );
+  if (!k)
+    throw new Error(`Stellar Enemies not found for system id ${stellarBodyId}`);
+
+  return inMemoryStellarEnemiesData[k];
+}
+
+export function getStellarEnemiesById(
+  stellarEnemiesId: number
+): StellarEnemiesData {
+  const k = Object.keys(inMemoryStellarEnemiesData).find(
+    (key) => inMemoryStellarEnemiesData[key].id === stellarEnemiesId
   );
   if (!k)
     throw new Error(
-      `Star System Enemies not found for system id ${starSystemId}`
+      `Stellar Enemies not found for stellar enemies id ${stellarEnemiesId}`
     );
 
-  return inMemoryStarSystemEnemiesData[k];
+  return inMemoryStellarEnemiesData[k];
 }
 
-export function getStarSystemEnemiesById(
-  starSystemEnemiesId: number
-): SystemEnemiesData {
-  const k = Object.keys(inMemoryStarSystemEnemiesData).find(
-    (key) => inMemoryStarSystemEnemiesData[key].id === starSystemEnemiesId
-  );
-  if (!k)
-    throw new Error(
-      `Star System Enemies not found for system id ${starSystemEnemiesId}`
-    );
-
-  return inMemoryStarSystemEnemiesData[k];
-}
-
-export function setStarSystemEnemies(
-  starSystemId: number,
+export function setStellarEnemies(
+  stellarBodyId: number,
   enemies: number[]
-): SystemEnemiesData {
+): StellarEnemiesData {
   const id = Math.random();
 
-  const starSystemEnemies = {
+  const stellarEnemies = {
     id,
-    system: starSystemId,
+    stellarBody: stellarBodyId,
     enemies,
   };
 
-  inMemoryStarSystemEnemiesData[starSystemEnemies.id] = {
-    ...starSystemEnemies,
+  inMemoryStellarEnemiesData[stellarEnemies.id] = {
+    ...stellarEnemies,
   };
-  return starSystemEnemies;
+  return stellarEnemies;
 }

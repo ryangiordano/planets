@@ -11,6 +11,7 @@ export type StellarBodyData = {
   size: StellarBodySize;
   id: number;
   resourceType: MineableResourceType;
+  stellarEnemies?: number;
 };
 
 const data: {

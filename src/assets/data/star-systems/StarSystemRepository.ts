@@ -4,7 +4,7 @@ import {
   StellarBodyObject,
 } from "../stellar-bodies/StellarBodyRepository";
 import { EnemyObject, getEnemyObjectById } from "../enemy/EnemyController";
-import { getStarSystemEnemiesById } from "../enemy/EnemyRepository";
+import { getStellarEnemiesById } from "../enemy/EnemyRepository";
 
 const inMemoryData = { ...starSystems };
 
@@ -13,7 +13,6 @@ export type StarSystemObject = {
   sun: StellarBodyObject;
   system: StellarBodyObject[];
   coordinates: [number, number];
-  enemies: EnemyObject[];
 };
 export function getStarSystemDataById(id: number): StarSystemData {
   const starSystem = inMemoryData[id];
@@ -38,9 +37,6 @@ function _getStarSystemByCoordinate(coords: [number, number]): StarSystemData {
 export function mapToStarSystemObject(
   starSystemData: StarSystemData
 ): StarSystemObject {
-  const starSystemEnemies = getStarSystemEnemiesById(
-    starSystemData.systemEnemies
-  );
   return {
     id: starSystemData.id,
     sun: getStellarBody(starSystemData.sun),
@@ -48,7 +44,6 @@ export function mapToStarSystemObject(
       getStellarBody(stellarBodyId)
     ),
     coordinates: starSystemData.coordinates,
-    enemies: starSystemEnemies.enemies.map((e) => getEnemyObjectById(e)),
   };
 }
 

@@ -4,10 +4,10 @@ import {
   EnemyType,
   getEnemyById,
   getEnemyTemplateById,
-  getStarSystemEnemiesById,
-  getStarSystemEnemiesByStarSystemId,
+  getStellarEnemiesById,
+  getStellarEnemiesByStellarBodyId,
   setEnemy,
-  setStarSystemEnemies,
+  setStellarEnemies,
 } from "./EnemyRepository";
 
 export type EnemyObject = {
@@ -52,28 +52,25 @@ export function getEnemyObjectById(enemyId: number): EnemyObject {
   };
 }
 
-export function removeStarSystemEnemy(starSystemId: number, enemyId: number) {
-  const starSystemEnemies = getStarSystemEnemiesByStarSystemId(starSystemId);
+export function removeStellarEnemy(stellarBodyId: number, enemyId: number) {
+  const stellarEnemies = getStellarEnemiesByStellarBodyId(stellarBodyId);
 
-  starSystemEnemies.enemies = starSystemEnemies.enemies.filter(
+  stellarEnemies.enemies = stellarEnemies.enemies.filter(
     (id) => id !== enemyId
   );
 }
 
-export function addStarSystemEnemy(starSystemId: number, enemyId: number) {
-  const starSystemEnemies = getStarSystemEnemiesByStarSystemId(starSystemId);
-  const enemySet = new Set(starSystemEnemies.enemies);
+export function addStellarEnemy(stellarBodyId: number, enemyId: number) {
+  const stellarEnemies = getStellarEnemiesByStellarBodyId(stellarBodyId);
+  const enemySet = new Set(stellarEnemies.enemies);
   enemySet.add(enemyId);
-  starSystemEnemies.enemies = Array.from(enemySet);
+  stellarEnemies.enemies = Array.from(enemySet);
 }
 
-export function getStarSystemEnemies(starSystemId: number) {
-  return getStarSystemEnemiesById(starSystemId);
+export function getstellarEnemies(stellarBodyId: number) {
+  return getStellarEnemiesById(stellarBodyId);
 }
 
-export function createStarSystemEnemies(
-  starSystemId: number,
-  enemies: number[]
-) {
-  return setStarSystemEnemies(starSystemId, enemies);
+export function createstellarEnemies(stellarBodyId: number, enemies: number[]) {
+  return setStellarEnemies(stellarBodyId, enemies);
 }

@@ -9,13 +9,8 @@ import { withProximity } from "../utility/Proximity";
 import { paintStars } from "./utility/index";
 import LaserMine from "../components/enemies/LaserMine";
 import Laser from "../components/player/Laser";
-import {
-  EnemyObject,
-  EnemyTypeMap,
-} from "../assets/data/enemy/EnemyController";
-import { getRandomInt } from "../utility/Utility";
-import { removeStarSystemEnemy } from "../assets/data/enemy/EnemyController";
 import { addNotification } from "./StateScene/NotificationManagement";
+import { removeStellarEnemy } from "../assets/data/enemy/EnemyController";
 
 const MAX_SYSTEM_SIZE = 2000;
 
@@ -126,18 +121,6 @@ export class StarSystemScene extends DependentScene {
       }
     );
 
-    this.physics.add.overlap(
-      this.enemyGroup,
-      this.playerLaserGroup,
-      (enemy: Phaser.GameObjects.GameObject, laser: Laser) => {
-        removeStarSystemEnemy(systemObject.id, enemy["enemyId"]);
-
-        enemy.destroy();
-        laser.destroy();
-
-        this.game.events.emit("update-hex-map");
-      }
-    );
 
     withProximity({
       scene: this,
