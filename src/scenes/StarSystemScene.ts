@@ -16,7 +16,7 @@ import {
 import { getRandomInt } from "../utility/Utility";
 import { removeStarSystemEnemy } from "../assets/data/enemy/EnemyController";
 import { addNotification } from "./StateScene/NotificationManagement";
- 
+
 const MAX_SYSTEM_SIZE = 2000;
 
 export class StarSystemScene extends DependentScene {
@@ -117,8 +117,6 @@ export class StarSystemScene extends DependentScene {
         }, 500);
       }
     );
-
-    this.renderEnemies(systemObject.enemies);
 
     this.physics.add.overlap(
       this.playerGroup,
@@ -222,23 +220,5 @@ export class StarSystemScene extends DependentScene {
 
   update(time: number, delta: number): void {
     this.sun.update(time, delta);
-  }
-
-  private renderEnemies(enemyObjects: EnemyObject[]) {
-    enemyObjects.forEach((eo) => {
-      const cls = EnemyTypeMap.get(eo.enemyTemplate.enemyType);
-      const enemy = this.add.existing(
-        new cls({
-          scene: this,
-          x: this.sun.x + getRandomInt(-500, 500),
-          y: this.sun.y + getRandomInt(-500, 500),
-          onFire: (laser) => {
-            this.enemyLaserGroup.add(laser);
-          },
-          id: eo.id,
-        })
-      );
-      this.enemyGroup.add(enemy);
-    });
   }
 }

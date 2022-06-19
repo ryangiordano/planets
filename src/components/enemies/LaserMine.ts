@@ -1,51 +1,116 @@
 import { COLOR_MAP } from "../../assets/data/stellar-bodies/Constants";
-import { getRandomInt } from "../../utility/Utility";
+import { enemyDamage } from "../../scenes/StellarBodyScene/EnemyImpact";
+import { WHITE } from "../../utility/Constants";
+import { getRandomInt, getCanvasPosition } from "../../utility/Utility";
 import Laser from "../player/Laser";
+import EnemyLaser from "./EnemyLaser";
 export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
   private firingInterval: NodeJS.Timer;
+  public currentHP: number;
+  public maxHP: number;
   static spriteDependencies: SpriteDependency[] = [
     {
-      frameHeight: 64,
-      frameWidth: 64,
+      frameHeight: 128,
+      frameWidth: 128,
       key: "enemy",
       url: "/src/assets/sprites/enemy.png",
     },
-    ...Laser.spriteDependencies,
+    ...EnemyLaser.spriteDependencies,
   ];
   public enemyId: number;
+  private movementPattern: [number, number][] = [];
   constructor({
     scene,
     x,
     y,
-    onFire,
+    onLaserFire,
     id,
   }: {
     scene: Phaser.Scene;
     x: number;
     y: number;
-    onFire: (laser: Laser) => void;
+    onLaserFire: (laser: EnemyLaser) => void;
     id: number;
   }) {
     super(scene, x, y, "enemy", 0);
     this.enemyId = id;
     scene.physics.add.existing(this);
+    scene.add.existing(this);
+    this.setTint(COLOR_MAP.red[2]);
+    this.setScale(0.3);
+    this.createMovementPatterns();
 
-    this.setTint(COLOR_MAP.red[0]);
+    //TODO: Set HP from data
+    this.currentHP = 100;
+    this.maxHP = 100;
 
     this.firingInterval = setInterval(() => {
-      const randomAngle = getRandomInt(0, 361);
-      onFire(
-        new Laser({
-          scene: this.scene,
-          x: this.x,
-          y: this.y,
-          angle: randomAngle,
-        })
-      );
+      const laser = new EnemyLaser({
+        scene: this.scene,
+        x: this.x,
+        y: this.y,
+        targetX: getRandomInt(
+          0 - this.parentContainer.x + 0,
+          this.scene.game.canvas.width - this.parentContainer.x - 0
+        ),
+        targetY: getRandomInt(
+          0 - this.parentContainer.y + 0,
+          this.scene.game.canvas.height - this.parentContainer.y - 0
+        ),
+        onReachDestination: (laser) => {
+          onLaserFire(laser);
+        },
+      });
+
+      this.parentContainer.add(laser);
     }, 1000);
 
     this.on("destroy", () => {
       clearTimeout(this.firingInterval);
+    });
+    this.beginMovement();
+  }
+
+  public takeDamage(
+    damageToTake: number,
+    impactCoords: { x: number; y: number }
+  ) {
+    this.currentHP = Math.max(0, this.currentHP - damageToTake);
+
+    if (this.currentHP === 0) {
+      this.explode(impactCoords);
+    } else {
+      enemyDamage(this.scene, WHITE.hex, getRandomInt(10, 20), impactCoords);
+    }
+  }
+
+  public explode(impactCoords: Coords) {
+    enemyDamage(this.scene, WHITE.hex, getRandomInt(30, 40), impactCoords, 30);
+    this.destroy();
+  }
+
+  private createMovementPatterns() {
+    for (let i = 0; i <= 3; i++) {
+      this.movementPattern.push([
+        getRandomInt(this.x - 100, this.x + 100),
+        getRandomInt(this.y - 100, this.y + 100),
+      ]);
+    }
+  }
+
+  beginMovement() {
+    const randomPattern =
+      this.movementPattern[getRandomInt(0, this.movementPattern.length)];
+    this.scene?.add.tween({
+      targets: this,
+      y: randomPattern[1],
+      x: randomPattern[0],
+      ease: "Cubic.easeInOut",
+      duration: 1000,
+      angle: 180,
+      onComplete: () => {
+        this.beginMovement();
+      },
     });
   }
 }

@@ -1,6 +1,6 @@
 import { setRemainingYield } from "../../assets/data/stellar-bodies/StellarBodyRepository";
 import LargeStellarBody from "../../components/planet/LargeStellarBody";
-import { LaserImpact } from "../../components/player/MiningLaser";
+import { LaserImpact } from "../../components/player/LargeLaser";
 import { BLACK } from "../../utility/Constants";
 import { getRandomInt } from "../../utility/Utility";
 import { StateScene } from "../StateScene/StateScene";

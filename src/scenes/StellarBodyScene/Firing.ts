@@ -1,7 +1,7 @@
-import MiningLaser, {
+import LargeLaser, {
   LaserImpact,
   LaserTarget,
-} from "../../components/player/MiningLaser";
+} from "../../components/player/LargeLaser";
 
 /** Lasers, when hitting something, will leave an impact animation behind
  * This impact is added to a laserImpactGroup, where other entities can react
@@ -12,12 +12,12 @@ function setLaserLaserTargetCollision(
   laserGroup: Phaser.GameObjects.Group,
   laserTargetGroup: Phaser.GameObjects.Group,
   laserImpactGroup: Phaser.GameObjects.Group,
-  onLaserImpact?: (laser: MiningLaser, laserTarget: LaserTarget) => void
+  onLaserImpact?: (laser: LargeLaser, laserTarget: LaserTarget) => void
 ) {
   scene.physics.add.overlap(
     laserGroup,
     laserTargetGroup,
-    (laser: MiningLaser, laserTarget: LaserTarget) => {
+    (laser: LargeLaser, laserTarget: LaserTarget) => {
       onLaserImpact?.(laser, laserTarget);
       laser.destroy();
       laserImpactGroup.add(
@@ -34,7 +34,7 @@ export function buildFiringBehavior(
   laserGroup: Phaser.GameObjects.Group,
   laserTargetGroup: Phaser.GameObjects.Group,
   laserImpactGroup: Phaser.GameObjects.Group,
-  onLaserImpact?: (laser: MiningLaser, laserTarget: LaserTarget) => void
+  onLaserImpact?: (laser: LargeLaser, laserTarget: LaserTarget) => void
 ) {
   let fireCount = 0;
   scene.input.on("pointerdown", (pointer) => {
@@ -45,7 +45,7 @@ export function buildFiringBehavior(
       y: scene.game.canvas.height,
     };
 
-    const miningLaser = new MiningLaser({
+    const miningLaser = new LargeLaser({
       scene: scene,
       ...placeholderCoords,
       targetX: pointer.x,

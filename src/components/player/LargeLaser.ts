@@ -4,7 +4,7 @@ import {
   getRandomInt,
 } from "../../utility/Utility";
 
-export default class MiningLaser extends Phaser.Physics.Arcade.Sprite {
+export default class LargeLaser extends Phaser.Physics.Arcade.Sprite {
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,
@@ -45,7 +45,7 @@ export default class MiningLaser extends Phaser.Physics.Arcade.Sprite {
     const distance = Math.sqrt(Math.abs(targetX - x) + Math.abs(targetY - y));
     this.scene.tweens.add({
       targets: [this],
-      scale: { from: 1, to: 0.1 },
+      scale: { from: 1.5, to: 0.1 },
       duration: distance * 10,
     });
   }
@@ -62,6 +62,8 @@ export class LaserTarget extends Phaser.Physics.Arcade.Sprite {
 
 export class LaserImpact extends Phaser.Physics.Arcade.Sprite {
   public isActive = true;
+  //TODO: set this via game state
+  public potency = 25;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,

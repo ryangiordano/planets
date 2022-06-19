@@ -1,5 +1,5 @@
 import LargeStellarBody from "../../components/planet/LargeStellarBody";
-import { LaserImpact } from "../../components/player/MiningLaser";
+import { LaserImpact } from "../../components/player/LargeLaser";
 
 /** Establishes basic behavior on hitting a stellar body with a la */
 export function buildLaserImpactStellarBodyBehavior(
@@ -22,3 +22,4 @@ export function buildLaserImpactStellarBodyBehavior(
     }
   );
 }
+

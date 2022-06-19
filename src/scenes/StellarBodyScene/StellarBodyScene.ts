@@ -5,10 +5,10 @@ import { getRandomInt } from "../../utility/Utility";
 import { paintStars, warpOutStar, warpInStar } from "../utility/index";
 import LargeStellarBody from "../../components/planet/LargeStellarBody";
 import { getStellarBody } from "../../assets/data/stellar-bodies/StellarBodyRepository";
-import { LaserImpact } from "../../components/player/MiningLaser";
-import MiningLaser from "../../components/player/MiningLaser";
+import { LaserImpact } from "../../components/player/LargeLaser";
+import LargeLaser from "../../components/player/LargeLaser";
 import { buildFiringBehavior } from "./Firing";
-import { buildLaserImpactStellarBodyBehavior } from "./LaserImpactStellarBody";
+import { buildLaserImpactStellarBodyBehavior } from "./LaserImpact";
 import { handleHarvest } from "./HarvestStellarBody";
 import { renderStellarBody } from "./RenderStellarBody";
 import { StateScene } from "../StateScene";
@@ -16,6 +16,9 @@ import {
   addNotification,
   NotificationTypes,
 } from "../StateScene/NotificationManagement";
+import LaserMine from "../../components/enemies/LaserMine";
+import { WHITE } from "../../utility/Constants";
+import { enemyDamage } from "./EnemyImpact";
 
 /** Scene where the action takes place in the game.
  * Currently players can mine planets and moons.
@@ -32,6 +35,7 @@ export class StellarBodyScene extends DependentScene {
   private laserImpactGroup: Phaser.GameObjects.Group;
   private laserGroup: Phaser.GameObjects.Group;
   private stellarBodyGroup: Phaser.GameObjects.Group;
+  private enemyTargetGroup: Phaser.GameObjects.Group;
 
   constructor() {
     super({
@@ -42,7 +46,7 @@ export class StellarBodyScene extends DependentScene {
   static spriteDependencies: SpriteDependency[] = [
     ...LargeStellarBody.spriteDependencies,
     ...Ship.spriteDependencies,
-    ...MiningLaser.spriteDependencies,
+    ...LargeLaser.spriteDependencies,
     ...LaserImpact.spriteDependencies,
     {
       frameHeight: 128,
@@ -67,6 +71,7 @@ export class StellarBodyScene extends DependentScene {
     this.laserImpactGroup = new Phaser.GameObjects.Group(this, []);
     this.laserGroup = new Phaser.GameObjects.Group(this, []);
     this.laserTargetGroup = new Phaser.GameObjects.Group(this, []);
+    this.enemyTargetGroup = new Phaser.GameObjects.Group(this, []);
     this.paintStars();
     this.stellarBodyContainer = this.add.container(centerX, centerY);
 
@@ -89,9 +94,15 @@ export class StellarBodyScene extends DependentScene {
           );
         })
     );
-    setTimeout(() => {
-      addNotification(this, `Approaching  ${stellarBodyObject.name}`);
-    }, 500);
+
+    this.physics.add.overlap(
+      this.laserImpactGroup,
+      this.enemyTargetGroup,
+      (laserImpact: LaserImpact, laserMine: LaserMine) => {
+        laserMine.takeDamage(laserImpact.potency, laserImpact);
+        laserImpact.destroy();
+      }
+    );
 
     renderStellarBody({
       scene: this,
@@ -101,10 +112,43 @@ export class StellarBodyScene extends DependentScene {
       centerX: 0,
       centerY: 0,
     });
-
+    const laserMine = this.add.existing(
+      new LaserMine({
+        scene: this,
+        x: -150,
+        y: -150,
+        onLaserFire: (laser) => {
+          laser.destroy();
+        },
+        id: 0,
+      })
+    );
+    const laserMine2 = this.add.existing(
+      new LaserMine({
+        scene: this,
+        x: 150,
+        y: 150,
+        onLaserFire: (laser) => {
+          laser.destroy();
+        },
+        id: 0,
+      })
+    );
+    this.enemyTargetGroup.add(laserMine);
+    this.enemyTargetGroup.add(laserMine2);
+    this.stellarBodyContainer.add(laserMine);
+    this.stellarBodyContainer.add(laserMine2);
     await this.warpIn();
 
     this.approachStellarBody();
+    setTimeout(() => {
+      addNotification(this, `Approaching  ${stellarBodyObject.name}`);
+    }, 500);
+    if (this.enemyTargetGroup.getLength()) {
+      setTimeout(() => {
+        addNotification(this, `Hostiles present`, NotificationTypes.urgent);
+      }, 1000);
+    }
   }
 
   /** Set escape and firing behavior */
