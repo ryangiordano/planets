@@ -27,7 +27,7 @@ function shockWave(
   });
 }
 
-export function enemyDamage(
+export function sparkImpact(
   scene: Phaser.Scene,
   color: number,
   numberToSpawn: number,

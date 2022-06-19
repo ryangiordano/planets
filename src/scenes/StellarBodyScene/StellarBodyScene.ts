@@ -18,7 +18,7 @@ import {
 } from "../StateScene/NotificationManagement";
 import LaserMine from "../../components/enemies/LaserMine";
 import { WHITE } from "../../utility/Constants";
-import { enemyDamage } from "./EnemyImpact";
+import { sparkImpact } from "./EnemyImpact";
 
 /** Scene where the action takes place in the game.
  * Currently players can mine planets and moons.
