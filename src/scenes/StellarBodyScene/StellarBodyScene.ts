@@ -11,14 +11,11 @@ import { buildFiringBehavior } from "./Firing";
 import { buildLaserImpactStellarBodyBehavior } from "./LaserImpact";
 import { handleHarvest } from "./HarvestStellarBody";
 import { renderStellarBody } from "./RenderStellarBody";
-import { StateScene } from "../StateScene";
 import {
   addNotification,
   NotificationTypes,
 } from "../StateScene/NotificationManagement";
 import LaserMine from "../../components/enemies/LaserMine";
-import { WHITE } from "../../utility/Constants";
-import { sparkImpact } from "./EnemyImpact";
 import {
   removeStellarEnemy,
   EnemyObject,
@@ -83,22 +80,6 @@ export class StellarBodyScene extends DependentScene {
     this.setSceneKeyEvents(referringSystemId);
 
     const stellarBodyObject = getStellarBody(stellarBodyId);
-    buildLaserImpactStellarBodyBehavior(
-      this,
-      this.laserImpactGroup,
-      this.stellarBodyGroup,
-      (laserImpact, stellarBody) =>
-        !stellarBody.noYieldLeft() &&
-        handleHarvest(this, laserImpact, stellarBody, () => {
-          const sbi = getStellarBody(stellarBody.stellarBodyId);
-          stellarBody.bodyExhausted();
-          addNotification(
-            this,
-            `${sbi.name}'s resources completely mined!`,
-            NotificationTypes.positive
-          );
-        })
-    );
 
     this.physics.add.overlap(
       this.laserImpactGroup,
@@ -110,6 +91,25 @@ export class StellarBodyScene extends DependentScene {
           (isDestroyed: boolean) => {
             if (isDestroyed) {
               removeStellarEnemy(stellarBodyId, laserMine["enemyId"]);
+              if (!this.hasEnemies()) {
+                addNotification(this, `No more hostiles.`);
+                buildLaserImpactStellarBodyBehavior(
+                  this,
+                  this.laserImpactGroup,
+                  this.stellarBodyGroup,
+                  (laserImpact, stellarBody) =>
+                    !stellarBody.noYieldLeft() &&
+                    handleHarvest(this, laserImpact, stellarBody, () => {
+                      const sbi = getStellarBody(stellarBody.stellarBodyId);
+                      stellarBody.bodyExhausted();
+                      addNotification(
+                        this,
+                        `${sbi.name}'s resources completely mined!`,
+                        NotificationTypes.positive
+                      );
+                    })
+                );
+              }
             }
           }
         );
@@ -131,19 +131,17 @@ export class StellarBodyScene extends DependentScene {
     await this.warpIn();
 
     this.approachStellarBody();
-    setTimeout(() => {
-      addNotification(this, `Approaching  ${stellarBodyObject.name}`);
-    }, 500);
-    if (this.enemyTargetGroup.getLength()) {
-      setTimeout(() => {
-        addNotification(this, `Hostiles present`, NotificationTypes.urgent);
-      }, 1000);
+    addNotification(this, `Approaching  ${stellarBodyObject.name}`);
+    if (this.hasEnemies()) {
+      addNotification(this, `Hostiles present`, NotificationTypes.urgent);
     }
   }
 
-  private renderEnemies(enemyObjects: EnemyObject[]) {
-    console.log(enemyObjects);
+  private hasEnemies() {
+    return Boolean(this.enemyTargetGroup.getLength());
+  }
 
+  private renderEnemies(enemyObjects: EnemyObject[]) {
     enemyObjects.forEach((eo) => {
       const cls = EnemyTypeMap.get(eo.enemyTemplate.enemyType);
       const enemy = this.add.existing(

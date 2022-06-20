@@ -19,6 +19,7 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
   ];
   public enemyId: number;
   private movementPattern: [number, number][] = [];
+
   constructor({
     scene,
     x,
@@ -82,22 +83,28 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
       this.explode(impactCoords);
       onResolvedHit(true);
     } else {
-      sparkImpact(this.scene, WHITE.hex, getRandomInt(10, 20), impactCoords);
+      sparkImpact(
+        this.scene,
+        WHITE.hex,
+        getRandomInt(5, 10),
+        impactCoords,
+        15,
+        150
+      );
       onResolvedHit(false);
     }
   }
 
   public explode(impactCoords: Coords) {
-    sparkImpact(this.scene, WHITE.hex, getRandomInt(30, 40), impactCoords, 30);
-    this.scene.tweens.add({
-      targets: this,
-      scale: 0,
-      duration: 500,
-      alpha: 0,
-      onComplete: () => {
-        this.destroy();
-      },
-    });
+    sparkImpact(
+      this.scene,
+      WHITE.hex,
+      getRandomInt(40, 50),
+      impactCoords,
+      30,
+      200
+    );
+    this.destroy();
   }
 
   private createMovementPatterns() {

@@ -62,8 +62,6 @@ export class LaserTarget extends Phaser.Physics.Arcade.Sprite {
 
 export class LaserImpact extends Phaser.Physics.Arcade.Sprite {
   public isActive = true;
-  //TODO: set this via game state
-  public potency = 25;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,
@@ -72,7 +70,13 @@ export class LaserImpact extends Phaser.Physics.Arcade.Sprite {
       url: "/src/assets/sprites/impact.png",
     },
   ];
-  constructor(scene, x, y) {
+  constructor(
+    scene,
+    x,
+    y,
+    //TODO: set this via game state
+    public potency = 20
+  ) {
     super(scene, x, y, null);
     scene.physics.add.existing(this);
     scene.add.existing(this);
@@ -94,7 +98,7 @@ export class LaserImpact extends Phaser.Physics.Arcade.Sprite {
     ]);
     setTimeout(() => {
       this.destroy?.();
-    }, 2000);
+    }, 500);
   }
 
   public handleImpact() {

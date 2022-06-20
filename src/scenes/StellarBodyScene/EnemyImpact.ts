@@ -32,7 +32,8 @@ export function sparkImpact(
   color: number,
   numberToSpawn: number,
   coords: { x: number; y: number },
-  explosionSize?: number
+  explosionSize?: number,
+  potency: number = 100
 ) {
   shockWave(scene, WHITE.hex, coords, explosionSize);
   for (let i = 0; i <= numberToSpawn; i++) {
@@ -41,8 +42,14 @@ export function sparkImpact(
 
     scene.tweens.add({
       targets: [square],
-      x: { from: coords.x, to: getRandomInt(coords.x - 100, coords.x + 100) },
-      y: { from: coords.y, to: getRandomInt(coords.y - 100, coords.y + 100) },
+      x: {
+        from: coords.x,
+        to: getRandomInt(coords.x - potency, coords.x + potency),
+      },
+      y: {
+        from: coords.y,
+        to: getRandomInt(coords.y - potency, coords.y + potency),
+      },
       duration: getRandomInt(300, 500),
       angle: getRandomInt(0, 360),
       ease: "Power4",
