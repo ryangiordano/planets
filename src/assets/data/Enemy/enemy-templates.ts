@@ -5,5 +5,6 @@ export default {
     baseHP: 50,
     fireRate: 2000,
     enemyType: 0,
+    XP: 20,
   },
 };

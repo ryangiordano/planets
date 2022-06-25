@@ -4,6 +4,7 @@ import stellarEnemies from "./stellar-enemies";
 
 export type EnemyData = {
   id: number;
+  level: number;
   enemyTemplate: number;
 };
 export type EnemyTemplateData = {
@@ -12,6 +13,7 @@ export type EnemyTemplateData = {
   baseHP: number;
   fireRate: number;
   enemyType: EnemyType;
+  XP: number;
 };
 
 export type StellarEnemiesData = {

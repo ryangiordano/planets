@@ -1,4 +1,4 @@
-import { ShipStatusObject } from "../../../scenes/StateScene/ShipManagement";
+import { ShipStatusObject } from "../../../scenes/StateScene/types";
 import { Repository } from "../repository/Repository";
 
 export type SaveData = {

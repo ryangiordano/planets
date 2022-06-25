@@ -6,6 +6,8 @@ import { buildResourceUI } from "./ResourceUI";
 import { buildNotificationUI } from "./NotificationUI";
 import NotificationView from "../../components/UI/Notification";
 import { buildTooltipUI } from "./TooltipUI";
+import { StateScene } from "../StateScene/StateScene";
+import { buildXPUI } from "./buildXPUI";
 
 export class UIScene extends DependentScene {
   private UIParent: Phaser.GameObjects.Container;
@@ -25,11 +27,17 @@ export class UIScene extends DependentScene {
   preload(): void {}
 
   create(): void {
+    const stateScene = this.scene.get("StateScene") as StateScene;
     this.buildUIParent();
     const { resourceContainer, contentMap } = buildResourceUI(this);
 
     buildNotificationUI(this);
     buildTooltipUI(this);
+    buildXPUI(
+      this,
+      stateScene.shipStatusManager.shipStatus.xpGainedThisLevel,
+      stateScene.shipStatusManager.shipStatus.getXPToNextLevel()
+    );
     this.UIParent.add(resourceContainer);
     this.contentMap = contentMap;
   }

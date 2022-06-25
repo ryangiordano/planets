@@ -1,5 +1,6 @@
 import LaserMine from "../../../components/enemies/LaserMine";
 import {
+  EnemyData,
   EnemyTemplateData,
   EnemyType,
   getEnemyById,
@@ -12,6 +13,7 @@ import {
 
 export type EnemyObject = {
   id: number;
+  level: number;
   enemyTemplate: EnemyTemplateData;
 };
 
@@ -29,9 +31,13 @@ export const EnemyTypeMap = new Map<EnemyType, EnemyTypes>([
   [EnemyType.laserMine, LaserMine],
 ]);
 
-export function randomlyCreateEnemyData(templateId: number): EnemyObject {
+export function randomlyCreateEnemyData(
+  templateId: number,
+  systemLevel: number
+): EnemyObject {
   const enemyData = {
     id: Math.random(),
+    level: systemLevel,
     enemyTemplate: templateId,
   };
 

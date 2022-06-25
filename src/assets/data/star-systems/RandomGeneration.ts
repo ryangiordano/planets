@@ -76,6 +76,7 @@ function createRandomStellarBodyObject({
   mineralMaxYield,
   gasMaxYield,
   hasEnemies,
+  systemLevel,
 }: {
   numberOfMinerals?: PossibleCompositionValues;
   numberOfGasElements?: PossibleCompositionValues;
@@ -89,6 +90,7 @@ function createRandomStellarBodyObject({
   mineralMaxYield: number;
   gasMaxYield: number;
   hasEnemies?: boolean;
+  systemLevel: number;
 }): StellarBodyObject {
   if (!numberOfMinerals && !numberOfGasElements) {
     const hasMinerals = isWinningRoll(0.5);
@@ -130,6 +132,7 @@ function createRandomStellarBodyObject({
         maxDistanceFromCenter: 50,
         mineralMaxYield,
         gasMaxYield,
+        systemLevel,
       })
     );
   }
@@ -148,7 +151,9 @@ function createRandomStellarBodyObject({
     /** For now, let's just say there is a 100% chance the system has enemies */
     enemies.push(0, 0, 0);
 
-    const systemEnemies = enemies.map((e) => randomlyCreateEnemyData(e));
+    const systemEnemies = enemies.map((e) =>
+      randomlyCreateEnemyData(e, systemLevel)
+    );
 
     stellarEnemies = createStellarEnemies(
       id,
@@ -190,6 +195,7 @@ export function createRandomSystem(
     minSize: 3,
     gasMaxYield,
     mineralMaxYield,
+    systemLevel,
   });
   const numberOfPlanets = getRandomInt(1, 10);
   const planets: StellarBodyObject[] = [];
@@ -203,6 +209,7 @@ export function createRandomSystem(
       gasMaxYield,
       mineralMaxYield,
       hasEnemies: isWinningRoll(1),
+      systemLevel,
     });
 
     planets.push(planet);

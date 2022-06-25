@@ -61,8 +61,8 @@ export class BootScene extends Phaser.Scene {
       setTimeout(() => {
         this.scene.start("SystemSelectScene");
         // this.scene.start("StellarBodyScene", { stellarBodyId: 1 });
-        this.scene.start("UIScene");
         this.scene.start("StateScene");
+        this.scene.start("UIScene");
       }, 1);
     });
   }

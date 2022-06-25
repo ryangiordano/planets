@@ -16,6 +16,7 @@ import {
   NotificationTypes,
 } from "../StateScene/NotificationManagement";
 import LaserMine from "../../components/enemies/LaserMine";
+import { StateScene } from "../StateScene/StateScene";
 import {
   removeStellarEnemy,
   EnemyObject,
@@ -29,6 +30,8 @@ import {
  * - planetary orbital batteries that fire lasers and missiles
  * - blockade ships/large battleships to negotiate with or take down
  * - waves of enemies from the planet to attack player
+ * - game of simon with shield generator
+ * - giant space snake
  */
 export class StellarBodyScene extends DependentScene {
   private stars: Phaser.GameObjects.Sprite[];
@@ -80,7 +83,7 @@ export class StellarBodyScene extends DependentScene {
     this.setSceneKeyEvents(referringSystemId);
 
     const stellarBodyObject = getStellarBody(stellarBodyId);
-
+    const stateScene = this.scene.get("StateScene") as StateScene;
     this.physics.add.overlap(
       this.laserImpactGroup,
       this.enemyTargetGroup,
@@ -90,6 +93,7 @@ export class StellarBodyScene extends DependentScene {
           laserImpact,
           (isDestroyed: boolean) => {
             if (isDestroyed) {
+              stateScene.shipStatusManager.incrementXP(laserMine.xpValue);
               removeStellarEnemy(stellarBodyId, laserMine["enemyId"]);
               if (!this.hasEnemies()) {
                 addNotification(this, `No more hostiles.`);
@@ -159,6 +163,7 @@ export class StellarBodyScene extends DependentScene {
             laser.destroy();
           },
           id: eo.id,
+          xpValue: eo.level * eo.enemyTemplate.XP,
         })
       );
       this.enemyTargetGroup.add(enemy);

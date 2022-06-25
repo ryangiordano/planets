@@ -7,11 +7,7 @@ import {
   buildResourceManagement,
   ResourceStateManager,
 } from "./ResourceManagement";
-import {
-  buildShipManagement,
-  ShipStatus,
-  ShipStatusManager,
-} from "./ShipManagement";
+import { buildShipManagement, ShipStatusManager } from "./ShipManagement";
 import { getSaveData } from "../../assets/data/player/SaveController";
 
 //TODO: Make this a function of the ship's upgrades

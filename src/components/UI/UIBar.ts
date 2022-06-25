@@ -1,5 +1,3 @@
-import { WHITE } from "../../utility/Constants";
-
 export enum BarType {
   horizontal,
   vertical,

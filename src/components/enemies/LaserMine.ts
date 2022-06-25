@@ -8,6 +8,7 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
   private firingInterval: NodeJS.Timer;
   public currentHP: number;
   public maxHP: number;
+  public xpValue: number;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,
@@ -26,12 +27,14 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
     y,
     onLaserFire,
     id,
+    xpValue,
   }: {
     scene: Phaser.Scene;
     x: number;
     y: number;
     onLaserFire: (laser: EnemyLaser) => void;
     id: number;
+    xpValue: number;
   }) {
     super(scene, x, y, "enemy", 0);
     this.enemyId = id;
@@ -40,6 +43,8 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
     this.setTint(WHITE.hex);
     this.setScale(0.3);
     this.createMovementPatterns();
+
+    this.xpValue = xpValue;
 
     //TODO: Set HP from data
     this.currentHP = 100;

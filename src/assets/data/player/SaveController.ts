@@ -5,8 +5,8 @@ import {
   StarSystemObject,
 } from "../star-systems/StarSystemRepository";
 import { createRandomSystem } from "../star-systems/RandomGeneration";
-import { ShipStatusObject } from "../../../scenes/StateScene/ShipManagement";
 import { getDefaultShipStatus } from "./SaveRepository";
+import { ShipStatusObject } from "../../../scenes/StateScene/types";
 
 export type SaveObject = {
   id: number;
