@@ -43,16 +43,18 @@ export class BootScene extends Phaser.Scene {
     }
   }
   private runStartupProcess() {
+    const centerX = this.game.canvas.width / 2;
+    const centerY = this.game.canvas.height / 2;
     const animationHelper = new AnimationHelper(this);
     animationHelper.createGameAnimations(
       this.cache.json.get("ryanAndLoAnimation").anims
     );
-    const sprite = this.add.sprite(400, 300, "ryanandlo");
+    const sprite = this.add.sprite(centerX, centerY, "ryanandlo");
     sprite.scaleX = 1;
     sprite.scaleY = 1;
     sprite.anims.play("shine-in");
     sprite.on("animationcomplete", () => {
-      this.add.text(300, 330, "Catshape Daruma®", {
+      this.add.text(centerX + 200, centerY + 100, "Catshape Daruma®", {
         fontFamily: "pixel",
         fontSize: "20px",
         color: BLACK.str,
@@ -63,7 +65,7 @@ export class BootScene extends Phaser.Scene {
         // this.scene.start("StellarBodyScene", { stellarBodyId: 1 });
         this.scene.start("StateScene");
         this.scene.start("UIScene");
-      }, 1);
+      }, 1000);
     });
   }
 
