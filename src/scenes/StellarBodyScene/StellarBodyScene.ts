@@ -93,22 +93,7 @@ export class StellarBodyScene extends DependentScene {
               removeStellarEnemy(stellarBodyId, laserMine["enemyId"]);
               if (!this.hasEnemies()) {
                 addNotification(this, `No more hostiles.`);
-                buildLaserImpactStellarBodyBehavior(
-                  this,
-                  this.laserImpactGroup,
-                  this.stellarBodyGroup,
-                  (laserImpact, stellarBody) =>
-                    !stellarBody.noYieldLeft() &&
-                    handleHarvest(this, laserImpact, stellarBody, () => {
-                      const sbi = getStellarBody(stellarBody.stellarBodyId);
-                      stellarBody.bodyExhausted();
-                      addNotification(
-                        this,
-                        `${sbi.name}'s resources completely mined!`,
-                        NotificationTypes.positive
-                      );
-                    })
-                );
+                this.setMineable();
               }
             }
           }
@@ -134,7 +119,28 @@ export class StellarBodyScene extends DependentScene {
     addNotification(this, `Approaching  ${stellarBodyObject.name}`);
     if (this.hasEnemies()) {
       addNotification(this, `Hostiles present`, NotificationTypes.urgent);
+    } else {
+      this.setMineable();
     }
+  }
+
+  private setMineable() {
+    buildLaserImpactStellarBodyBehavior(
+      this,
+      this.laserImpactGroup,
+      this.stellarBodyGroup,
+      (laserImpact, stellarBody) =>
+        !stellarBody.noYieldLeft() &&
+        handleHarvest(this, laserImpact, stellarBody, () => {
+          const sbi = getStellarBody(stellarBody.stellarBodyId);
+          stellarBody.bodyExhausted();
+          addNotification(
+            this,
+            `${sbi.name}'s resources completely mined!`,
+            NotificationTypes.positive
+          );
+        })
+    );
   }
 
   private hasEnemies() {

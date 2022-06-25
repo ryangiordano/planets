@@ -7,6 +7,12 @@ import {
   buildResourceManagement,
   ResourceStateManager,
 } from "./ResourceManagement";
+import {
+  buildShipManagement,
+  ShipStatus,
+  ShipStatusManager,
+} from "./ShipManagement";
+import { getSaveData } from "../../assets/data/player/SaveController";
 
 //TODO: Make this a function of the ship's upgrades
 const RESOURCE_GATHER_SIZE = 0.25;
@@ -16,6 +22,7 @@ export class StateScene extends DependentScene {
   public resourceGatherSize: number = RESOURCE_GATHER_SIZE;
   public resourceManager: ResourceStateManager;
   public notificationManager: NotificationManager;
+  public shipStatusManager: ShipStatusManager;
   constructor() {
     super({
       key: "StateScene",
@@ -25,8 +32,10 @@ export class StateScene extends DependentScene {
   preload(): void {}
 
   create(): void {
+    const save = getSaveData();
     this.resourceManager = buildResourceManagement(this);
     this.notificationManager = buildNotificationManagement(this);
+    this.shipStatusManager = buildShipManagement(this, save.shipStatus);
   }
 
   public incrementSystemLevel() {

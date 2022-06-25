@@ -5,12 +5,15 @@ import {
   StarSystemObject,
 } from "../star-systems/StarSystemRepository";
 import { createRandomSystem } from "../star-systems/RandomGeneration";
+import { ShipStatusObject } from "../../../scenes/StateScene/ShipManagement";
+import { getDefaultShipStatus } from "./SaveRepository";
 
 export type SaveObject = {
   id: number;
   startingSystem: StarSystemObject;
   /** id of the bodies the user has access to */
   access: number[];
+  shipStatus: ShipStatusObject;
 };
 
 export function getSaveData(id?: number): SaveObject {
@@ -20,6 +23,7 @@ export function getSaveData(id?: number): SaveObject {
       id: Math.random() * new Date().getTime(),
       startingSystem,
       access: [startingSystem.id],
+      shipStatus: { ...getDefaultShipStatus().shipStatus },
     };
   }
 
@@ -30,6 +34,7 @@ export function getSaveData(id?: number): SaveObject {
     id: saveData.id,
     startingSystem,
     access: saveData.access,
+    shipStatus: saveData.shipStatus,
   };
 }
 /** In the absence of save data, generate a random world state */
