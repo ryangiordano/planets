@@ -65,7 +65,7 @@ export class BootScene extends Phaser.Scene {
         // this.scene.start("StellarBodyScene", { stellarBodyId: 1 });
         this.scene.start("StateScene");
         this.scene.start("UIScene");
-      }, 1000);
+      }, 1);
     });
   }
 

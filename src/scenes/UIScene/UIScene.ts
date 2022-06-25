@@ -8,6 +8,7 @@ import NotificationView from "../../components/UI/Notification";
 import { buildTooltipUI } from "./TooltipUI";
 import { StateScene } from "../StateScene/StateScene";
 import { buildXPUI } from "./buildXPUI";
+import { buildShipStatusUI } from "./ShipStatusUI";
 
 export class UIScene extends DependentScene {
   private UIParent: Phaser.GameObjects.Container;
@@ -38,6 +39,8 @@ export class UIScene extends DependentScene {
       stateScene.shipStatusManager.shipStatus.xpGainedThisLevel,
       stateScene.shipStatusManager.shipStatus.getXPToNextLevel()
     );
+
+    const shipStatusIndicator = buildShipStatusUI(this);
     this.UIParent.add(resourceContainer);
     this.contentMap = contentMap;
   }
