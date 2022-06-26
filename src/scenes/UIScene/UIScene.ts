@@ -40,7 +40,7 @@ export class UIScene extends DependentScene {
       stateScene.shipStatusManager.shipStatus.getXPToNextLevel()
     );
 
-    const shipStatusIndicator = buildShipStatusUI(this);
+    buildShipStatusUI(this);
     this.UIParent.add(resourceContainer);
     this.contentMap = contentMap;
   }
