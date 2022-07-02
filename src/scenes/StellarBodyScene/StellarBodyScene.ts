@@ -152,6 +152,7 @@ export class StellarBodyScene extends DependentScene {
   }
 
   private renderEnemies(enemyObjects: EnemyObject[]) {
+    const stateScene = this.scene.get("StateScene") as StateScene;
     enemyObjects.forEach((eo) => {
       const cls = EnemyTypeMap.get(eo.enemyTemplate.enemyType);
       const enemy = this.add.existing(
@@ -161,9 +162,11 @@ export class StellarBodyScene extends DependentScene {
           y: getRandomInt(-200, 200),
           onLaserFire: (laser) => {
             laser.destroy();
+            stateScene.shipStatusManager.takeDamage(laser.potency);
           },
           id: eo.id,
           xpValue: eo.level * eo.enemyTemplate.XP,
+          level: eo.level
         })
       );
       this.enemyTargetGroup.add(enemy);

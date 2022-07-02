@@ -3,7 +3,7 @@ import { WHITE } from "../../../utility/Constants";
 
 const shieldsUp = (
   scene: Phaser.Scene,
-  shields: Phaser.GameObjects.Ellipse
+  shields: Phaser.GameObjects.Ellipse[]
 ) => {
   scene.add.tween({
     targets: shields,
@@ -22,7 +22,7 @@ const shieldsUp = (
 
 const shieldsDown = (
   scene: Phaser.Scene,
-  shields: Phaser.GameObjects.Ellipse
+  shields: Phaser.GameObjects.Ellipse[]
 ) => {
   scene.add.tween({
     targets: shields,
@@ -125,19 +125,21 @@ export class ShipShieldsIndicator extends Phaser.GameObjects.Container {
       shields.push(this.firstCircle);
     }
     shields.forEach((s) => shieldsUp(this.scene, s));
+    shieldsUp(this.scene, shields);
   }
   private shieldsDown(percentage: number) {
     const shields = [];
     if (percentage < 0.7 && this.thirdCircle.alpha === 1) {
       shields.push(this.thirdCircle);
     }
-    if (percentage < 0.5 && this.thirdCircle.alpha === 1) {
+    if (percentage < 0.5 && this.secondCircle.alpha === 1) {
       shields.push(this.secondCircle);
     }
-    if (percentage < 0.3 && this.thirdCircle.alpha === 1) {
+    if (percentage < 0.3 && this.firstCircle.alpha === 1) {
       shields.push(this.firstCircle);
     }
     shields.forEach((s) => shieldsDown(this.scene, s));
+    shieldsDown(this.scene, shields);
   }
 }
 

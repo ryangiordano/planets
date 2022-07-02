@@ -28,6 +28,7 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
     onLaserFire,
     id,
     xpValue,
+    level,
   }: {
     scene: Phaser.Scene;
     x: number;
@@ -35,6 +36,7 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
     onLaserFire: (laser: EnemyLaser) => void;
     id: number;
     xpValue: number;
+    level: number;
   }) {
     super(scene, x, y, "enemy", 0);
     this.enemyId = id;
@@ -66,6 +68,8 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
         onReachDestination: (laser) => {
           onLaserFire(laser);
         },
+        //TODO: Placeholder value
+        potency: level * 2.5,
       });
 
       this.parentContainer.add(laser);

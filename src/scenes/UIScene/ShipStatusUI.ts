@@ -9,11 +9,30 @@ export function buildShipStatusUI(scene: Phaser.Scene) {
     shieldPercentage: 1,
   });
 
-
-  scene.game.events.on("player-shield-increase", () => {});
-  scene.game.events.on("player-shield-decrease", () => {});
-  scene.game.events.on("player-health-increase", () => {});
-  scene.game.events.on("player-health-decrease", () => {});
+  scene.game.events.on(
+    "player-shield-increase",
+    ({ currentPercentage }: { currentPercentage: number }) => {
+      shipStatusIndicator.shieldsIndicator.setShieldPercentage(
+        currentPercentage
+      );
+    }
+  );
+  scene.game.events.on(
+    "player-shield-decrease",
+    ({ currentPercentage }: { currentPercentage: number }) => {
+      shipStatusIndicator.shieldsIndicator.setShieldPercentage(
+        currentPercentage
+      );
+    }
+  );
+  scene.game.events.on(
+    "player-health-increase",
+    ({ currentPercentage }: { currentPercentage: number }) => {}
+  );
+  scene.game.events.on(
+    "player-health-decrease",
+    ({ currentPercentage }: { currentPercentage: number }) => {}
+  );
 
   return shipStatusIndicator;
 }

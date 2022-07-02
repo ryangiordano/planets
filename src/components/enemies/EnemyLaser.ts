@@ -1,6 +1,7 @@
 import { getAngleDegreesBetweenPoints } from "../../utility/Utility";
 
 export default class EnemyLaser extends Phaser.Physics.Arcade.Sprite {
+  public potency: number;
   static spriteDependencies: SpriteDependency[] = [
     {
       frameHeight: 128,
@@ -15,6 +16,7 @@ export default class EnemyLaser extends Phaser.Physics.Arcade.Sprite {
     y,
     targetX,
     targetY,
+    potency,
     onReachDestination,
   }: {
     scene: Phaser.Scene;
@@ -22,9 +24,11 @@ export default class EnemyLaser extends Phaser.Physics.Arcade.Sprite {
     y: number;
     targetX: number;
     targetY: number;
+    potency: number;
     onReachDestination: (laser: EnemyLaser) => void;
   }) {
     super(scene, x, y, "large_laser", 0);
+    this.potency = potency;
     const angleDeg = getAngleDegreesBetweenPoints(
       { x: targetX, y: targetY },
       { x, y }

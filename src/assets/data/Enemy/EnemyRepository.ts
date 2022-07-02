@@ -14,6 +14,7 @@ export type EnemyTemplateData = {
   fireRate: number;
   enemyType: EnemyType;
   XP: number;
+  level: number;
 };
 
 export type StellarEnemiesData = {

@@ -20,7 +20,9 @@ export function buildShipManagement(
     );
 
     scene.game.events.emit("player-health-increase", {
-      healthValue: shipStatus.healthModule.currentValue,
+      currentPercentage:
+        shipStatus.healthModule.currentValue /
+        shipStatus.healthModule.getMaxValue(),
     });
   }
 
@@ -31,7 +33,9 @@ export function buildShipManagement(
     );
 
     scene.game.events.emit("player-health-decrease", {
-      healthValue: shipStatus.healthModule.currentValue,
+      currentPercentage:
+        shipStatus.healthModule.currentValue /
+        shipStatus.healthModule.getMaxValue(),
     });
   }
 
@@ -42,7 +46,9 @@ export function buildShipManagement(
     );
 
     scene.game.events.emit("player-shield-increase", {
-      shieldValue: shipStatus.shieldModule.currentValue,
+      currentPercentage:
+        shipStatus.shieldModule.currentValue /
+        shipStatus.shieldModule.getMaxValue(),
     });
   }
 
@@ -53,7 +59,9 @@ export function buildShipManagement(
     );
 
     scene.game.events.emit("player-shield-decrease", {
-      shieldValue: shipStatus.shieldModule.currentValue,
+      currentPercentage:
+        shipStatus.shieldModule.currentValue /
+        shipStatus.shieldModule.getMaxValue(),
     });
   }
 
@@ -73,11 +81,21 @@ export function buildShipManagement(
     });
   }
 
+  function takeDamage(potency: number) {
+    if (
+      shipStatus.shieldModule.currentValue <= 0 &&
+      shipStatus.healthModule.currentValue - potency <= 0
+    ) {
+      scene.game.events.emit("game-over");
+    } else if (shipStatus.shieldModule.currentValue <= 0) {
+      decrementHP(potency);
+    } else {
+      decrementShields(potency);
+    }
+  }
+
   return {
-    incrementHP,
-    decrementHP,
-    incrementShields,
-    decrementShields,
+    takeDamage,
     incrementXP,
     increaseModuleLevel,
     shipStatus,
