@@ -123,8 +123,6 @@ function damageShip(scene: Phaser.Scene, projectile: Projectile) {
   const stateScene = scene.scene.get("StateScene") as StateScene;
   const { shipStatusManager } = stateScene;
   if (shipStatusManager.shipStatus.shieldModule.currentValue) {
-    //handle visual for shield damage
-
     const circle = scene.add.circle(
       getRandomInt(0, scene.game.canvas.width),
       getRandomInt(0, scene.game.canvas.height),

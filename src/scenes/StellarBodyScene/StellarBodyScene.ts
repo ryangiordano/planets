@@ -166,7 +166,7 @@ export class StellarBodyScene extends DependentScene {
           onLaserFire: (laser) => {
             laser.destroy();
             //TODO: Handle this somewhere else...
-            if (isWinningRoll(1)) {
+            if (isWinningRoll(0.5)) {
               this.shipLogic.damageShip(this, laser);
             }
           },
