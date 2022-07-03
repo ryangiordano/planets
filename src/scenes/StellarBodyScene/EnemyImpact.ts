@@ -1,5 +1,6 @@
 import { BLACK, WHITE } from "../../utility/Constants";
 import { getRandomInt } from "../../utility/Utility";
+import { fadeResourceTowardCoordinate } from "./shared";
 
 function shockWave(
   scene: Phaser.Scene,
@@ -33,7 +34,8 @@ export function sparkImpact(
   numberToSpawn: number,
   coords: { x: number; y: number },
   explosionSize?: number,
-  potency: number = 100
+  potency: number = 100,
+  onComplete?: (spark: Phaser.GameObjects.Rectangle) => void
 ) {
   shockWave(scene, WHITE.hex, coords, explosionSize);
   for (let i = 0; i <= numberToSpawn; i++) {
@@ -54,17 +56,44 @@ export function sparkImpact(
       angle: getRandomInt(0, 360),
       ease: "Power4",
       onComplete: () => {
-        scene.tweens.add({
-          targets: [square],
-          scale: { from: 1, to: 0 },
-          duration: getRandomInt(500, 800),
-          alpha: { from: 1, to: 0 },
-          // ease: "Power4",
-          onComplete: () => {
-            square.destroy();
-          },
-        });
+        if (onComplete) {
+          onComplete(square);
+        } else {
+          scene.tweens.add({
+            targets: [square],
+            scale: { from: 1, to: 0 },
+            duration: getRandomInt(500, 800),
+            alpha: { from: 1, to: 0 },
+            // ease: "Power4",
+            onComplete: () => {
+              square.destroy();
+            },
+          });
+        }
       },
     });
   }
+}
+
+export function enemyExplode(scene: Phaser.Scene, impactCoords: Coords) {
+  sparkImpact(
+    scene,
+    WHITE.hex,
+    getRandomInt(40, 50),
+    impactCoords,
+    30,
+    200,
+    (spark) => {
+      const randomX = getRandomInt(-270, -170);
+      const randomY = getRandomInt(-300, -250);
+
+      fadeResourceTowardCoordinate(
+        scene,
+        spark,
+        scene.game.canvas.width + randomX,
+        scene.game.canvas.height + randomY,
+        getRandomInt(500, 800)
+      );
+    }
+  );
 }

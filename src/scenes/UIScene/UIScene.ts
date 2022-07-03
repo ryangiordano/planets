@@ -9,6 +9,8 @@ import { buildTooltipUI } from "./TooltipUI";
 import { StateScene } from "../StateScene/StateScene";
 import { buildXPUI } from "./buildXPUI";
 import { buildShipStatusUI } from "./ShipStatusUI";
+import Shield from "../../components/icons/Shield";
+import Heart from "../../components/icons/Heart";
 
 export class UIScene extends DependentScene {
   private UIParent: Phaser.GameObjects.Container;
@@ -22,6 +24,8 @@ export class UIScene extends DependentScene {
   static spriteDependencies: SpriteDependency[] = [
     ...UIBar.spriteDependencies,
     ...NotificationView.spriteDependencies,
+    ...Shield.spriteDependencies,
+    ...Heart.spriteDependencies,
   ];
   static audioDependencies: AudioDependency[] = [];
 

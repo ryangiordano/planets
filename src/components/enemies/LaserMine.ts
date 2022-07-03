@@ -1,5 +1,8 @@
 import { COLOR_MAP } from "../../assets/data/stellar-bodies/Constants";
-import { sparkImpact } from "../../scenes/StellarBodyScene/EnemyImpact";
+import {
+  sparkImpact,
+  enemyExplode,
+} from "../../scenes/StellarBodyScene/EnemyImpact";
 import { WHITE } from "../../utility/Constants";
 import { getRandomInt, getCanvasPosition } from "../../utility/Utility";
 import Laser from "../player/Laser";
@@ -105,14 +108,7 @@ export default class LaserMine extends Phaser.Physics.Arcade.Sprite {
   }
 
   public explode(impactCoords: Coords) {
-    sparkImpact(
-      this.scene,
-      WHITE.hex,
-      getRandomInt(40, 50),
-      impactCoords,
-      30,
-      200
-    );
+    enemyExplode(this.scene, impactCoords);
     this.destroy();
   }
 

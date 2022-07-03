@@ -1,13 +1,13 @@
 import DependentScene from "../DependentScene";
 import { getStarSystem } from "../../assets/data/star-systems/StarSystemRepository";
 import Ship from "../../components/player/Ship";
-import { getRandomInt } from "../../utility/Utility";
+import { getRandomInt, isWinningRoll } from "../../utility/Utility";
 import { paintStars, warpOutStar, warpInStar } from "../utility/index";
 import LargeStellarBody from "../../components/planet/LargeStellarBody";
 import { getStellarBody } from "../../assets/data/stellar-bodies/StellarBodyRepository";
 import { LaserImpact } from "../../components/player/LargeLaser";
 import LargeLaser from "../../components/player/LargeLaser";
-import { buildFiringBehavior } from "./Firing";
+import { buildFiringBehavior } from "./shipFiring";
 import { buildLaserImpactStellarBodyBehavior } from "./LaserImpact";
 import { handleHarvest } from "./HarvestStellarBody";
 import { renderStellarBody } from "./RenderStellarBody";
@@ -22,6 +22,9 @@ import {
   EnemyObject,
   EnemyTypeMap,
 } from "../../assets/data/enemy/EnemyController";
+import EnemyLaser from "../../components/enemies/EnemyLaser";
+import { WHITE } from "../../utility/Constants";
+import { buildShipHealth } from "./shipHealth";
 
 /** Scene where the action takes place in the game.
  * Currently players can mine planets and moons.
@@ -41,6 +44,7 @@ export class StellarBodyScene extends DependentScene {
   private laserGroup: Phaser.GameObjects.Group;
   private stellarBodyGroup: Phaser.GameObjects.Group;
   private enemyTargetGroup: Phaser.GameObjects.Group;
+  private shipLogic: ReturnType<typeof buildShipHealth>;
 
   constructor() {
     super({
@@ -152,7 +156,6 @@ export class StellarBodyScene extends DependentScene {
   }
 
   private renderEnemies(enemyObjects: EnemyObject[]) {
-    const stateScene = this.scene.get("StateScene") as StateScene;
     enemyObjects.forEach((eo) => {
       const cls = EnemyTypeMap.get(eo.enemyTemplate.enemyType);
       const enemy = this.add.existing(
@@ -162,11 +165,14 @@ export class StellarBodyScene extends DependentScene {
           y: getRandomInt(-200, 200),
           onLaserFire: (laser) => {
             laser.destroy();
-            stateScene.shipStatusManager.takeDamage(laser.potency);
+            //TODO: Handle this somewhere else...
+            if (isWinningRoll(1)) {
+              this.shipLogic.damageShip(this, laser);
+            }
           },
           id: eo.id,
           xpValue: eo.level * eo.enemyTemplate.XP,
-          level: eo.level
+          level: eo.level,
         })
       );
       this.enemyTargetGroup.add(enemy);
@@ -174,7 +180,7 @@ export class StellarBodyScene extends DependentScene {
     });
   }
 
-  /** Set escape and firing behavior */
+  /** Set escape, firing behavior and ship health events */
   private setSceneKeyEvents(referringSystemId: number) {
     const esc = this.input.keyboard.addKey("ESC");
     esc.on("down", async () => {
@@ -189,6 +195,8 @@ export class StellarBodyScene extends DependentScene {
       this.laserImpactGroup,
       () => {}
     );
+
+    this.shipLogic = buildShipHealth(this);
   }
 
   private returnToPreviouseScene(referringSystemId: number) {

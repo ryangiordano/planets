@@ -40,12 +40,16 @@ export function buildShipManagement(
   }
 
   function incrementShields(value: number) {
+    const prevPercentage =
+      shipStatus.shieldModule.currentValue /
+      shipStatus.shieldModule.getMaxValue();
     shipStatus.shieldModule.currentValue = Math.min(
       shipStatus.shieldModule.getMaxValue(),
       shipStatus.shieldModule.currentValue + value
     );
 
     scene.game.events.emit("player-shield-increase", {
+      previousPercentage: prevPercentage,
       currentPercentage:
         shipStatus.shieldModule.currentValue /
         shipStatus.shieldModule.getMaxValue(),

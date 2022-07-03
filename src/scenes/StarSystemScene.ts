@@ -10,7 +10,6 @@ import { paintStars } from "./utility/index";
 import LaserMine from "../components/enemies/LaserMine";
 import Laser from "../components/player/Laser";
 import { addNotification } from "./StateScene/NotificationManagement";
-import { removeStellarEnemy } from "../assets/data/enemy/EnemyController";
 
 const MAX_SYSTEM_SIZE = 2000;
 

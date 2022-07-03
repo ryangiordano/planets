@@ -13,22 +13,7 @@ import {
   PURPLE,
 } from "../../utility/Constants";
 import { ResourceStateObject } from "../StateScene/ResourceManagement";
-
-function buildBorder({
-  x,
-  y,
-  scene,
-  width,
-  height,
-}: {
-  x: number;
-  y: number;
-  scene: Phaser.Scene;
-  width: number;
-  height: number;
-}) {
-  return scene.add.nineslice(x, y, width, height, "UI_box", 5);
-}
+import { buildBorder, borderFlicker } from "../../components/UI/Border";
 
 export function buildResourceBorder(scene: Phaser.Scene, x: number, y: number) {
   return buildBorder({
@@ -75,7 +60,9 @@ const UIBarData = [
 
 function setResourceManagementEvents(
   scene: Phaser.Scene,
-  contentMap: Map<MineableResourceType, UIBar>
+  contentMap: Map<MineableResourceType, UIBar>,
+  gasBorder,
+  mineralBorder
 ) {
   scene.game.events.on(
     "resource-value-change",
@@ -88,6 +75,8 @@ function setResourceManagementEvents(
     }) => {
       const bar = contentMap.get(key);
       if (bar) {
+        borderFlicker(scene, gasBorder);
+        borderFlicker(scene, mineralBorder);
         bar.setCurrentValue(resource.current);
       }
     }
@@ -137,7 +126,8 @@ export function buildResourceUI(scene: Phaser.Scene) {
   });
 
   /** Gas UI */
-  const gasBorder = buildResourceBorder(scene, -75, -60);
+  const gasBorder = buildResourceBorder(scene, 0, 40);
+  gasBorder.setOrigin(0.5);
   const gasText = scene.add.text(-65, -55, "gas", {
     fontFamily: "pixel",
     fontSize: "25px",
@@ -158,7 +148,8 @@ export function buildResourceUI(scene: Phaser.Scene) {
     fontSize: "25px",
     color: WHITE.str,
   });
-  const mineralBorder = buildResourceBorder(scene, -75, -60);
+  const mineralBorder = buildResourceBorder(scene, 0, 40);
+  mineralBorder.setOrigin(0.5);
   const mineralBarContainer = scene.add.container(147, 0, [
     orangeMineralBar,
     greenMineralBar,
@@ -173,7 +164,7 @@ export function buildResourceUI(scene: Phaser.Scene) {
     [gasBarContainer, mineralBarContainer]
   );
 
-  setResourceManagementEvents(scene, contentMap);
+  setResourceManagementEvents(scene, contentMap, gasBorder, mineralBorder);
 
   return { resourceContainer, contentMap };
 }

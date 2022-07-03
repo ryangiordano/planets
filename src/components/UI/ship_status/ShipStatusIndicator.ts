@@ -230,6 +230,9 @@ export class ShipStatusIndicator extends Phaser.GameObjects.Container {
       currentPercentage: healthPercentage,
     });
     this.add([this.shieldsIndicator, this.hullIndicator]);
+  }
+
+  init() {
     this.buildEngineExhaust();
   }
 
@@ -238,8 +241,8 @@ export class ShipStatusIndicator extends Phaser.GameObjects.Container {
 
     const { x, y } = this.scene.cameras.main.getWorldPoint(this.x, this.y);
     const emitter = particles.createEmitter({
-      x,
-      y: y + 65,
+      x: this.parentContainer.x + x,
+      y: this.parentContainer.y + y + 65,
       scale: { start: 1.8, end: 0 },
       blendMode: "ADD",
       angle: 90,

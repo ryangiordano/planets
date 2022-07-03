@@ -4,6 +4,7 @@ import { LaserImpact } from "../../components/player/LargeLaser";
 import { BLACK } from "../../utility/Constants";
 import { getRandomInt } from "../../utility/Utility";
 import { StateScene } from "../StateScene/StateScene";
+import { fadeResourceTowardCoordinate } from "./shared";
 
 export function handleHarvest(
   scene: Phaser.Scene,
@@ -69,24 +70,14 @@ function spawnElementDebris(
       onComplete: () => {
         const randomX = getRandomInt(-270, -170);
         const randomY = getRandomInt(-150, -100);
-        scene.tweens.add({
-          targets: [circle],
-          x: {
-            from: circle.x,
-            to: scene.game.canvas.width + randomX,
-          },
-          y: {
-            from: circle.y,
-            to: scene.game.canvas.height + randomY,
-          },
-          scale: { from: 1, to: 3 },
-          duration: getRandomInt(500, 800),
-          alpha: { from: 1, to: 0.3 },
-          // ease: "Power4",
-          onComplete: () => {
-            circle.destroy();
-          },
-        });
+
+        fadeResourceTowardCoordinate(
+          scene,
+          circle,
+          scene.game.canvas.width + randomX,
+          scene.game.canvas.height + randomY,
+          getRandomInt(500, 800)
+        );
       },
     });
   }
