@@ -36,6 +36,7 @@ const data: {
     remainingYield: 4,
     maxYield: 4,
     id: 1,
+    stellarEnemies: 0,
   },
   "2": {
     name: "Wryan",

@@ -17,7 +17,7 @@ import {
 } from "./Constants";
 import { StarSystemObject, setStarSystemData } from "./StarSystemRepository";
 import {
-  createstellarEnemies as createStellarEnemies,
+  createStellarEnemies,
   randomlyCreateEnemyData,
 } from "../enemy/EnemyController";
 import { createName } from "../names/names";

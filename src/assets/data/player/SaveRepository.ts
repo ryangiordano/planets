@@ -21,20 +21,20 @@ export function getDefaultShipStatus() {
       totalXP: 0,
       totalSkillPoints: 0,
       laserModule: {
-        multiplier: 0.3,
+        multiplier: 1.3,
         level: 1,
       },
       engineModule: {
-        multiplier: 0.3,
+        multiplier: 1.3,
         level: 1,
       },
       storageModule: {
-        multiplier: 0.3,
+        multiplier: 1.3,
         level: 1,
       },
       healthModuleObject: {
         upgradeableModule: {
-          multiplier: 0.3,
+          multiplier: 1.3,
           level: 1,
         },
         currentValue: 100,
@@ -42,7 +42,7 @@ export function getDefaultShipStatus() {
       },
       shieldModuleObject: {
         upgradeableModule: {
-          multiplier: 0.3,
+          multiplier: 1.3,
           level: 1,
         },
         currentValue: 100,

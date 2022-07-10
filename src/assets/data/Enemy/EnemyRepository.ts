@@ -1,6 +1,10 @@
 import enemies from "./enemies";
 import enemyTemplates from "./enemy-templates";
 import stellarEnemies from "./stellar-enemies";
+import {
+  ResourceModuleObject,
+  UpgradeableModule,
+} from "../../../components/battle/ResourceModule";
 
 export type EnemyData = {
   id: number;
@@ -10,11 +14,14 @@ export type EnemyData = {
 export type EnemyTemplateData = {
   id: number;
   name: string;
-  baseHP: number;
-  fireRate: number;
   enemyType: EnemyType;
   XP: number;
-  level: number;
+  texture: string;
+  health: { multiplier: number; currentValue: number; baseValue: number };
+  shield: { multiplier: number; currentValue: number; baseValue: number };
+  attack: number;
+  speed: number;
+  storage: number;
 };
 
 export type StellarEnemiesData = {

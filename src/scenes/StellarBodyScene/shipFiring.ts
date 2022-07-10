@@ -7,7 +7,7 @@ import LargeLaser, {
  * This impact is added to a laserImpactGroup, where other entities can react
  * according to being struck by a laser.
  */
-function setLaserLaserTargetCollision(
+export function setLaserLaserTargetCollision(
   scene: Phaser.Scene,
   laserGroup: Phaser.GameObjects.Group,
   laserTargetGroup: Phaser.GameObjects.Group,
@@ -40,20 +40,16 @@ export function buildFiringBehavior(
   scene.input.on("pointerdown", (pointer) => {
     /** Alternating parts of the screen to fire from */
     fireCount++;
-    const placeholderCoords = {
-      x: scene.game.canvas.width / (fireCount % 2 ? 4 : 1.25),
-      y: scene.game.canvas.height,
-    };
-
-    const miningLaser = new LargeLaser({
-      scene: scene,
-      ...placeholderCoords,
-      targetX: pointer.x,
-      targetY: pointer.y,
-    });
-
-    laserGroup.add(miningLaser);
-    laserTargetGroup.add(new LaserTarget(scene, pointer.x, pointer.y));
+    fireLaser(
+      scene,
+      fireCount % 2
+        ? getLeftLaserPosition(scene)
+        : getRightLaserPosition(scene),
+      scene.game.canvas.height,
+      pointer,
+      laserGroup,
+      laserTargetGroup
+    );
   });
 
   setLaserLaserTargetCollision(
@@ -63,4 +59,41 @@ export function buildFiringBehavior(
     laserImpactGroup,
     onLaserImpact
   );
+}
+
+export function fireLaser(
+  scene: Phaser.Scene,
+  x: number,
+  y: number,
+  pointer: { x: number; y: number },
+  laserGroup: Phaser.GameObjects.Group,
+  laserTargetGroup: Phaser.GameObjects.Group
+) {
+  return new Promise<void>((resolve) => {
+    const placeholderCoords = {
+      x,
+      y,
+    };
+
+    const miningLaser = new LargeLaser({
+      scene: scene,
+      ...placeholderCoords,
+      targetX: pointer.x,
+      targetY: pointer.y,
+      onHitTarget: () => {
+        resolve();
+      },
+    });
+
+    laserGroup.add(miningLaser);
+    laserTargetGroup.add(new LaserTarget(scene, pointer.x, pointer.y));
+  });
+}
+
+export function getLeftLaserPosition(scene: Phaser.Scene) {
+  return scene.game.canvas.width / 4;
+}
+
+export function getRightLaserPosition(scene: Phaser.Scene) {
+  return scene.game.canvas.width / 1.25;
 }

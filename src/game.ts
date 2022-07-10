@@ -8,9 +8,9 @@ import { SystemSelectScene } from "./scenes/SystemSelectScene";
 import { StellarBodyScene } from "./scenes/StellarBodyScene/StellarBodyScene";
 import { UIScene } from "./scenes/UIScene/UIScene";
 import { StateScene } from "./scenes/StateScene/StateScene";
-import { getRandomInt } from "./utility/Utility";
+import BattleScene from "./scenes/battle/BattleScene";
 export type GameScenes = "BootScene" | "StarSystemScene" | "Audio";
-// main game configuration
+
 const config: Phaser.Types.Core.GameConfig = {
   width: "100%",
   height: "100%",
@@ -23,6 +23,7 @@ const config: Phaser.Types.Core.GameConfig = {
     StellarBodyScene,
     UIScene,
     StateScene,
+    BattleScene,
   ],
   plugins: {
     global: [NineSlicePlugin.DefaultCfg],

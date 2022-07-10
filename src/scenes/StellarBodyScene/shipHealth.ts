@@ -119,7 +119,7 @@ function setOnRegainShields(scene: Phaser.Scene) {
   );
 }
 
-function damageShip(scene: Phaser.Scene, projectile: Projectile) {
+function damageShip(scene: Phaser.Scene) {
   const stateScene = scene.scene.get("StateScene") as StateScene;
   const { shipStatusManager } = stateScene;
   if (shipStatusManager.shipStatus.shieldModule.currentValue) {
@@ -151,8 +151,6 @@ function damageShip(scene: Phaser.Scene, projectile: Projectile) {
     //handle visual for ship damage
   }
   scene.cameras.main.shake(300, 0.008);
-
-  shipStatusManager.takeDamage(projectile.potency);
 }
 
 /** Managing the ship's shields, hull-health and damage taken */

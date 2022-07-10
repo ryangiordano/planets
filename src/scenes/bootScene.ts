@@ -6,6 +6,7 @@ import { SystemSelectScene } from "./SystemSelectScene";
 import { StellarBodyScene } from "./StellarBodyScene/StellarBodyScene";
 import { UIScene } from "./UIScene/UIScene";
 import { StateScene } from "./StateScene/StateScene";
+import BattleScene from "./battle/BattleScene";
 
 function preloadSceneDependencies(
   bootScene: Phaser.Scene,
@@ -61,8 +62,8 @@ export class BootScene extends Phaser.Scene {
       });
 
       setTimeout(() => {
-        this.scene.start("SystemSelectScene");
-        // this.scene.start("StellarBodyScene", { stellarBodyId: 1 });
+        // this.scene.start("SystemSelectScene");
+        this.scene.start("StellarBodyScene", { stellarBodyId: 1 });
         this.scene.start("StateScene");
         this.scene.start("UIScene");
       }, 1);
@@ -111,6 +112,7 @@ export class BootScene extends Phaser.Scene {
       StellarBodyScene,
       UIScene,
       StateScene,
+      BattleScene,
     ]);
   }
   private createLoadingGraphics(): void {

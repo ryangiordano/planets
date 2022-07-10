@@ -1,3 +1,8 @@
+import {
+  UpgradeableModule,
+  ResourceModuleObject,
+} from "../../components/battle/ResourceModule";
+
 /** Handle gaining xp, reaching new levels, spending skill points */
 export type ShipStatusObject = {
   shipLevel: number;
@@ -9,15 +14,3 @@ export type ShipStatusObject = {
   healthModuleObject: ResourceModuleObject;
   shieldModuleObject: ResourceModuleObject;
 };
-
-export interface UpgradeableModule {
-  multiplier: number;
-  level: number;
-}
-
-export interface ResourceModuleObject {
-  upgradeableModule: UpgradeableModule;
-  currentValue: number;
-  /** Number that will be multiplied to get the max value */
-  baseValue: number;
-}

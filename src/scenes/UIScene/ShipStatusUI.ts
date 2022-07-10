@@ -21,7 +21,7 @@ export function buildShipStatusUI(scene: Phaser.Scene) {
     width: 200,
     height: 320,
   });
-  border.setOrigin(.5);
+  border.setOrigin(0.5);
   container.add(border);
 
   const shipStatusIndicator = new ShipStatusIndicator({

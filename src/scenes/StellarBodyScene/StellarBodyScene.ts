@@ -1,7 +1,7 @@
 import DependentScene from "../DependentScene";
 import { getStarSystem } from "../../assets/data/star-systems/StarSystemRepository";
 import Ship from "../../components/player/Ship";
-import { getRandomInt, isWinningRoll } from "../../utility/Utility";
+import { getRandomInt } from "../../utility/Utility";
 import { paintStars, warpOutStar, warpInStar } from "../utility/index";
 import LargeStellarBody from "../../components/planet/LargeStellarBody";
 import { getStellarBody } from "../../assets/data/stellar-bodies/StellarBodyRepository";
@@ -17,14 +17,7 @@ import {
 } from "../StateScene/NotificationManagement";
 import LaserMine from "../../components/enemies/LaserMine";
 import { StateScene } from "../StateScene/StateScene";
-import {
-  removeStellarEnemy,
-  EnemyObject,
-  EnemyTypeMap,
-} from "../../assets/data/enemy/EnemyController";
-import EnemyLaser from "../../components/enemies/EnemyLaser";
-import { WHITE } from "../../utility/Constants";
-import { buildShipHealth } from "./shipHealth";
+import { removeStellarEnemy } from "../../assets/data/enemy/EnemyController";
 
 /** Scene where the action takes place in the game.
  * Currently players can mine planets and moons.
@@ -44,7 +37,7 @@ export class StellarBodyScene extends DependentScene {
   private laserGroup: Phaser.GameObjects.Group;
   private stellarBodyGroup: Phaser.GameObjects.Group;
   private enemyTargetGroup: Phaser.GameObjects.Group;
-  private shipLogic: ReturnType<typeof buildShipHealth>;
+
 
   constructor() {
     super({
@@ -119,17 +112,23 @@ export class StellarBodyScene extends DependentScene {
       centerY: 0,
     });
 
-    this.renderEnemies(stellarBodyObject.stellarEnemies);
+    // this.renderEnemies(stellarBodyObject.stellarEnemies);
 
     await this.warpIn();
 
-    this.approachStellarBody();
-    addNotification(this, `Approaching  ${stellarBodyObject.name}`);
-    if (this.hasEnemies()) {
-      addNotification(this, `Hostiles present`, NotificationTypes.urgent);
-    } else {
-      this.setMineable();
-    }
+    this.startBattle();
+    // this.approachStellarBody();
+    // addNotification(this, `Approaching  ${stellarBodyObject.name}`);
+    // if (this.hasEnemies()) {
+    //   addNotification(this, `Hostiles present`, NotificationTypes.urgent);
+    // } else {
+    //   this.setMineable();
+    // }
+  }
+
+  private startBattle() {
+    this.scene.run("BattleScene");
+    this.scene.pause("StellarBodyScene");
   }
 
   private setMineable() {
@@ -155,31 +154,6 @@ export class StellarBodyScene extends DependentScene {
     return Boolean(this.enemyTargetGroup.getLength());
   }
 
-  private renderEnemies(enemyObjects: EnemyObject[]) {
-    enemyObjects.forEach((eo) => {
-      const cls = EnemyTypeMap.get(eo.enemyTemplate.enemyType);
-      const enemy = this.add.existing(
-        new cls({
-          scene: this,
-          x: getRandomInt(-200, 200),
-          y: getRandomInt(-200, 200),
-          onLaserFire: (laser) => {
-            laser.destroy();
-            //TODO: Handle this somewhere else...
-            if (isWinningRoll(0.5)) {
-              this.shipLogic.damageShip(this, laser);
-            }
-          },
-          id: eo.id,
-          xpValue: eo.level * eo.enemyTemplate.XP,
-          level: eo.level,
-        })
-      );
-      this.enemyTargetGroup.add(enemy);
-      this.stellarBodyContainer.add(enemy);
-    });
-  }
-
   /** Set escape, firing behavior and ship health events */
   private setSceneKeyEvents(referringSystemId: number) {
     const esc = this.input.keyboard.addKey("ESC");
@@ -196,7 +170,6 @@ export class StellarBodyScene extends DependentScene {
       () => {}
     );
 
-    this.shipLogic = buildShipHealth(this);
   }
 
   private returnToPreviouseScene(referringSystemId: number) {

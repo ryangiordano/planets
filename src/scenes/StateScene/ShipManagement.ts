@@ -13,64 +13,8 @@ export function buildShipManagement(
     });
   });
 
-  function incrementHP(value: number) {
-    shipStatus.healthModule.currentValue = Math.min(
-      shipStatus.healthModule.getMaxValue(),
-      shipStatus.healthModule.currentValue + value
-    );
-
-    scene.game.events.emit("player-health-increase", {
-      currentPercentage:
-        shipStatus.healthModule.currentValue /
-        shipStatus.healthModule.getMaxValue(),
-    });
-  }
-
-  function decrementHP(value: number) {
-    shipStatus.healthModule.currentValue = Math.max(
-      0,
-      shipStatus.healthModule.currentValue - value
-    );
-
-    scene.game.events.emit("player-health-decrease", {
-      currentPercentage:
-        shipStatus.healthModule.currentValue /
-        shipStatus.healthModule.getMaxValue(),
-    });
-  }
-
-  function incrementShields(value: number) {
-    const prevPercentage =
-      shipStatus.shieldModule.currentValue /
-      shipStatus.shieldModule.getMaxValue();
-    shipStatus.shieldModule.currentValue = Math.min(
-      shipStatus.shieldModule.getMaxValue(),
-      shipStatus.shieldModule.currentValue + value
-    );
-
-    scene.game.events.emit("player-shield-increase", {
-      previousPercentage: prevPercentage,
-      currentPercentage:
-        shipStatus.shieldModule.currentValue /
-        shipStatus.shieldModule.getMaxValue(),
-    });
-  }
-
-  function decrementShields(value: number) {
-    shipStatus.shieldModule.currentValue = Math.max(
-      0,
-      shipStatus.shieldModule.currentValue - value
-    );
-
-    scene.game.events.emit("player-shield-decrease", {
-      currentPercentage:
-        shipStatus.shieldModule.currentValue /
-        shipStatus.shieldModule.getMaxValue(),
-    });
-  }
-
   function increaseModuleLevel(module: ShipModules, value: number) {
-    shipStatus.moduleMap.get(module).level += value;
+    shipStatus.increaseModuleLevel(module, value);
     scene.game.events.emit("player-module-level-increase", {
       module,
       level: shipStatus.moduleMap.get(module).level,
@@ -86,16 +30,38 @@ export function buildShipManagement(
   }
 
   function takeDamage(potency: number) {
-    if (
-      shipStatus.shieldModule.currentValue <= 0 &&
-      shipStatus.healthModule.currentValue - potency <= 0
-    ) {
-      scene.game.events.emit("game-over");
-    } else if (shipStatus.shieldModule.currentValue <= 0) {
-      decrementHP(potency);
-    } else {
-      decrementShields(potency);
-    }
+    shipStatus.takeDamage({
+      potency,
+      onDamageShield: () => {
+        scene.game.events.emit("player-shield-decrease", {
+          currentPercentage: shipStatus.shieldModule.getPercentage(),
+        });
+      },
+      onDamageHealth: () => {
+        scene.game.events.emit("player-health-decrease", {
+          currentPercentage: shipStatus.healthModule.getPercentage(),
+        });
+      },
+      onDeath: () => {
+        scene.game.events.emit("game-over");
+      },
+    });
+  }
+
+  function recoverShield(potency: number) {
+    const prevPercentage = shipStatus.shieldModule.getPercentage();
+    shipStatus.recoverShield(potency);
+    scene.game.events.emit("player-shield-increase", {
+      previousPercentage: prevPercentage,
+      currentPercentage: shipStatus.shieldModule.getPercentage(),
+    });
+  }
+
+  function recoverHealth(potency: number) {
+    shipStatus.recoverHealth(potency);
+    scene.game.events.emit("player-health-increase", {
+      currentPercentage: shipStatus.healthModule.getPercentage(),
+    });
   }
 
   return {
@@ -103,6 +69,8 @@ export function buildShipManagement(
     incrementXP,
     increaseModuleLevel,
     shipStatus,
+    recoverShield,
+    recoverHealth,
   };
 }
 

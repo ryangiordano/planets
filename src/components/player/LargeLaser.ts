@@ -19,12 +19,14 @@ export default class LargeLaser extends Phaser.Physics.Arcade.Sprite {
     y,
     targetX,
     targetY,
+    onHitTarget,
   }: {
     scene: Phaser.Scene;
     x: number;
     y: number;
     targetX: number;
     targetY: number;
+    onHitTarget?: () => void;
   }) {
     super(scene, x, y, "large_laser", 0);
     const angleDeg = getAngleDegreesBetweenPoints(
@@ -47,6 +49,10 @@ export default class LargeLaser extends Phaser.Physics.Arcade.Sprite {
       targets: [this],
       scale: { from: 1.5, to: 0.1 },
       duration: distance * 10,
+    });
+
+    this.on("destroy", () => {
+      onHitTarget?.();
     });
   }
 }

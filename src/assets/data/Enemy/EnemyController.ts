@@ -77,6 +77,6 @@ export function getstellarEnemies(stellarBodyId: number) {
   return getStellarEnemiesById(stellarBodyId);
 }
 
-export function createstellarEnemies(stellarBodyId: number, enemies: number[]) {
+export function createStellarEnemies(stellarBodyId: number, enemies: number[]) {
   return setStellarEnemies(stellarBodyId, enemies);
 }
